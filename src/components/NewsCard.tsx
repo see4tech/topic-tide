@@ -1,11 +1,15 @@
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Topic } from "@/lib/airtable";
+import { useEffect, useState } from "react";
+import { translate } from '@vitalets/google-translate-api';
 
 interface NewsCardProps {
   topic: Topic;
 }
 
 export const NewsCard = ({ topic }: NewsCardProps) => {
+  const [translatedTitle, setTranslatedTitle] = useState(topic.title);
+
   // Format the date if it exists
   const formattedDate = topic.pubDate 
     ? new Date(topic.pubDate).toLocaleDateString('es-ES', {
@@ -15,8 +19,27 @@ export const NewsCard = ({ topic }: NewsCardProps) => {
       })
     : '';
 
-  console.log('Raw pubDate:', topic.pubDate); // Debug log
-  console.log('Formatted date:', formattedDate); // Debug log
+  useEffect(() => {
+    const translateTitle = async () => {
+      try {
+        // Simple check if the text might be in English (contains common English words)
+        const commonEnglishWords = /\b(the|is|are|what|how|why|when|who|this|that|with)\b/i;
+        if (commonEnglishWords.test(topic.title)) {
+          const result = await translate(topic.title, { to: 'es' });
+          setTranslatedTitle(result.text);
+          console.log('Translated title:', result.text);
+        }
+      } catch (error) {
+        console.error('Translation error:', error);
+        setTranslatedTitle(topic.title); // Fallback to original title
+      }
+    };
+
+    translateTitle();
+  }, [topic.title]);
+
+  console.log('Raw pubDate:', topic.pubDate);
+  console.log('Formatted date:', formattedDate);
 
   return (
     <Card className="h-full overflow-hidden hover:shadow-lg transition-shadow flex flex-col">
@@ -37,10 +60,10 @@ export const NewsCard = ({ topic }: NewsCardProps) => {
           className="block mb-4"
         >
           <h2 className="text-lg font-semibold hover:text-primary leading-relaxed" style={{ color: '#216B67' }}>
-            {topic.title}
+            {translatedTitle}
           </h2>
         </a>
-        <p className="text-muted-foreground mb-8 line-clamp-6 flex-grow">
+        <p className="text-muted-foreground mb-8 line-clamp-3 flex-grow">
           {topic.content}
         </p>
         <div className="flex justify-between items-center text-sm text-muted-foreground border-t pt-4 mt-auto">
