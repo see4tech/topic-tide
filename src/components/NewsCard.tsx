@@ -34,8 +34,10 @@ export const NewsCard = ({ topic }: NewsCardProps) => {
         <p className="text-muted-foreground mb-8 line-clamp-4 flex-grow">
           {topic.content}
         </p>
-        <div className="flex justify-between items-center text-sm text-muted-foreground mt-auto">
-          <time dateTime={topic.pubDate}>{formattedDate}</time>
+        <div className="flex justify-between items-center text-sm text-muted-foreground border-t pt-4 mt-auto">
+          <time dateTime={topic.pubDate} className="font-medium">
+            {formattedDate}
+          </time>
           <span>{topic.creator}</span>
         </div>
       </CardContent>
