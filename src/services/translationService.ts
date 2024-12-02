@@ -32,9 +32,13 @@ export const translateTitle = async (text: string, apiKey: string): Promise<stri
       return translation;
     }
     
+    console.log('No translation received, returning original text:', text);
     return text;
   } catch (error) {
-    console.error('Translation error:', error);
+    console.error('Translation error:', {
+      text,
+      error: error instanceof Error ? error.message : error
+    });
     return text;
   }
 };
