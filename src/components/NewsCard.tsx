@@ -42,8 +42,8 @@ export const NewsCard = ({ topic }: NewsCardProps) => {
         }
 
         // Enhanced English detection patterns
-        const englishWords = /\b(the|is|are|was|were|has|have|had|will|would|could|should|may|might|must|can|court|urges|block|says|new|report|update|man|with|to|backdoor|hackers|hacked|networks|pitch|services|cybersecurity|DOJ)\b/i;
-        const englishPatterns = /\b(ing|ed|ly)\b|\b[A-Z][a-z]+ [A-Z][a-z]+\b/;
+        const englishWords = /\b(the|is|are|was|were|has|have|had|will|would|could|should|may|might|must|can|court|urges|block|says|new|report|update|man|with|to|backdoor|hackers|hacked|networks|pitch|services|cybersecurity|DOJ|and|by|about|stepping|up|its|bid|dethrone|getting|serious|verification|impersonation|what|going|on|with|name)\b/i;
+        const englishPatterns = /\b(ing|ed|ly)\b|\b[A-Z][a-z]+ [A-Z][a-z]+\b|\b[A-Z][a-z]+\b/;
         const spanishChars = /[áéíóúñü¿¡]/i;
         const spanishCommonWords = /\b(el|la|los|las|un|una|unos|unas|y|en|de|para|por|con|sin|pero|que|como|este|esta|estos|estas|según|así|qué)\b/i;
 
@@ -58,40 +58,45 @@ export const NewsCard = ({ topic }: NewsCardProps) => {
           hasEnglishWords,
           hasEnglishPatterns,
           hasSpanishSpecificChars,
-          hasSpanishWords
+          hasSpanishWords,
+          title: topic.title
         });
 
         let finalTranslation = topic.title;
 
-        if ((hasSpanishSpecificChars || hasSpanishWords) && !hasEnglishPatterns) {
-          console.log('Text detected as Spanish, using original');
-          finalTranslation = topic.title;
-        } else if (hasEnglishWords || hasEnglishPatterns) {
-          console.log('Text detected as English, translating...');
-          const openai = new OpenAI({
-            apiKey: apiKey,
-            dangerouslyAllowBrowser: true
-          });
+        // If it has English patterns or words and no clear Spanish indicators, translate it
+        if (hasEnglishWords || hasEnglishPatterns) {
+          if (!(hasSpanishSpecificChars && hasSpanishWords)) {
+            console.log('Text detected as English, translating...');
+            const openai = new OpenAI({
+              apiKey: apiKey,
+              dangerouslyAllowBrowser: true
+            });
 
-          const completion = await openai.chat.completions.create({
-            messages: [
-              {
-                role: "system",
-                content: "You are a translator. Translate the following English text to Spanish. Only return the translation, nothing else."
-              },
-              {
-                role: "user",
-                content: topic.title
-              }
-            ],
-            model: "gpt-4o-mini",
-          });
+            const completion = await openai.chat.completions.create({
+              messages: [
+                {
+                  role: "system",
+                  content: "You are a translator. Translate the following English text to Spanish. Only return the translation, nothing else."
+                },
+                {
+                  role: "user",
+                  content: topic.title
+                }
+              ],
+              model: "gpt-4o-mini",
+            });
 
-          const translation = completion.choices[0]?.message?.content;
-          if (translation) {
-            console.log('Translation received:', translation);
-            finalTranslation = translation;
+            const translation = completion.choices[0]?.message?.content;
+            if (translation) {
+              console.log('Translation received:', translation);
+              finalTranslation = translation;
+            }
+          } else {
+            console.log('Text has both English and Spanish indicators, using original');
           }
+        } else {
+          console.log('Text detected as Spanish or no clear English patterns, using original');
         }
 
         queryClient.setQueryData<Record<string, string>>(["translations"], (old = {}) => ({
