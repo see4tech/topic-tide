@@ -107,7 +107,7 @@ const Story = () => {
               className="inline-block text-sm hover:underline"
               style={{ color: import.meta.env.VITE_READ_MORE_FONT_COLOR }}
             >
-              Leer la historia completa en el sitio original →
+              Leer la historia original →
             </a>
           )}
         </div>
