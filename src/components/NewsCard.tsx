@@ -94,9 +94,6 @@ export const NewsCard = ({ topic }: NewsCardProps) => {
               className="w-full h-48 object-cover hover:opacity-90 transition-opacity"
             />
           </a>
-          <div className="absolute top-0 left-0 bg-primary/90 text-white px-3 py-1 text-sm m-3 rounded">
-            TECNOLOGÍA
-          </div>
         </div>
       </CardHeader>
       <CardContent className="p-6 flex flex-col flex-grow">
