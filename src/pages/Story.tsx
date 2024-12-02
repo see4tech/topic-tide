@@ -56,6 +56,7 @@ const Story = () => {
             </span>
             <time 
               dateTime={story.pubDate}
+              className="text-sm"
               style={{ color: import.meta.env.VITE_PUBDATE_FONT_COLOR }}
             >
               {new Date(story.pubDate).toLocaleDateString('es-ES')}
@@ -85,7 +86,7 @@ const Story = () => {
               className="inline-block text-sm hover:underline"
               style={{ color: import.meta.env.VITE_READ_MORE_FONT_COLOR }}
             >
-              Leer la historia completa en el sitio original →
+              Leer la noticia completa en el sitio original →
             </a>
           )}
         </div>
