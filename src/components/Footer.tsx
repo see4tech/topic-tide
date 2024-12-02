@@ -5,18 +5,14 @@ export const Footer = () => {
   const copyrightText = import.meta.env.VITE_COPYRIGHT_TEXT;
   const subscribeUrl = import.meta.env.VITE_SUBSCRIBE_URL;
   const unsubscribeUrl = import.meta.env.VITE_UNSUBSCRIBE_URL;
-  const footerBgColor = import.meta.env.VITE_FOOTER_BG_COLOR;
-  const footerFontColor = import.meta.env.VITE_FOOTER_FONT_COLOR;
+  const footerBgColor = import.meta.env.VITE_FOOTER_BG_COLOR || '#2B2B2B';
+  const footerFontColor = import.meta.env.VITE_FOOTER_FONT_COLOR || '#ffffff';
 
   console.log('Environment variables in Footer:', {
     FOOTER_BG: footerBgColor,
     FOOTER_FONT: footerFontColor,
     ENV: import.meta.env
   });
-
-  if (!footerBgColor || !footerFontColor) {
-    return <div className="p-4 text-red-500">Error: Missing required environment variables</div>;
-  }
 
   return (
     <footer 
