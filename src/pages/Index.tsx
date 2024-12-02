@@ -4,10 +4,12 @@ import { Footer } from "@/components/Footer";
 const Index = () => {
   const logoUrl = import.meta.env.VITE_LOGO_URL;
   const tagline = import.meta.env.VITE_SITE_TAGLINE;
+  const heroBgColor = import.meta.env.VITE_HERO_BG_COLOR || '#216B67';
+  const bodyBgColor = import.meta.env.VITE_BODY_BG_COLOR || '#ffffff';
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
-      <header className="bg-[#216B67] text-white py-12">
+    <div className="min-h-screen flex flex-col" style={{ backgroundColor: bodyBgColor }}>
+      <header style={{ backgroundColor: heroBgColor }} className="text-white py-12">
         <div className="container mx-auto px-4">
           <div className="flex flex-col md:flex-row items-center justify-center md:justify-between">
             <div className="flex items-center gap-8 mb-6 md:mb-0">

@@ -94,6 +94,9 @@ export const NewsCard = ({ topic }: NewsCardProps) => {
               className="w-full h-48 object-cover hover:opacity-90 transition-opacity"
             />
           </a>
+          <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 text-white text-xs p-2 text-center">
+            Haz clic en la imagen o el título para leer la historia completa
+          </div>
         </div>
       </CardHeader>
       <CardContent className="p-6 flex flex-col flex-grow">
