@@ -9,12 +9,14 @@ export const NewsList = () => {
   const { data: topics, isLoading, error } = useQuery({
     queryKey: ["topics"],
     queryFn: fetchTopics,
-    onError: () => {
-      toast({
-        title: "Error",
-        description: "Failed to fetch news. Please try again later.",
-        variant: "destructive",
-      });
+    meta: {
+      onError: () => {
+        toast({
+          title: "Error",
+          description: "Failed to fetch news. Please try again later.",
+          variant: "destructive",
+        });
+      },
     },
   });
 

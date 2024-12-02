@@ -1,9 +1,20 @@
 import Airtable from 'airtable';
 
 // Initialize Airtable
-const base = new Airtable({ apiKey: import.meta.env.VITE_AIRTABLE_API_KEY }).base(
-  import.meta.env.VITE_AIRTABLE_BASE_ID
-);
+const apiKey = import.meta.env.VITE_AIRTABLE_API_KEY;
+const baseId = import.meta.env.VITE_AIRTABLE_BASE_ID;
+
+if (!apiKey) {
+  console.error('Missing VITE_AIRTABLE_API_KEY environment variable');
+  throw new Error('Missing VITE_AIRTABLE_API_KEY environment variable');
+}
+
+if (!baseId) {
+  console.error('Missing VITE_AIRTABLE_BASE_ID environment variable');
+  throw new Error('Missing VITE_AIRTABLE_BASE_ID environment variable');
+}
+
+const base = new Airtable({ apiKey }).base(baseId);
 
 export interface Topic {
   id: string;
