@@ -14,6 +14,9 @@ export const Footer = () => {
     RAW_ENV: import.meta.env
   });
 
+  if (!footerBgColor) throw new Error('VITE_FOOTER_BG_COLOR must be defined in .env');
+  if (!footerFontColor) throw new Error('VITE_FOOTER_FONT_COLOR must be defined in .env');
+
   return (
     <footer 
       className="py-8 mt-12"

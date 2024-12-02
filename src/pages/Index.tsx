@@ -8,13 +8,17 @@ const Index = () => {
   const bodyBgColor = import.meta.env.VITE_BODY_BG_COLOR;
   const heroFontColor = import.meta.env.VITE_HERO_FONT_COLOR;
 
-  console.log('Raw Environment Variables:', {
+  console.log('Raw Environment Variables in Index:', {
     LOGO_URL: logoUrl,
     HERO_BG: heroBgColor,
     BODY_BG: bodyBgColor,
     HERO_FONT: heroFontColor,
     RAW_ENV: import.meta.env
   });
+
+  if (!heroBgColor) throw new Error('VITE_HERO_BG_COLOR must be defined in .env');
+  if (!heroFontColor) throw new Error('VITE_HERO_FONT_COLOR must be defined in .env');
+  if (!bodyBgColor) throw new Error('VITE_BODY_BG_COLOR must be defined in .env');
 
   return (
     <div style={{ backgroundColor: bodyBgColor }} className="min-h-screen flex flex-col">
