@@ -8,17 +8,22 @@ export const Footer = () => {
   const footerBgColor = import.meta.env.VITE_FOOTER_BG_COLOR;
   const footerFontColor = import.meta.env.VITE_FOOTER_FONT_COLOR;
 
-  console.log('Environment variables in Footer:', {
-    FOOTER_BG: footerBgColor,
-    FOOTER_FONT: footerFontColor,
-    ENV: import.meta.env
+  console.log('Raw environment variables in Footer:', {
+    VITE_FOOTER_BG_COLOR: import.meta.env.VITE_FOOTER_BG_COLOR,
+    VITE_FOOTER_FONT_COLOR: import.meta.env.VITE_FOOTER_FONT_COLOR
+  });
+
+  console.log('Processed footer color variables:', {
+    footerBgColor,
+    footerFontColor,
+    allEnvVars: import.meta.env
   });
 
   return (
     <footer 
       style={{ 
-        backgroundColor: footerBgColor,
-        color: footerFontColor
+        backgroundColor: footerBgColor || '#2B2B2B',
+        color: footerFontColor || '#ffffff'
       }}
       className="py-8 mt-12"
     >

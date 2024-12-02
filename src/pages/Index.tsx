@@ -8,20 +8,31 @@ const Index = () => {
   const bodyBgColor = import.meta.env.VITE_BODY_BG_COLOR;
   const heroFontColor = import.meta.env.VITE_HERO_FONT_COLOR;
 
-  console.log('Environment variables in Index:', {
-    LOGO_URL: logoUrl,
-    HERO_BG: heroBgColor,
-    BODY_BG: bodyBgColor,
-    HERO_FONT: heroFontColor,
-    ENV: import.meta.env
+  console.log('Raw environment variables in Index:', {
+    VITE_HERO_BG_COLOR: import.meta.env.VITE_HERO_BG_COLOR,
+    VITE_BODY_BG_COLOR: import.meta.env.VITE_BODY_BG_COLOR,
+    VITE_HERO_FONT_COLOR: import.meta.env.VITE_HERO_FONT_COLOR
+  });
+
+  console.log('Processed color variables in Index:', {
+    heroBgColor,
+    bodyBgColor,
+    heroFontColor,
+    allEnvVars: import.meta.env
   });
 
   return (
-    <div style={{ backgroundColor: bodyBgColor }} className="min-h-screen flex flex-col">
+    <div 
+      style={{ 
+        backgroundColor: bodyBgColor || '#ffffff',
+        color: heroFontColor || '#000000'
+      }} 
+      className="min-h-screen flex flex-col"
+    >
       <header 
         style={{ 
-          backgroundColor: heroBgColor,
-          color: heroFontColor
+          backgroundColor: heroBgColor || '#2B2B2B',
+          color: heroFontColor || '#ffffff'
         }}
         className="py-12"
       >
