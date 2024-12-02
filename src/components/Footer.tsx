@@ -5,14 +5,17 @@ export const Footer = () => {
   const copyrightText = import.meta.env.VITE_COPYRIGHT_TEXT;
   const subscribeUrl = import.meta.env.VITE_SUBSCRIBE_URL;
   const unsubscribeUrl = import.meta.env.VITE_UNSUBSCRIBE_URL;
-  const footerBgColor = import.meta.env.VITE_FOOTER_BG_COLOR || '#2B2B2B';
-  const footerFontColor = import.meta.env.VITE_FOOTER_FONT_COLOR || '#ffffff';
+  const footerBgColor = import.meta.env.VITE_FOOTER_BG_COLOR;
+  const footerFontColor = import.meta.env.VITE_FOOTER_FONT_COLOR;
 
   console.log('Environment variables in Footer:', {
     FOOTER_BG: footerBgColor,
     FOOTER_FONT: footerFontColor,
     ENV: import.meta.env
   });
+
+  if (!footerBgColor) throw new Error('VITE_FOOTER_BG_COLOR must be defined in .env');
+  if (!footerFontColor) throw new Error('VITE_FOOTER_FONT_COLOR must be defined in .env');
 
   return (
     <footer 

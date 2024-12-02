@@ -4,9 +4,9 @@ import { Footer } from "@/components/Footer";
 const Index = () => {
   const logoUrl = import.meta.env.VITE_LOGO_URL;
   const tagline = import.meta.env.VITE_SITE_TAGLINE;
-  const heroBgColor = import.meta.env.VITE_HERO_BG_COLOR || '#2B2B2B';
-  const bodyBgColor = import.meta.env.VITE_BODY_BG_COLOR || '#ffffff';
-  const heroFontColor = import.meta.env.VITE_HERO_FONT_COLOR || '#ffffff';
+  const heroBgColor = import.meta.env.VITE_HERO_BG_COLOR;
+  const bodyBgColor = import.meta.env.VITE_BODY_BG_COLOR;
+  const heroFontColor = import.meta.env.VITE_HERO_FONT_COLOR;
 
   console.log('Environment variables in Index:', {
     LOGO_URL: logoUrl,
@@ -15,6 +15,10 @@ const Index = () => {
     HERO_FONT: heroFontColor,
     ENV: import.meta.env
   });
+
+  if (!heroBgColor) throw new Error('VITE_HERO_BG_COLOR must be defined in .env');
+  if (!bodyBgColor) throw new Error('VITE_BODY_BG_COLOR must be defined in .env');
+  if (!heroFontColor) throw new Error('VITE_HERO_FONT_COLOR must be defined in .env');
 
   return (
     <div style={{ backgroundColor: bodyBgColor }} className="min-h-screen flex flex-col">
