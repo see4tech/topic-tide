@@ -3,7 +3,6 @@ import { Footer } from "@/components/Footer";
 import { useEffect, useState } from "react";
 
 const Index = () => {
-  const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   const logoUrl = import.meta.env.VITE_LOGO_URL;
@@ -20,31 +19,18 @@ const Index = () => {
     ENV: import.meta.env
   });
 
-  useEffect(() => {
-    try {
-      if (!heroBgColor) throw new Error('VITE_HERO_BG_COLOR must be defined in .env');
-      if (!bodyBgColor) throw new Error('VITE_BODY_BG_COLOR must be defined in .env');
-      if (!heroFontColor) throw new Error('VITE_HERO_FONT_COLOR must be defined in .env');
-      setIsLoading(false);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'An error occurred');
-      setIsLoading(false);
-    }
-  }, [heroBgColor, bodyBgColor, heroFontColor]);
-
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
-
-  if (error) {
-    return <div className="p-4 text-red-500">Error: {error}</div>;
+  if (!heroBgColor || !bodyBgColor || !heroFontColor) {
+    return <div className="p-4 text-red-500">Error: Missing required environment variables</div>;
   }
 
   return (
     <div style={{ backgroundColor: bodyBgColor }} className="min-h-screen flex flex-col">
       <header 
+        style={{ 
+          backgroundColor: heroBgColor,
+          color: heroFontColor
+        }}
         className="py-12"
-        style={{ backgroundColor: heroBgColor, color: heroFontColor }}
       >
         <div className="container mx-auto px-4">
           <div className="flex flex-col md:flex-row items-center justify-center md:justify-between">

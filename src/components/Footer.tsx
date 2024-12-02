@@ -1,8 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 
 export const Footer = () => {
-  const [error, setError] = useState<string | null>(null);
-  
   const contactEmail = import.meta.env.VITE_CONTACT_EMAIL;
   const copyrightText = import.meta.env.VITE_COPYRIGHT_TEXT;
   const subscribeUrl = import.meta.env.VITE_SUBSCRIBE_URL;
@@ -16,23 +14,17 @@ export const Footer = () => {
     ENV: import.meta.env
   });
 
-  useEffect(() => {
-    try {
-      if (!footerBgColor) throw new Error('VITE_FOOTER_BG_COLOR must be defined in .env');
-      if (!footerFontColor) throw new Error('VITE_FOOTER_FONT_COLOR must be defined in .env');
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'An error occurred');
-    }
-  }, [footerBgColor, footerFontColor]);
-
-  if (error) {
-    return <div className="p-4 text-red-500">Error: {error}</div>;
+  if (!footerBgColor || !footerFontColor) {
+    return <div className="p-4 text-red-500">Error: Missing required environment variables</div>;
   }
 
   return (
     <footer 
+      style={{ 
+        backgroundColor: footerBgColor,
+        color: footerFontColor
+      }}
       className="py-8 mt-12"
-      style={{ backgroundColor: footerBgColor, color: footerFontColor }}
     >
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
