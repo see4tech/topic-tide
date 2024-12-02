@@ -32,7 +32,6 @@ export const NewsCard = ({ topic }: NewsCardProps) => {
       }
 
       try {
-        // Check if we already have this translation in the cache
         const translations = queryClient.getQueryData<Record<string, string>>(["translations"]) || {};
         
         if (translations[topic.id]) {
@@ -42,23 +41,32 @@ export const NewsCard = ({ topic }: NewsCardProps) => {
           return;
         }
 
-        // Improved language detection
-        const englishWords = /\b(the|is|are|was|were|has|have|had|will|would|could|should|may|might|must|can|court|urges|block|says|new|report|update)\b/i;
+        // Enhanced English detection patterns
+        const englishWords = /\b(the|is|are|was|were|has|have|had|will|would|could|should|may|might|must|can|court|urges|block|says|new|report|update|man|with|to|backdoor|hackers|hacked|networks|pitch|services|cybersecurity|DOJ)\b/i;
+        const englishPatterns = /\b(ing|ed|ly)\b|\b[A-Z][a-z]+ [A-Z][a-z]+\b/;
         const spanishChars = /[áéíóúñü¿¡]/i;
-        const spanishCommonWords = /\b(el|la|los|las|un|una|unos|unas|y|en|de|para|por|con|sin|pero|que|como|este|esta|estos|estas)\b/i;
-        
+        const spanishCommonWords = /\b(el|la|los|las|un|una|unos|unas|y|en|de|para|por|con|sin|pero|que|como|este|esta|estos|estas|según|así|qué)\b/i;
+
         console.log('Analyzing title:', topic.title);
         
         const hasEnglishWords = englishWords.test(topic.title);
+        const hasEnglishPatterns = englishPatterns.test(topic.title);
         const hasSpanishSpecificChars = spanishChars.test(topic.title);
         const hasSpanishWords = spanishCommonWords.test(topic.title);
         
+        console.log('Detection results:', {
+          hasEnglishWords,
+          hasEnglishPatterns,
+          hasSpanishSpecificChars,
+          hasSpanishWords
+        });
+
         let finalTranslation = topic.title;
 
-        if (hasSpanishSpecificChars || hasSpanishWords) {
+        if ((hasSpanishSpecificChars || hasSpanishWords) && !hasEnglishPatterns) {
           console.log('Text detected as Spanish, using original');
           finalTranslation = topic.title;
-        } else if (hasEnglishWords) {
+        } else if (hasEnglishWords || hasEnglishPatterns) {
           console.log('Text detected as English, translating...');
           const openai = new OpenAI({
             apiKey: apiKey,
@@ -86,7 +94,6 @@ export const NewsCard = ({ topic }: NewsCardProps) => {
           }
         }
 
-        // Store the translation in the cache
         queryClient.setQueryData<Record<string, string>>(["translations"], (old = {}) => ({
           ...old,
           [topic.id]: finalTranslation
