@@ -3,10 +3,9 @@ import { Topic } from "@/lib/airtable";
 
 interface StoryIndexItemProps {
   topic: Topic;
-  translatedTitle: string;
 }
 
-export const StoryIndexItem = ({ topic, translatedTitle }: StoryIndexItemProps) => {
+export const StoryIndexItem = ({ topic }: StoryIndexItemProps) => {
   return (
     <Link 
       to={`/story/${topic.id}`}
@@ -17,7 +16,7 @@ export const StoryIndexItem = ({ topic, translatedTitle }: StoryIndexItemProps) 
           className="text-xl font-semibold"
           style={{ color: import.meta.env.VITE_TITLE_FONT_COLOR }}
         >
-          {translatedTitle || topic.title}
+          {topic.title}
         </h2>
         <time 
           dateTime={topic.pubDate}

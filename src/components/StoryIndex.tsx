@@ -2,23 +2,12 @@ import { useQuery } from "@tanstack/react-query";
 import { fetchTopics } from "@/lib/airtable";
 import { Skeleton } from "@/components/ui/skeleton";
 import { StoryIndexItem } from "./StoryIndexItem";
-import { TranslationHandler } from "./TranslationHandler";
 
 export const StoryIndex = () => {
   const { data: topics, isLoading } = useQuery({
     queryKey: ["topics"],
     queryFn: fetchTopics,
   });
-
-  const { data: translations = {}, refetch: refetchTranslations } = useQuery({
-    queryKey: ["translations"],
-    initialData: {},
-  });
-
-  const handleTranslationsUpdate = async (newTranslations: Record<string, string>) => {
-    console.log('StoryIndex - Batch updating translations:', newTranslations);
-    await refetchTranslations();
-  };
 
   if (isLoading) {
     return (
@@ -40,12 +29,6 @@ export const StoryIndex = () => {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <TranslationHandler 
-        topics={topics}
-        translations={translations}
-        onTranslationsUpdate={handleTranslationsUpdate}
-      />
-      
       <h1 
         className="text-3xl font-bold mb-6"
         style={{ color: import.meta.env.VITE_TITLE_FONT_COLOR }}
@@ -58,7 +41,6 @@ export const StoryIndex = () => {
           <StoryIndexItem 
             key={topic.id}
             topic={topic}
-            translatedTitle={translations[topic.id]}
           />
         ))}
       </div>

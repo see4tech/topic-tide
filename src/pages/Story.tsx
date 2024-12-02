@@ -11,12 +11,6 @@ const Story = () => {
     queryFn: fetchTopics,
   });
 
-  // Get translations from the cache
-  const { data: translations } = useQuery({
-    queryKey: ["translations"],
-    initialData: {},
-  });
-
   const story = topics?.find((t) => t.id === id);
 
   if (!story) {
@@ -47,7 +41,7 @@ const Story = () => {
             className="text-4xl font-bold mb-4"
             style={{ color: import.meta.env.VITE_TITLE_FONT_COLOR }}
           >
-            {translations[story.id] || story.title}
+            {story.title}
           </h1>
 
           <div className="flex items-center gap-4 text-sm">
@@ -66,7 +60,7 @@ const Story = () => {
           {story.image && (
             <img
               src={story.image}
-              alt={translations[story.id] || story.title}
+              alt={story.title}
               className="w-full h-96 object-cover rounded-lg my-8"
             />
           )}

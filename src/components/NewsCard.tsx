@@ -2,7 +2,6 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Topic } from "@/lib/airtable";
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { useQueryClient } from "@tanstack/react-query";
 import { formatDate } from "@/utils/dateFormatter";
 
 interface NewsCardProps {
@@ -11,9 +10,6 @@ interface NewsCardProps {
 
 export const NewsCard = ({ topic }: NewsCardProps) => {
   const [isExpanded, setIsExpanded] = useState(false);
-  const queryClient = useQueryClient();
-  const translations = queryClient.getQueryData<Record<string, string>>(["translations"]) || {};
-  const translatedTitle = translations[topic.id] || topic.title;
   const formattedDate = formatDate(topic.pubDate);
 
   return (
@@ -64,7 +60,7 @@ export const NewsCard = ({ topic }: NewsCardProps) => {
             className="text-xl font-bold mb-3 leading-tight group-hover:text-primary transition-colors"
             style={{ color: import.meta.env.VITE_TITLE_FONT_COLOR }}
           >
-            {translatedTitle}
+            {topic.title}
           </h2>
         </Link>
         <div className="prose prose-sm max-w-none">
