@@ -1,27 +1,21 @@
 import Airtable from 'airtable';
 
-// Initialize Airtable
 const apiKey = import.meta.env.VITE_AIRTABLE_API_KEY;
 const baseId = import.meta.env.VITE_AIRTABLE_BASE_ID;
 
-if (!apiKey) {
-  console.error('Missing VITE_AIRTABLE_API_KEY environment variable');
-  throw new Error('Missing VITE_AIRTABLE_API_KEY environment variable');
-}
-
-if (!baseId) {
-  console.error('Missing VITE_AIRTABLE_BASE_ID environment variable');
-  throw new Error('Missing VITE_AIRTABLE_BASE_ID environment variable');
-}
+if (!apiKey) throw new Error('Missing Airtable API key');
+if (!baseId) throw new Error('Missing Airtable base ID');
 
 const base = new Airtable({ apiKey }).base(baseId);
 
 export interface Topic {
   id: string;
   title: string;
-  image: string;
   content: string;
+  image: string;
   link: string;
+  pubDate: string;
+  creator: string;
 }
 
 export const fetchTopics = async (): Promise<Topic[]> => {
@@ -39,12 +33,14 @@ export const fetchTopics = async (): Promise<Topic[]> => {
     return records.map((record) => ({
       id: record.id,
       title: record.get('Titulo') as string,
-      image: record.get('imagen') as string,
       content: record.get('Contenido Post') as string,
-      link: record.get('link') as string,
+      image: record.get('Imagen') as string,
+      link: record.get('Link') as string,
+      pubDate: record.get('Pubdata') as string,
+      creator: record.get('Creador') as string,
     }));
   } catch (error) {
     console.error('Error fetching topics:', error);
     throw error;
   }
-};
+}
