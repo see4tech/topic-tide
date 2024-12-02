@@ -59,7 +59,7 @@ export const StoryIndex = () => {
                   content: topic.title
                 }
               ],
-              model: "gpt-4",
+              model: "gpt-4o-mini",
             });
 
             const translation = completion.choices[0]?.message?.content;
