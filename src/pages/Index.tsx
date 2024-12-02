@@ -14,18 +14,10 @@ const Index = () => {
     VITE_HERO_FONT_COLOR: import.meta.env.VITE_HERO_FONT_COLOR
   });
 
-  console.log('Processed color variables in Index:', {
-    heroBgColor,
-    bodyBgColor,
-    heroFontColor,
-    allEnvVars: import.meta.env
-  });
-
   return (
     <div 
       style={{ 
-        backgroundColor: bodyBgColor,
-        color: heroFontColor
+        backgroundColor: bodyBgColor
       }} 
       className="min-h-screen flex flex-col"
     >
@@ -53,7 +45,7 @@ const Index = () => {
         </div>
       </header>
 
-      <main className="container mx-auto px-4 py-8 flex-grow">
+      <main className="container mx-auto px-4 py-8 flex-grow text-gray-900">
         <NewsList />
       </main>
 
