@@ -6,36 +6,21 @@ export const Footer = () => {
   const subscribeUrl = import.meta.env.VITE_SUBSCRIBE_URL;
   const unsubscribeUrl = import.meta.env.VITE_UNSUBSCRIBE_URL;
   const footerBgColor = import.meta.env.VITE_FOOTER_BG_COLOR;
-
-  // Function to determine if a color is light
-  const isLightColor = (color: string) => {
-    const hex = color.replace('#', '');
-    const r = parseInt(hex.substr(0, 2), 16);
-    const g = parseInt(hex.substr(2, 2), 16);
-    const b = parseInt(hex.substr(4, 2), 16);
-    const brightness = (r * 299 + g * 587 + b * 114) / 1000;
-    return brightness > 155;
-  };
+  const footerFontColor = import.meta.env.VITE_FOOTER_FONT_COLOR;
 
   console.log('Raw Footer env values:', {
     FOOTER_BG: footerBgColor,
+    FOOTER_FONT: footerFontColor,
     RAW_ENV: import.meta.env
-  });
-
-  // Ensure the color starts with # and handle undefined
-  const formattedFooterBgColor = footerBgColor ? (footerBgColor.startsWith('#') ? footerBgColor : `#${footerBgColor}`) : '#2B2B2B';
-  const isLightBg = isLightColor(formattedFooterBgColor);
-
-  console.log('Processed Footer Background Color:', {
-    original: footerBgColor,
-    formatted: formattedFooterBgColor,
-    style: { backgroundColor: formattedFooterBgColor }
   });
 
   return (
     <footer 
-      className={`py-8 mt-12 ${isLightBg ? 'text-gray-800' : 'text-white'}`}
-      style={{ backgroundColor: formattedFooterBgColor }}
+      className="py-8 mt-12"
+      style={{ 
+        backgroundColor: footerBgColor,
+        color: footerFontColor
+      }}
     >
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
