@@ -29,7 +29,8 @@ const Index = () => {
 
   console.log('Hero Background Color:', {
     original: heroBgColor,
-    formatted: formattedHeroBgColor
+    formatted: formattedHeroBgColor,
+    style: { backgroundColor: formattedHeroBgColor }
   });
 
   return (

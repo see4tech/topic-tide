@@ -28,7 +28,8 @@ export const Footer = () => {
 
   console.log('Footer Background Color:', {
     original: footerBgColor,
-    formatted: formattedFooterBgColor
+    formatted: formattedFooterBgColor,
+    style: { backgroundColor: formattedFooterBgColor }
   });
 
   return (
