@@ -1,6 +1,8 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 export const Footer = () => {
+  const [error, setError] = useState<string | null>(null);
+  
   const contactEmail = import.meta.env.VITE_CONTACT_EMAIL;
   const copyrightText = import.meta.env.VITE_COPYRIGHT_TEXT;
   const subscribeUrl = import.meta.env.VITE_SUBSCRIBE_URL;
@@ -14,8 +16,18 @@ export const Footer = () => {
     ENV: import.meta.env
   });
 
-  if (!footerBgColor) throw new Error('VITE_FOOTER_BG_COLOR must be defined in .env');
-  if (!footerFontColor) throw new Error('VITE_FOOTER_FONT_COLOR must be defined in .env');
+  useEffect(() => {
+    try {
+      if (!footerBgColor) throw new Error('VITE_FOOTER_BG_COLOR must be defined in .env');
+      if (!footerFontColor) throw new Error('VITE_FOOTER_FONT_COLOR must be defined in .env');
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'An error occurred');
+    }
+  }, [footerBgColor, footerFontColor]);
+
+  if (error) {
+    return <div className="p-4 text-red-500">Error: {error}</div>;
+  }
 
   return (
     <footer 
