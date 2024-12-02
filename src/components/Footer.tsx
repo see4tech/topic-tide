@@ -7,14 +7,25 @@ export const Footer = () => {
   const unsubscribeUrl = import.meta.env.VITE_UNSUBSCRIBE_URL;
   const footerBgColor = import.meta.env.VITE_FOOTER_BG_COLOR || '#216B67';
 
+  // Function to determine if a color is light
+  const isLightColor = (color: string) => {
+    const hex = color.replace('#', '');
+    const r = parseInt(hex.substr(0, 2), 16);
+    const g = parseInt(hex.substr(2, 2), 16);
+    const b = parseInt(hex.substr(4, 2), 16);
+    const brightness = (r * 299 + g * 587 + b * 114) / 1000;
+    return brightness > 155;
+  };
+
   // Ensure the color starts with #
   const formattedFooterBgColor = footerBgColor.startsWith('#') ? footerBgColor : `#${footerBgColor}`;
+  const isLightBg = isLightColor(formattedFooterBgColor);
 
   console.log('Footer Background Color:', formattedFooterBgColor); // Debug log
 
   return (
     <footer 
-      className="text-gray-800 py-8 mt-12"
+      className={`py-8 mt-12 ${isLightBg ? 'text-gray-800' : 'text-white'}`}
       style={{ backgroundColor: formattedFooterBgColor }}
     >
       <div className="container mx-auto px-4">

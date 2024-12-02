@@ -24,9 +24,9 @@ const Index = () => {
   console.log('Hero Background Color:', formattedHeroBgColor); // Debug log
 
   return (
-    <div className="min-h-screen flex flex-col" style={{ backgroundColor: bodyBgColor }}>
+    <div style={{ backgroundColor: bodyBgColor }} className="min-h-screen flex flex-col">
       <header 
-        className={`py-12 ${isLightBg ? 'text-gray-800' : 'text-white'}`} 
+        className={`py-12 ${isLightBg ? 'text-gray-800' : 'text-white'}`}
         style={{ backgroundColor: formattedHeroBgColor }}
       >
         <div className="container mx-auto px-4">
