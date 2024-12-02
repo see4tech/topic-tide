@@ -29,28 +29,27 @@ export const NewsCard = ({ topic }: NewsCardProps) => {
       }
 
       try {
-        // More comprehensive English detection
-        const englishPattern = /^[a-zA-Z0-9\s,.'"-]*$/;
+        // Improved language detection
+        const englishWords = /\b(the|is|are|was|were|has|have|had|will|would|could|should|may|might|must|can|court|urges|block|says|new|report|update)\b/i;
         const spanishChars = /[áéíóúñü¿¡]/i;
         const spanishCommonWords = /\b(el|la|los|las|un|una|unos|unas|y|en|de|para|por|con|sin|pero|que|como|este|esta|estos|estas)\b/i;
         
         console.log('Analyzing title:', topic.title);
         
-        const hasOnlyEnglishChars = englishPattern.test(topic.title);
+        const hasEnglishWords = englishWords.test(topic.title);
         const hasSpanishSpecificChars = spanishChars.test(topic.title);
         const hasSpanishWords = spanishCommonWords.test(topic.title);
         
         console.log('Language analysis:', {
-          hasOnlyEnglishChars,
+          hasEnglishWords,
           hasSpanishSpecificChars,
           hasSpanishWords
         });
 
-        // If text has Spanish-specific characters or common Spanish words, consider it Spanish
         if (hasSpanishSpecificChars || hasSpanishWords) {
           console.log('Text detected as Spanish, using original');
           setTranslatedTitle(topic.title);
-        } else if (hasOnlyEnglishChars) {
+        } else if (hasEnglishWords) {
           console.log('Text detected as English, translating...');
           const openai = new OpenAI({
             apiKey: apiKey,

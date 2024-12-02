@@ -9,7 +9,7 @@ const Index = () => {
 
   return (
     <div className="min-h-screen flex flex-col" style={{ backgroundColor: bodyBgColor }}>
-      <header style={{ backgroundColor: heroBgColor }} className="text-white py-12">
+      <header className="text-white py-12" style={{ backgroundColor: heroBgColor.startsWith('#') ? heroBgColor : `#${heroBgColor}` }}>
         <div className="container mx-auto px-4">
           <div className="flex flex-col md:flex-row items-center justify-center md:justify-between">
             <div className="flex items-center gap-8 mb-6 md:mb-0">
