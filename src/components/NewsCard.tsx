@@ -47,7 +47,7 @@ export const NewsCard = ({ topic }: NewsCardProps) => {
                 content: topic.title
               }
             ],
-            model: "gpt-4",
+            model: "gpt-4o-mini",
           });
 
           const translation = completion.choices[0]?.message?.content;
@@ -90,7 +90,7 @@ export const NewsCard = ({ topic }: NewsCardProps) => {
             {translatedTitle}
           </h2>
         </a>
-        <p className="text-muted-foreground mb-8 line-clamp-4 flex-grow">
+        <p className="text-muted-foreground mb-8 line-clamp-3 flex-grow">
           {topic.content}
         </p>
         <div className="flex justify-between items-center text-sm text-muted-foreground border-t pt-4 mt-auto">
