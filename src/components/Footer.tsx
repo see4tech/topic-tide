@@ -18,14 +18,15 @@ export const Footer = () => {
   };
 
   console.log('Raw Footer env values:', {
-    FOOTER_BG: import.meta.env.VITE_FOOTER_BG_COLOR
+    FOOTER_BG: footerBgColor,
+    RAW_ENV: import.meta.env
   });
 
-  // Ensure the color starts with #
-  const formattedFooterBgColor = footerBgColor?.startsWith('#') ? footerBgColor : `#${footerBgColor}`;
+  // Ensure the color starts with # and handle undefined
+  const formattedFooterBgColor = footerBgColor ? (footerBgColor.startsWith('#') ? footerBgColor : `#${footerBgColor}`) : '#2B2B2B';
   const isLightBg = isLightColor(formattedFooterBgColor);
 
-  console.log('Footer Background Color:', {
+  console.log('Processed Footer Background Color:', {
     original: footerBgColor,
     formatted: formattedFooterBgColor,
     style: { backgroundColor: formattedFooterBgColor }

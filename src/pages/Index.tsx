@@ -17,16 +17,17 @@ const Index = () => {
     return brightness > 155;
   };
 
-  console.log('Environment Variables:', {
-    HERO_BG: import.meta.env.VITE_HERO_BG_COLOR,
-    BODY_BG: import.meta.env.VITE_BODY_BG_COLOR
+  console.log('Raw Environment Variables:', {
+    HERO_BG: heroBgColor,
+    BODY_BG: bodyBgColor,
+    RAW_ENV: import.meta.env
   });
 
-  // Ensure the color starts with #
-  const formattedHeroBgColor = heroBgColor?.startsWith('#') ? heroBgColor : `#${heroBgColor}`;
+  // Ensure the color starts with # and handle undefined
+  const formattedHeroBgColor = heroBgColor ? (heroBgColor.startsWith('#') ? heroBgColor : `#${heroBgColor}`) : '#2B2B2B';
   const isLightBg = isLightColor(formattedHeroBgColor);
 
-  console.log('Hero Background Color:', {
+  console.log('Processed Hero Background Color:', {
     original: heroBgColor,
     formatted: formattedHeroBgColor,
     style: { backgroundColor: formattedHeroBgColor }
