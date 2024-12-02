@@ -24,7 +24,7 @@ export const fetchTopics = async (): Promise<Topic[]> => {
     const records = await base('Topicos')
       .select({
         filterByFormula: '{Postear} = TRUE()',
-        sort: [{ field: 'Fecha', direction: 'desc' }], // Changed from 'Pubdata' to 'Fecha'
+        sort: [{ field: 'Pubdate', direction: 'desc' }],
       })
       .all();
 
@@ -36,7 +36,7 @@ export const fetchTopics = async (): Promise<Topic[]> => {
       content: record.get('Contenido Post') as string,
       image: record.get('Imagen') as string,
       link: record.get('Link') as string,
-      pubDate: record.get('Fecha') as string, // Changed from 'Pubdata' to 'Fecha'
+      pubDate: record.get('Pubdate') as string,
       creator: record.get('Creador') as string,
     }));
   } catch (error) {
