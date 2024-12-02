@@ -27,43 +27,44 @@ export const StoryIndex = () => {
       let hasNewTranslations = false;
 
       for (const topic of topics) {
-        console.log('Checking translation for topic:', topic.title);
+        console.log('StoryIndex - Processing topic:', topic.title);
         
-        // Skip if already translated
         if (translations[topic.id]) {
-          console.log('Topic already translated:', topic.title);
+          console.log('StoryIndex - Using cached translation for:', topic.id);
           continue;
         }
 
         const detection = detectLanguage(topic.title);
-        console.log('Language detection results:', detection);
+        console.log('StoryIndex - Language detection results:', detection);
 
-        if (
-          (detection.hasEnglishWords || detection.hasEnglishPatterns || detection.shouldForceTranslate) &&
-          !detection.hasSpanishSpecificChars
-        ) {
+        // Changed logic to always translate if not in Spanish
+        if (!detection.hasSpanishSpecificChars || detection.hasEnglishWords || detection.hasEnglishPatterns || detection.shouldForceTranslate) {
           try {
-            console.log('Translating topic:', topic.title);
+            console.log('StoryIndex - Translating topic:', topic.title);
             const translatedTitle = await translateTitle(
               topic.title,
               import.meta.env.VITE_OPENAI_API_KEY
             );
+            console.log('StoryIndex - Translation received:', translatedTitle);
             newTranslations[topic.id] = translatedTitle;
             hasNewTranslations = true;
           } catch (error) {
-            console.error('Translation error:', error);
+            console.error('StoryIndex - Translation error:', error);
             toast({
               title: "Error de traducción",
               description: "No se pudo traducir el título",
               variant: "destructive",
             });
           }
+        } else {
+          console.log('StoryIndex - Text detected as Spanish, skipping translation');
         }
       }
 
       if (hasNewTranslations) {
-        console.log('New translations found, updating cache');
-        refetchTranslations();
+        console.log('StoryIndex - Updating translations cache');
+        // Update the translations cache
+        await refetchTranslations();
       }
     };
 
