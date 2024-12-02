@@ -2,12 +2,47 @@ import { useQuery } from "@tanstack/react-query";
 import { fetchTopics } from "@/lib/airtable";
 import { Link } from "react-router-dom";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useState, useEffect } from "react";
+import { translate } from '@vitalets/google-translate-api';
 
 export const StoryIndex = () => {
   const { data: topics, isLoading } = useQuery({
     queryKey: ["topics"],
     queryFn: fetchTopics,
   });
+
+  const [translatedTitles, setTranslatedTitles] = useState<{ [key: string]: string }>({});
+
+  useEffect(() => {
+    const translateTitles = async () => {
+      if (!topics) return;
+
+      const translations: { [key: string]: string } = {};
+      
+      for (const topic of topics) {
+        try {
+          // Simple check if the title might be in English (contains common English words)
+          const mightBeEnglish = /\b(the|a|an|in|on|at|to|for|of|with)\b/i.test(topic.title);
+          
+          if (mightBeEnglish) {
+            console.log(`Attempting to translate title: ${topic.title}`);
+            const result = await translate(topic.title, { to: 'es' });
+            translations[topic.id] = result.text;
+            console.log(`Translated title: ${result.text}`);
+          } else {
+            translations[topic.id] = topic.title;
+          }
+        } catch (error) {
+          console.error(`Translation error for ${topic.title}:`, error);
+          translations[topic.id] = topic.title;
+        }
+      }
+      
+      setTranslatedTitles(translations);
+    };
+
+    translateTitles();
+  }, [topics]);
 
   if (isLoading) {
     return (
@@ -47,7 +82,7 @@ export const StoryIndex = () => {
                 className="text-xl font-semibold"
                 style={{ color: import.meta.env.VITE_TITLE_FONT_COLOR }}
               >
-                {topic.title}
+                {translatedTitles[topic.id] || topic.title}
               </h2>
               <time 
                 dateTime={topic.pubDate}
