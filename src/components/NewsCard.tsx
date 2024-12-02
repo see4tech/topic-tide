@@ -3,6 +3,7 @@ import { Topic } from "@/lib/airtable";
 import { useEffect, useState } from "react";
 import OpenAI from "openai";
 import { Link } from "react-router-dom";
+import { useQueryClient } from "@tanstack/react-query";
 
 interface NewsCardProps {
   topic: Topic;
@@ -12,6 +13,7 @@ export const NewsCard = ({ topic }: NewsCardProps) => {
   const [translatedTitle, setTranslatedTitle] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [isExpanded, setIsExpanded] = useState(false);
+  const queryClient = useQueryClient();
 
   const formattedDate = topic.pubDate 
     ? new Date(topic.pubDate).toLocaleDateString('es-ES', {
@@ -30,6 +32,16 @@ export const NewsCard = ({ topic }: NewsCardProps) => {
       }
 
       try {
+        // Check if we already have this translation in the cache
+        const translations = queryClient.getQueryData<Record<string, string>>(["translations"]) || {};
+        
+        if (translations[topic.id]) {
+          console.log('Using cached translation for:', topic.id);
+          setTranslatedTitle(translations[topic.id]);
+          setIsLoading(false);
+          return;
+        }
+
         // Improved language detection
         const englishWords = /\b(the|is|are|was|were|has|have|had|will|would|could|should|may|might|must|can|court|urges|block|says|new|report|update)\b/i;
         const spanishChars = /[áéíóúñü¿¡]/i;
@@ -41,15 +53,11 @@ export const NewsCard = ({ topic }: NewsCardProps) => {
         const hasSpanishSpecificChars = spanishChars.test(topic.title);
         const hasSpanishWords = spanishCommonWords.test(topic.title);
         
-        console.log('Language analysis:', {
-          hasEnglishWords,
-          hasSpanishSpecificChars,
-          hasSpanishWords
-        });
+        let finalTranslation = topic.title;
 
         if (hasSpanishSpecificChars || hasSpanishWords) {
           console.log('Text detected as Spanish, using original');
-          setTranslatedTitle(topic.title);
+          finalTranslation = topic.title;
         } else if (hasEnglishWords) {
           console.log('Text detected as English, translating...');
           const openai = new OpenAI({
@@ -74,12 +82,17 @@ export const NewsCard = ({ topic }: NewsCardProps) => {
           const translation = completion.choices[0]?.message?.content;
           if (translation) {
             console.log('Translation received:', translation);
-            setTranslatedTitle(translation);
+            finalTranslation = translation;
           }
-        } else {
-          console.log('Language detection inconclusive, using original');
-          setTranslatedTitle(topic.title);
         }
+
+        // Store the translation in the cache
+        queryClient.setQueryData<Record<string, string>>(["translations"], (old = {}) => ({
+          ...old,
+          [topic.id]: finalTranslation
+        }));
+
+        setTranslatedTitle(finalTranslation);
       } catch (error) {
         console.error('Translation error:', error);
         setTranslatedTitle(topic.title);
@@ -89,7 +102,7 @@ export const NewsCard = ({ topic }: NewsCardProps) => {
     };
 
     translateTitle();
-  }, [topic.title]);
+  }, [topic.title, topic.id, queryClient]);
 
   if (isLoading) {
     return null;
