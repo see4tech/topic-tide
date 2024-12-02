@@ -8,10 +8,15 @@ interface NewsCardProps {
 export const NewsCard = ({ topic }: NewsCardProps) => {
   // Format the date if it exists
   const formattedDate = topic.pubDate 
-    ? topic.pubDate // Use the date directly from Airtable
+    ? new Date(topic.pubDate).toLocaleDateString('es-ES', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric'
+      })
     : '';
 
   console.log('Raw pubDate:', topic.pubDate); // Debug log
+  console.log('Formatted date:', formattedDate); // Debug log
 
   return (
     <Card className="h-full overflow-hidden hover:shadow-lg transition-shadow flex flex-col">
@@ -35,7 +40,7 @@ export const NewsCard = ({ topic }: NewsCardProps) => {
             {topic.title}
           </h2>
         </a>
-        <p className="text-muted-foreground mb-8 line-clamp-4 flex-grow">
+        <p className="text-muted-foreground mb-8 line-clamp-6 flex-grow">
           {topic.content}
         </p>
         <div className="flex justify-between items-center text-sm text-muted-foreground border-t pt-4 mt-auto">
