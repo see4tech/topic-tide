@@ -11,6 +11,8 @@ interface TranslationHandlerProps {
   onTranslationsUpdate: (newTranslations: Record<string, string>) => Promise<void>;
 }
 
+const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+
 export const TranslationHandler = ({ 
   topics, 
   translations, 
@@ -26,9 +28,9 @@ export const TranslationHandler = ({
         return;
       }
 
-      console.log('TranslationHandler - Starting batch translation for all topics');
+      console.log('TranslationHandler - Starting selective translation for new topics');
       
-      const newTranslations: Record<string, string> = {};
+      const newTranslations: Record<string, string> = { ...translations };
       let hasNewTranslations = false;
 
       // Sort topics by date to identify the most recent ones
@@ -36,24 +38,24 @@ export const TranslationHandler = ({
         new Date(b.pubDate).getTime() - new Date(a.pubDate).getTime()
       );
 
-      console.log('TranslationHandler - Processing sorted topics:', 
-        sortedTopics.map(t => ({
+      // Only process the 5 most recent articles that don't have translations
+      const topicsToTranslate = sortedTopics
+        .filter(topic => !translations[topic.id])
+        .slice(0, 5);
+
+      console.log('TranslationHandler - Processing topics:', 
+        topicsToTranslate.map(t => ({
           id: t.id,
           title: t.title,
           pubDate: t.pubDate
         }))
       );
 
-      for (const topic of sortedTopics) {
-        // Check if we already have a translation
-        const existingTranslation = translations[topic.id];
-        if (existingTranslation) {
-          console.log('TranslationHandler - Using existing translation for:', topic.id, existingTranslation);
-          newTranslations[topic.id] = existingTranslation;
-          continue;
-        }
+      for (const topic of topicsToTranslate) {
+        // Add a delay between translations to avoid rate limits
+        await delay(1000);
 
-        console.log('TranslationHandler - Processing new topic:', {
+        console.log('TranslationHandler - Processing topic:', {
           id: topic.id,
           title: topic.title
         });
