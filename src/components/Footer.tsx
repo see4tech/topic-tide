@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+import React from "react";
 
 export const Footer = () => {
   const contactEmail = import.meta.env.VITE_CONTACT_EMAIL;
   const copyrightText = import.meta.env.VITE_COPYRIGHT_TEXT;
-  const [isHovered, setIsHovered] = useState(false);
+  const subscribeUrl = import.meta.env.VITE_SUBSCRIBE_URL;
+  const unsubscribeUrl = import.meta.env.VITE_UNSUBSCRIBE_URL;
 
   return (
     <footer className="bg-[#216B67] text-white py-8 mt-12">
@@ -17,21 +18,22 @@ export const Footer = () => {
               </a>
             </p>
           </div>
-          <div 
-            onMouseEnter={() => setIsHovered(true)}
-            onMouseLeave={() => setIsHovered(false)}
-          >
+          <div>
             <h3 className="font-bold mb-4">Newsletter</h3>
-            {isHovered && (
-              <div className="space-x-4 animate-fade-in">
-                <a href="#" className="text-white hover:underline">
-                  Suscribirse
-                </a>
-                <a href="#" className="text-white hover:underline">
-                  Desuscribirse
-                </a>
-              </div>
-            )}
+            <div className="space-x-4">
+              <a 
+                href={subscribeUrl} 
+                className="text-white hover:underline"
+              >
+                Suscribirse
+              </a>
+              <a 
+                href={unsubscribeUrl} 
+                className="text-white hover:underline"
+              >
+                Desuscribirse
+              </a>
+            </div>
           </div>
           <div>
             <p className="text-sm mt-4">{copyrightText}</p>
