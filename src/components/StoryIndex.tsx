@@ -1,14 +1,10 @@
 import { useQuery } from "@tanstack/react-query";
 import { fetchTopics } from "@/lib/airtable";
-import { Link } from "react-router-dom";
 import { Skeleton } from "@/components/ui/skeleton";
-import { detectLanguage } from "@/utils/languageDetection";
-import { translateTitle } from "@/services/translationService";
-import { useToast } from "@/components/ui/use-toast";
-import { useEffect } from "react";
+import { StoryIndexItem } from "./StoryIndexItem";
+import { TranslationHandler } from "./TranslationHandler";
 
 export const StoryIndex = () => {
-  const { toast } = useToast();
   const { data: topics, isLoading } = useQuery({
     queryKey: ["topics"],
     queryFn: fetchTopics,
@@ -19,59 +15,9 @@ export const StoryIndex = () => {
     initialData: {},
   });
 
-  useEffect(() => {
-    const translateTopics = async () => {
-      if (!topics) return;
-
-      const newTranslations = { ...translations };
-      let hasNewTranslations = false;
-
-      for (const topic of topics) {
-        console.log('StoryIndex - Processing topic:', topic.title);
-        
-        if (translations[topic.id]) {
-          console.log('StoryIndex - Using cached translation for:', topic.id);
-          continue;
-        }
-
-        const detection = detectLanguage(topic.title);
-        console.log('StoryIndex - Language detection results:', detection);
-
-        // Always attempt translation for non-Spanish text
-        if (!detection.hasSpanishSpecificChars || detection.hasEnglishWords || detection.hasEnglishPatterns) {
-          try {
-            console.log('StoryIndex - Translating topic:', topic.title);
-            const translatedTitle = await translateTitle(
-              topic.title,
-              import.meta.env.VITE_OPENAI_API_KEY
-            );
-            console.log('StoryIndex - Translation received:', translatedTitle);
-            
-            // Immediately update translations object
-            newTranslations[topic.id] = translatedTitle;
-            hasNewTranslations = true;
-          } catch (error) {
-            console.error('StoryIndex - Translation error:', error);
-            toast({
-              title: "Error de traducción",
-              description: "No se pudo traducir el título",
-              variant: "destructive",
-            });
-          }
-        } else {
-          console.log('StoryIndex - Text detected as Spanish, skipping translation');
-        }
-      }
-
-      if (hasNewTranslations) {
-        console.log('StoryIndex - Updating translations cache');
-        // Update the translations cache and wait for it
-        await refetchTranslations();
-      }
-    };
-
-    translateTopics();
-  }, [topics, translations, toast, refetchTranslations]);
+  const handleTranslationsUpdate = async (newTranslations: Record<string, string>) => {
+    await refetchTranslations();
+  };
 
   if (isLoading) {
     return (
@@ -93,35 +39,26 @@ export const StoryIndex = () => {
 
   return (
     <div className="container mx-auto px-4 py-8">
+      <TranslationHandler 
+        topics={topics}
+        translations={translations}
+        onTranslationsUpdate={handleTranslationsUpdate}
+      />
+      
       <h1 
         className="text-3xl font-bold mb-6"
         style={{ color: import.meta.env.VITE_TITLE_FONT_COLOR }}
       >
         Índice de Historias
       </h1>
+      
       <div className="space-y-4">
         {topics.map((topic) => (
-          <Link 
-            key={topic.id} 
-            to={`/story/${topic.id}`}
-            className="block p-4 rounded-lg border hover:shadow-md transition-shadow"
-          >
-            <div className="flex items-center justify-between">
-              <h2 
-                className="text-xl font-semibold"
-                style={{ color: import.meta.env.VITE_TITLE_FONT_COLOR }}
-              >
-                {translations[topic.id] || topic.title}
-              </h2>
-              <time 
-                dateTime={topic.pubDate}
-                className="text-sm"
-                style={{ color: import.meta.env.VITE_PUBDATE_FONT_COLOR }}
-              >
-                {new Date(topic.pubDate).toLocaleDateString('es-ES')}
-              </time>
-            </div>
-          </Link>
+          <StoryIndexItem 
+            key={topic.id}
+            topic={topic}
+            translatedTitle={translations[topic.id]}
+          />
         ))}
       </div>
     </div>
