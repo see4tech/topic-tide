@@ -7,9 +7,25 @@ const Index = () => {
   const heroBgColor = import.meta.env.VITE_HERO_BG_COLOR || '#216B67';
   const bodyBgColor = import.meta.env.VITE_BODY_BG_COLOR || '#ffffff';
 
+  // Function to determine if a color is light
+  const isLightColor = (color: string) => {
+    const hex = color.replace('#', '');
+    const r = parseInt(hex.substr(0, 2), 16);
+    const g = parseInt(hex.substr(2, 2), 16);
+    const b = parseInt(hex.substr(4, 2), 16);
+    const brightness = (r * 299 + g * 587 + b * 114) / 1000;
+    return brightness > 155;
+  };
+
+  const formattedHeroBgColor = heroBgColor.startsWith('#') ? heroBgColor : `#${heroBgColor}`;
+  const isLightBg = isLightColor(formattedHeroBgColor);
+
   return (
     <div className="min-h-screen flex flex-col" style={{ backgroundColor: bodyBgColor }}>
-      <header className="text-white py-12" style={{ backgroundColor: heroBgColor.startsWith('#') ? heroBgColor : `#${heroBgColor}` }}>
+      <header 
+        className={`py-12 ${isLightBg ? 'text-gray-800' : 'text-white'}`} 
+        style={{ backgroundColor: formattedHeroBgColor }}
+      >
         <div className="container mx-auto px-4">
           <div className="flex flex-col md:flex-row items-center justify-center md:justify-between">
             <div className="flex items-center gap-8 mb-6 md:mb-0">
