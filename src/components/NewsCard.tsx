@@ -1,9 +1,11 @@
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Topic } from "@/lib/airtable";
 import { useEffect, useState } from "react";
-import OpenAI from "openai";
 import { Link } from "react-router-dom";
 import { useQueryClient } from "@tanstack/react-query";
+import { formatDate } from "@/utils/dateFormatter";
+import { detectLanguage } from "@/utils/languageDetection";
+import { translateTitle } from "@/services/translationService";
 
 interface NewsCardProps {
   topic: Topic;
@@ -15,16 +17,10 @@ export const NewsCard = ({ topic }: NewsCardProps) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const queryClient = useQueryClient();
 
-  const formattedDate = topic.pubDate 
-    ? new Date(topic.pubDate).toLocaleDateString('es-ES', {
-        day: '2-digit',
-        month: '2-digit',
-        year: 'numeric'
-      })
-    : '';
+  const formattedDate = formatDate(topic.pubDate);
 
   useEffect(() => {
-    const translateTitle = async () => {
+    const handleTranslation = async () => {
       const apiKey = import.meta.env.VITE_OPENAI_API_KEY;
       if (!apiKey) {
         console.error('OpenAI API key not found');
@@ -41,63 +37,19 @@ export const NewsCard = ({ topic }: NewsCardProps) => {
           return;
         }
 
-        // Enhanced English detection patterns with more comprehensive word list
-        const englishWords = /\b(the|is|are|was|were|has|have|had|will|would|could|should|may|might|must|can|court|urges|block|says|new|report|update|man|with|to|backdoor|hackers|hacked|networks|pitch|services|cybersecurity|DOJ|and|by|about|stepping|up|its|bid|dethrone|getting|serious|verification|impersonation|what|going|on|with|name|uses|magazine|promote|software|billionaire|owner|time)\b/i;
-        
-        // Enhanced pattern to catch proper nouns and technical terms
-        const englishPatterns = /\b(ing|ed|ly)\b|\b[A-Z][a-z]+ [A-Z][a-z]+\b|\b[A-Z][a-z]+\b|\b(AI|ChatGPT|X|DOJ)\b/;
-        
-        const spanishChars = /[áéíóúñü¿¡]/i;
-        const spanishCommonWords = /\b(el|la|los|las|un|una|unos|unas|y|en|de|para|por|con|sin|pero|que|como|este|esta|estos|estas|según|así|qué)\b/i;
-
-        console.log('Analyzing title:', topic.title);
-        
-        const hasEnglishWords = englishWords.test(topic.title);
-        const hasEnglishPatterns = englishPatterns.test(topic.title);
-        const hasSpanishSpecificChars = spanishChars.test(topic.title);
-        const hasSpanishWords = spanishCommonWords.test(topic.title);
-        
-        console.log('Detection results:', {
+        const {
           hasEnglishWords,
           hasEnglishPatterns,
           hasSpanishSpecificChars,
           hasSpanishWords,
-          title: topic.title
-        });
-
-        // Force translation for titles containing specific keywords or patterns
-        const forceTranslatePatterns = /(ChatGPT|Billionaire|AI Software|Magazine)/i;
-        const shouldForceTranslate = forceTranslatePatterns.test(topic.title);
+          shouldForceTranslate
+        } = detectLanguage(topic.title);
 
         let finalTranslation = topic.title;
 
         if (shouldForceTranslate || hasEnglishWords || hasEnglishPatterns) {
           if (!(hasSpanishSpecificChars && hasSpanishWords) || shouldForceTranslate) {
-            console.log('Text detected as English or contains force-translate terms, translating...');
-            const openai = new OpenAI({
-              apiKey: apiKey,
-              dangerouslyAllowBrowser: true
-            });
-
-            const completion = await openai.chat.completions.create({
-              messages: [
-                {
-                  role: "system",
-                  content: "You are a translator. Translate the following English text to Spanish. Only return the translation, nothing else."
-                },
-                {
-                  role: "user",
-                  content: topic.title
-                }
-              ],
-              model: "gpt-4o-mini",
-            });
-
-            const translation = completion.choices[0]?.message?.content;
-            if (translation) {
-              console.log('Translation received:', translation);
-              finalTranslation = translation;
-            }
+            finalTranslation = await translateTitle(topic.title, apiKey);
           } else {
             console.log('Text has both English and Spanish indicators, using original');
           }
@@ -119,7 +71,7 @@ export const NewsCard = ({ topic }: NewsCardProps) => {
       }
     };
 
-    translateTitle();
+    handleTranslation();
   }, [topic.title, topic.id, queryClient]);
 
   if (isLoading) {
