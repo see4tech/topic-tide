@@ -4,8 +4,8 @@ import { Footer } from "@/components/Footer";
 const Index = () => {
   const logoUrl = import.meta.env.VITE_LOGO_URL;
   const tagline = import.meta.env.VITE_SITE_TAGLINE;
-  const heroBgColor = import.meta.env.VITE_HERO_BG_COLOR || '#E8EF62';
-  const bodyBgColor = import.meta.env.VITE_BODY_BG_COLOR || '#ffffff';
+  const heroBgColor = import.meta.env.VITE_HERO_BG_COLOR;
+  const bodyBgColor = import.meta.env.VITE_BODY_BG_COLOR;
 
   // Function to determine if a color is light
   const isLightColor = (color: string) => {
@@ -23,7 +23,7 @@ const Index = () => {
   });
 
   // Ensure the color starts with #
-  const formattedHeroBgColor = heroBgColor.startsWith('#') ? heroBgColor : `#${heroBgColor}`;
+  const formattedHeroBgColor = heroBgColor?.startsWith('#') ? heroBgColor : `#${heroBgColor}`;
   const isLightBg = isLightColor(formattedHeroBgColor);
 
   console.log('Hero Background Color:', {

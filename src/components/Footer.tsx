@@ -5,7 +5,7 @@ export const Footer = () => {
   const copyrightText = import.meta.env.VITE_COPYRIGHT_TEXT;
   const subscribeUrl = import.meta.env.VITE_SUBSCRIBE_URL;
   const unsubscribeUrl = import.meta.env.VITE_UNSUBSCRIBE_URL;
-  const footerBgColor = import.meta.env.VITE_FOOTER_BG_COLOR || '#E8EF62';
+  const footerBgColor = import.meta.env.VITE_FOOTER_BG_COLOR;
 
   // Function to determine if a color is light
   const isLightColor = (color: string) => {
@@ -22,7 +22,7 @@ export const Footer = () => {
   });
 
   // Ensure the color starts with #
-  const formattedFooterBgColor = footerBgColor.startsWith('#') ? footerBgColor : `#${footerBgColor}`;
+  const formattedFooterBgColor = footerBgColor?.startsWith('#') ? footerBgColor : `#${footerBgColor}`;
   const isLightBg = isLightColor(formattedFooterBgColor);
 
   console.log('Footer Background Color:', {
