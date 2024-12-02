@@ -25,7 +25,10 @@ export const translateTitle = async (text: string, apiKey: string): Promise<stri
 
     const translation = completion.choices[0]?.message?.content;
     if (translation) {
-      console.log('Translation received:', translation);
+      console.log('Translation received:', {
+        original: text,
+        translated: translation
+      });
       return translation;
     }
     
