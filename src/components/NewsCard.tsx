@@ -28,8 +28,18 @@ export const NewsCard = ({ topic }: NewsCardProps) => {
       }
 
       try {
-        const commonEnglishWords = /\b(the|is|are|what|how|why|when|who|this|that|with)\b/i;
-        if (commonEnglishWords.test(topic.title)) {
+        // More comprehensive English detection
+        const englishPattern = /^[a-zA-Z0-9\s,.'"-]+$/;
+        const hasEnglishChars = englishPattern.test(topic.title);
+        const spanishCommonWords = /\b(el|la|los|las|un|una|unos|unas|y|en|de|para|por|con|sin)\b/i;
+        const hasSpanishWords = spanishCommonWords.test(topic.title);
+
+        console.log('Title:', topic.title);
+        console.log('Has English chars:', hasEnglishChars);
+        console.log('Has Spanish words:', hasSpanishWords);
+
+        if (hasEnglishChars && !hasSpanishWords) {
+          console.log('Translating title...');
           const openai = new OpenAI({
             apiKey: apiKey,
             dangerouslyAllowBrowser: true
@@ -46,14 +56,16 @@ export const NewsCard = ({ topic }: NewsCardProps) => {
                 content: topic.title
               }
             ],
-            model: "gpt-4",
+            model: "gpt-4o-mini",
           });
 
           const translation = completion.choices[0]?.message?.content;
           if (translation) {
+            console.log('Translation received:', translation);
             setTranslatedTitle(translation);
           }
         } else {
+          console.log('Text appears to be in Spanish, using original');
           setTranslatedTitle(topic.title);
         }
       } catch (error) {
