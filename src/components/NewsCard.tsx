@@ -6,6 +6,9 @@ interface NewsCardProps {
 }
 
 export const NewsCard = ({ topic }: NewsCardProps) => {
+  // Format the date if it exists
+  const formattedDate = topic.pubDate ? new Date(topic.pubDate).toLocaleDateString() : '';
+
   return (
     <Card className="h-full overflow-hidden hover:shadow-lg transition-shadow">
       <CardHeader className="p-0">
@@ -26,7 +29,7 @@ export const NewsCard = ({ topic }: NewsCardProps) => {
         </a>
         <p className="text-muted-foreground line-clamp-3 mb-4">{topic.content}</p>
         <div className="flex justify-between items-center text-sm text-muted-foreground">
-          <time dateTime={topic.pubDate}>{topic.pubDate}</time>
+          <time dateTime={topic.pubDate}>{formattedDate}</time>
           <span>{topic.creator}</span>
         </div>
       </CardContent>
