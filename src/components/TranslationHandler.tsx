@@ -21,16 +21,20 @@ export const TranslationHandler = ({
     const translateTopics = async () => {
       if (!topics) return;
 
-      console.log('TranslationHandler - Starting translation process for topics');
+      console.log('TranslationHandler - Starting batch translation for all topics');
       const newTranslations = { ...translations };
       let hasNewTranslations = false;
 
-      for (const topic of topics) {
-        if (translations[topic.id]) {
-          console.log('TranslationHandler - Using cached translation for:', topic.id);
-          continue;
-        }
+      const untranslatedTopics = topics.filter(topic => !translations[topic.id]);
+      
+      if (untranslatedTopics.length === 0) {
+        console.log('TranslationHandler - All topics already translated');
+        return;
+      }
 
+      console.log(`TranslationHandler - Found ${untranslatedTopics.length} untranslated topics`);
+
+      for (const topic of untranslatedTopics) {
         console.log('TranslationHandler - Processing topic:', topic.title);
         const detection = detectLanguage(topic.title);
         
@@ -60,13 +64,13 @@ export const TranslationHandler = ({
       }
 
       if (hasNewTranslations) {
-        console.log('TranslationHandler - Updating translations cache');
+        console.log('TranslationHandler - Updating translations cache with batch results');
         await onTranslationsUpdate(newTranslations);
       }
     };
 
     translateTopics();
-  }, [topics]); // Remove translations from dependency array to prevent infinite loops
+  }, [topics]); // Keep only topics in dependency array
 
   return null;
 };

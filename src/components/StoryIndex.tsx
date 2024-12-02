@@ -16,7 +16,7 @@ export const StoryIndex = () => {
   });
 
   const handleTranslationsUpdate = async (newTranslations: Record<string, string>) => {
-    console.log('StoryIndex - Updating translations:', newTranslations);
+    console.log('StoryIndex - Batch updating translations:', newTranslations);
     await refetchTranslations();
   };
 
