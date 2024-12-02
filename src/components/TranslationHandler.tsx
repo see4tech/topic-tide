@@ -3,6 +3,7 @@ import { useEffect } from "react";
 import { useToast } from "@/components/ui/use-toast";
 import { detectLanguage } from "@/utils/languageDetection";
 import { translateTitle } from "@/services/translationService";
+import { useQueryClient } from "@tanstack/react-query";
 
 interface TranslationHandlerProps {
   topics: Topic[];
@@ -16,32 +17,23 @@ export const TranslationHandler = ({
   onTranslationsUpdate 
 }: TranslationHandlerProps) => {
   const { toast } = useToast();
+  const queryClient = useQueryClient();
 
   useEffect(() => {
     const translateTopics = async () => {
       if (!topics) return;
 
       console.log('TranslationHandler - Starting batch translation for all topics');
-      console.log('TranslationHandler - Topics received:', topics.map(t => ({ id: t.id, title: t.title })));
       
       const newTranslations = { ...translations };
       let hasNewTranslations = false;
 
-      const untranslatedTopics = topics.filter(topic => !translations[topic.id]);
-      
-      if (untranslatedTopics.length === 0) {
-        console.log('TranslationHandler - All topics already translated');
-        return;
-      }
-
-      console.log(`TranslationHandler - Found ${untranslatedTopics.length} untranslated topics`);
-
       // Sort topics by date to identify the most recent ones
-      const sortedTopics = [...untranslatedTopics].sort((a, b) => 
+      const sortedTopics = [...topics].sort((a, b) => 
         new Date(b.pubDate).getTime() - new Date(a.pubDate).getTime()
       );
 
-      console.log('TranslationHandler - Last two articles:', 
+      console.log('TranslationHandler - Processing sorted topics. Last two:', 
         sortedTopics.slice(0, 2).map(t => ({
           id: t.id,
           title: t.title,
@@ -50,10 +42,14 @@ export const TranslationHandler = ({
       );
 
       for (const topic of sortedTopics) {
-        console.log('\nTranslationHandler - Processing topic:', {
+        if (translations[topic.id]) {
+          console.log('TranslationHandler - Using cached translation for:', topic.id);
+          continue;
+        }
+
+        console.log('TranslationHandler - Processing topic:', {
           id: topic.id,
-          title: topic.title,
-          pubDate: topic.pubDate
+          title: topic.title
         });
 
         const detection = detectLanguage(topic.title);
@@ -61,8 +57,8 @@ export const TranslationHandler = ({
           title: topic.title,
           ...detection
         });
-        
-        if (!detection.hasSpanishSpecificChars || detection.hasEnglishWords || detection.hasEnglishPatterns || detection.shouldForceTranslate) {
+
+        if (detection.hasEnglishWords || detection.hasEnglishPatterns || detection.shouldForceTranslate) {
           try {
             console.log('TranslationHandler - Attempting translation for:', topic.title);
             const translatedTitle = await translateTitle(
@@ -76,6 +72,15 @@ export const TranslationHandler = ({
             
             newTranslations[topic.id] = translatedTitle;
             hasNewTranslations = true;
+
+            // Update the query cache immediately
+            queryClient.setQueryData(
+              ["translations"],
+              (oldData: Record<string, string> = {}) => ({
+                ...oldData,
+                [topic.id]: translatedTitle
+              })
+            );
           } catch (error) {
             console.error('TranslationHandler - Translation error:', error);
             toast({
@@ -87,6 +92,15 @@ export const TranslationHandler = ({
         } else {
           console.log('TranslationHandler - Text detected as Spanish, skipping translation:', topic.title);
           newTranslations[topic.id] = topic.title;
+          
+          // Update the query cache for Spanish titles too
+          queryClient.setQueryData(
+            ["translations"],
+            (oldData: Record<string, string> = {}) => ({
+              ...oldData,
+              [topic.id]: topic.title
+            })
+          );
         }
       }
 
@@ -97,7 +111,7 @@ export const TranslationHandler = ({
     };
 
     translateTopics();
-  }, [topics]); // Keep only topics in dependency array
+  }, [topics, translations, onTranslationsUpdate, queryClient, toast]);
 
   return null;
 };
