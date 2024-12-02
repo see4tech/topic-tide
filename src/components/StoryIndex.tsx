@@ -2,18 +2,73 @@ import { useQuery } from "@tanstack/react-query";
 import { fetchTopics } from "@/lib/airtable";
 import { Link } from "react-router-dom";
 import { Skeleton } from "@/components/ui/skeleton";
+import { detectLanguage } from "@/utils/languageDetection";
+import { translateTitle } from "@/services/translationService";
+import { useToast } from "@/components/ui/use-toast";
+import { useEffect } from "react";
 
 export const StoryIndex = () => {
+  const { toast } = useToast();
   const { data: topics, isLoading } = useQuery({
     queryKey: ["topics"],
     queryFn: fetchTopics,
   });
 
-  // Get translations from the cache
-  const { data: translations } = useQuery({
+  const { data: translations, refetch: refetchTranslations } = useQuery({
     queryKey: ["translations"],
     initialData: {},
   });
+
+  useEffect(() => {
+    const translateTopics = async () => {
+      if (!topics) return;
+
+      const newTranslations = { ...translations };
+      let hasNewTranslations = false;
+
+      for (const topic of topics) {
+        console.log('Checking translation for topic:', topic.title);
+        
+        // Skip if already translated
+        if (translations[topic.id]) {
+          console.log('Topic already translated:', topic.title);
+          continue;
+        }
+
+        const detection = detectLanguage(topic.title);
+        console.log('Language detection results:', detection);
+
+        if (
+          (detection.hasEnglishWords || detection.hasEnglishPatterns || detection.shouldForceTranslate) &&
+          !detection.hasSpanishSpecificChars
+        ) {
+          try {
+            console.log('Translating topic:', topic.title);
+            const translatedTitle = await translateTitle(
+              topic.title,
+              import.meta.env.VITE_OPENAI_API_KEY
+            );
+            newTranslations[topic.id] = translatedTitle;
+            hasNewTranslations = true;
+          } catch (error) {
+            console.error('Translation error:', error);
+            toast({
+              title: "Error de traducción",
+              description: "No se pudo traducir el título",
+              variant: "destructive",
+            });
+          }
+        }
+      }
+
+      if (hasNewTranslations) {
+        console.log('New translations found, updating cache');
+        refetchTranslations();
+      }
+    };
+
+    translateTopics();
+  }, [topics, translations, toast, refetchTranslations]);
 
   if (isLoading) {
     return (
