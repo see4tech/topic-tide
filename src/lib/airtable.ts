@@ -19,7 +19,6 @@ export interface Topic {
 }
 
 export const fetchTopics = async (): Promise<Topic[]> => {
-  console.log('Fetching topics from Airtable...');
   try {
     // Calculate dates for filtering
     const today = new Date();
@@ -29,8 +28,6 @@ export const fetchTopics = async (): Promise<Topic[]> => {
     // Format dates for Airtable formula
     const todayStr = today.toISOString().split('T')[0];
     const weekAgoStr = weekAgo.toISOString().split('T')[0];
-
-    console.log(`Filtering records between ${weekAgoStr} and ${todayStr}`);
 
     const records = await base('Topicos')
       .select({
@@ -42,8 +39,6 @@ export const fetchTopics = async (): Promise<Topic[]> => {
         sort: [{ field: 'Pubdate', direction: 'desc' }],
       })
       .all();
-
-    console.log(`Found ${records.length} topics within date range`);
     
     return records.map((record) => ({
       id: record.id,
