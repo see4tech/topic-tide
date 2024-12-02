@@ -105,20 +105,32 @@ export const NewsCard = ({ topic }: NewsCardProps) => {
               className="w-full h-48 object-cover hover:opacity-90 transition-opacity"
             />
           </a>
-          <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 text-white text-xs p-2 text-center">
+          <div 
+            className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 text-xs p-2 text-center"
+            style={{ color: import.meta.env.VITE_IMAGE_TEXT_FONT_COLOR }}
+          >
             Haz clic en la imagen o el título para leer la historia completa
           </div>
         </div>
       </CardHeader>
       <CardContent className="p-6 flex flex-col flex-grow">
-        <div className="mb-3 text-sm text-muted-foreground flex items-center">
-          <time dateTime={topic.pubDate} className="font-medium">
+        <div className="mb-3 text-sm flex items-center">
+          <time 
+            dateTime={topic.pubDate} 
+            className="font-medium"
+            style={{ color: import.meta.env.VITE_PUBDATE_FONT_COLOR }}
+          >
             {formattedDate}
           </time>
           {topic.creator && (
             <>
               <span className="mx-2">•</span>
-              <span className="font-medium text-primary">{topic.creator}</span>
+              <span 
+                className="font-medium"
+                style={{ color: import.meta.env.VITE_AUTHOR_FONT_COLOR }}
+              >
+                {topic.creator}
+              </span>
             </>
           )}
         </div>
@@ -128,12 +140,18 @@ export const NewsCard = ({ topic }: NewsCardProps) => {
           rel="noopener noreferrer"
           className="group"
         >
-          <h2 className="text-xl font-bold mb-3 leading-tight group-hover:text-primary transition-colors" style={{ color: '#216B67' }}>
+          <h2 
+            className="text-xl font-bold mb-3 leading-tight group-hover:text-primary transition-colors"
+            style={{ color: import.meta.env.VITE_TITLE_FONT_COLOR }}
+          >
             {translatedTitle}
           </h2>
         </a>
-        <div className="prose prose-sm max-w-none text-gray-600">
-          <p className={`${isExpanded ? '' : 'line-clamp-3'} text-base leading-relaxed`}>
+        <div className="prose prose-sm max-w-none">
+          <p 
+            className={`${isExpanded ? '' : 'line-clamp-3'} text-base leading-relaxed`}
+            style={{ color: import.meta.env.VITE_TEXT_FONT_COLOR }}
+          >
             {topic.content}
           </p>
         </div>
@@ -142,7 +160,8 @@ export const NewsCard = ({ topic }: NewsCardProps) => {
             e.preventDefault();
             setIsExpanded(!isExpanded);
           }}
-          className="mt-4 inline-flex items-center text-primary hover:text-primary/80 transition-colors text-sm font-medium cursor-pointer"
+          className="mt-4 inline-flex items-center transition-colors text-sm font-medium cursor-pointer"
+          style={{ color: import.meta.env.VITE_READ_MORE_FONT_COLOR }}
         >
           {isExpanded ? 'Leer menos ↑' : 'Leer más ↓'}
         </button>

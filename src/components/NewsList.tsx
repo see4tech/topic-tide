@@ -77,6 +77,7 @@ export const NewsList = () => {
               <PaginationPrevious 
                 onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
                 className={currentPage === 1 ? "pointer-events-none opacity-50" : "cursor-pointer"}
+                style={{ color: import.meta.env.VITE_PAGINATION_FONT_COLOR }}
               />
             </PaginationItem>
             
@@ -86,6 +87,7 @@ export const NewsList = () => {
                   onClick={() => setCurrentPage(i + 1)}
                   isActive={currentPage === i + 1}
                   className="cursor-pointer"
+                  style={{ color: import.meta.env.VITE_PAGINATION_FONT_COLOR }}
                 >
                   {i + 1}
                 </PaginationLink>
@@ -96,6 +98,7 @@ export const NewsList = () => {
               <PaginationNext
                 onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
                 className={currentPage === totalPages ? "pointer-events-none opacity-50" : "cursor-pointer"}
+                style={{ color: import.meta.env.VITE_PAGINATION_FONT_COLOR }}
               />
             </PaginationItem>
           </PaginationContent>
