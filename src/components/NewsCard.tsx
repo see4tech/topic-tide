@@ -10,7 +10,6 @@ interface NewsCardProps {
 export const NewsCard = ({ topic }: NewsCardProps) => {
   const [translatedTitle, setTranslatedTitle] = useState("");
   const [isLoading, setIsLoading] = useState(true);
-  const [isHovered, setIsHovered] = useState(false);
 
   const formattedDate = topic.pubDate 
     ? new Date(topic.pubDate).toLocaleDateString('es-ES', {
@@ -29,7 +28,6 @@ export const NewsCard = ({ topic }: NewsCardProps) => {
       }
 
       try {
-        // More comprehensive English detection
         const englishPattern = /^[a-zA-Z0-9\s,.'"-]+$/;
         const hasEnglishChars = englishPattern.test(topic.title);
         const spanishCommonWords = /\b(el|la|los|las|un|una|unos|unas|y|en|de|para|por|con|sin)\b/i;
@@ -85,11 +83,7 @@ export const NewsCard = ({ topic }: NewsCardProps) => {
   }
 
   return (
-    <Card 
-      className="h-full overflow-hidden hover:shadow-lg transition-shadow flex flex-col bg-white border-gray-200"
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-    >
+    <Card className="h-full overflow-hidden hover:shadow-lg transition-shadow flex flex-col bg-white border-gray-200">
       <CardHeader className="p-0">
         <div className="relative">
           <a href={topic.link} target="_self" rel="noopener">
@@ -99,11 +93,6 @@ export const NewsCard = ({ topic }: NewsCardProps) => {
               className="w-full h-48 object-cover hover:opacity-90 transition-opacity"
             />
           </a>
-          {isHovered && (
-            <div className="absolute top-0 left-0 bg-primary/90 text-white px-3 py-1 text-sm m-3 rounded animate-fade-in">
-              Ver más
-            </div>
-          )}
         </div>
       </CardHeader>
       <CardContent className="p-6 flex flex-col flex-grow">
