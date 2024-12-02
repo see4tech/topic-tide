@@ -2,6 +2,7 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Topic } from "@/lib/airtable";
 import { useEffect, useState } from "react";
 import OpenAI from "openai";
+import { Link } from "react-router-dom";
 
 interface NewsCardProps {
   topic: Topic;
@@ -98,18 +99,18 @@ export const NewsCard = ({ topic }: NewsCardProps) => {
     <Card className={`h-full overflow-hidden hover:shadow-lg transition-all flex flex-col bg-white border-gray-200 ${isExpanded ? 'h-auto' : ''}`}>
       <CardHeader className="p-0">
         <div className="relative">
-          <a href={topic.link} target="_blank" rel="noopener noreferrer">
+          <Link to={`/story/${topic.id}`}>
             <img
               src={topic.image || import.meta.env.VITE_DEFAULT_NEWS_IMAGE}
               alt={topic.title}
               className="w-full h-48 object-cover hover:opacity-90 transition-opacity"
             />
-          </a>
+          </Link>
           <div 
             className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 text-xs p-2 text-center"
             style={{ color: import.meta.env.VITE_IMAGE_TEXT_FONT_COLOR }}
           >
-            Haz clic en la imagen o el título para leer la historia completa
+            Haz clic en la imagen o el título para ver más detalles
           </div>
         </div>
       </CardHeader>
@@ -134,10 +135,8 @@ export const NewsCard = ({ topic }: NewsCardProps) => {
             </>
           )}
         </div>
-        <a
-          href={topic.link}
-          target="_blank"
-          rel="noopener noreferrer"
+        <Link
+          to={`/story/${topic.id}`}
           className="group"
         >
           <h2 
@@ -146,7 +145,7 @@ export const NewsCard = ({ topic }: NewsCardProps) => {
           >
             {translatedTitle}
           </h2>
-        </a>
+        </Link>
         <div className="prose prose-sm max-w-none">
           <p 
             className={`${isExpanded ? '' : 'line-clamp-3'} text-base leading-relaxed`}

@@ -62,7 +62,7 @@ const Story = () => {
             style={{ color: import.meta.env.VITE_TITLE_FONT_COLOR }}
           >
             <ArrowLeft className="w-4 h-4" />
-            Back to News
+            Volver a Noticias
           </a>
 
           <h1 
@@ -74,7 +74,7 @@ const Story = () => {
 
           <div className="flex items-center gap-4 text-sm">
             <span style={{ color: import.meta.env.VITE_AUTHOR_FONT_COLOR }}>
-              By {story.creator}
+              Por {story.creator}
             </span>
             <time 
               dateTime={story.pubDate}
@@ -107,7 +107,7 @@ const Story = () => {
               className="inline-block text-sm hover:underline"
               style={{ color: import.meta.env.VITE_READ_MORE_FONT_COLOR }}
             >
-              Read full story on original site →
+              Leer la historia completa en el sitio original →
             </a>
           )}
         </div>
