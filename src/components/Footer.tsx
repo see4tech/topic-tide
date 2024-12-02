@@ -1,16 +1,11 @@
 import React from "react";
 
 export const Footer = () => {
-  // Log raw env values first
-  console.log('Raw Footer env values:', {
-    FOOTER_BG: import.meta.env.VITE_FOOTER_BG_COLOR
-  });
-
   const contactEmail = import.meta.env.VITE_CONTACT_EMAIL;
   const copyrightText = import.meta.env.VITE_COPYRIGHT_TEXT;
   const subscribeUrl = import.meta.env.VITE_SUBSCRIBE_URL;
   const unsubscribeUrl = import.meta.env.VITE_UNSUBSCRIBE_URL;
-  const footerBgColor = import.meta.env.VITE_FOOTER_BG_COLOR;
+  const footerBgColor = import.meta.env.VITE_FOOTER_BG_COLOR || '#E8EF62';
 
   // Function to determine if a color is light
   const isLightColor = (color: string) => {
@@ -22,8 +17,12 @@ export const Footer = () => {
     return brightness > 155;
   };
 
+  console.log('Raw Footer env values:', {
+    FOOTER_BG: import.meta.env.VITE_FOOTER_BG_COLOR
+  });
+
   // Ensure the color starts with #
-  const formattedFooterBgColor = footerBgColor?.startsWith('#') ? footerBgColor : `#${footerBgColor}`;
+  const formattedFooterBgColor = footerBgColor.startsWith('#') ? footerBgColor : `#${footerBgColor}`;
   const isLightBg = isLightColor(formattedFooterBgColor);
 
   console.log('Footer Background Color:', {
