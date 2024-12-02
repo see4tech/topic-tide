@@ -20,8 +20,8 @@ const Index = () => {
     <div style={{ backgroundColor: bodyBgColor }} className="min-h-screen flex flex-col">
       <header 
         style={{ 
-          backgroundColor: heroBgColor || '#2B2B2B',
-          color: heroFontColor || '#ffffff'
+          backgroundColor: heroBgColor,
+          color: heroFontColor
         }}
         className="py-12"
       >
