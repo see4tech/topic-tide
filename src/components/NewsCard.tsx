@@ -1,7 +1,7 @@
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Topic } from "@/lib/airtable";
 import { useEffect, useState } from "react";
-import { translate } from '@vitalets/google-translate-api';
+import OpenAI from "openai";
 
 interface NewsCardProps {
   topic: Topic;
@@ -21,13 +21,40 @@ export const NewsCard = ({ topic }: NewsCardProps) => {
 
   useEffect(() => {
     const translateTitle = async () => {
+      const apiKey = import.meta.env.VITE_OPENAI_API_KEY;
+      if (!apiKey) {
+        console.error('OpenAI API key not found');
+        return;
+      }
+
       try {
         // Simple check if the text might be in English (contains common English words)
         const commonEnglishWords = /\b(the|is|are|what|how|why|when|who|this|that|with)\b/i;
         if (commonEnglishWords.test(topic.title)) {
-          const result = await translate(topic.title, { to: 'es' });
-          setTranslatedTitle(result.text);
-          console.log('Translated title:', result.text);
+          const openai = new OpenAI({
+            apiKey: apiKey,
+            dangerouslyAllowBrowser: true
+          });
+
+          const completion = await openai.chat.completions.create({
+            messages: [
+              {
+                role: "system",
+                content: "You are a translator. Translate the following English text to Spanish. Only return the translation, nothing else."
+              },
+              {
+                role: "user",
+                content: topic.title
+              }
+            ],
+            model: "gpt-4o-mini",
+          });
+
+          const translation = completion.choices[0]?.message?.content;
+          if (translation) {
+            console.log('Translated title:', translation);
+            setTranslatedTitle(translation);
+          }
         }
       } catch (error) {
         console.error('Translation error:', error);
