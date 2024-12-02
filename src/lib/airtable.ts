@@ -16,24 +16,15 @@ export interface Topic {
 }
 
 export const fetchTopics = async (): Promise<Topic[]> => {
-  // Calculate dates for filtering
-  const today = new Date();
-  const weekAgo = new Date();
-  weekAgo.setDate(weekAgo.getDate() - 7);
-
-  // Format dates for Airtable formula
-  const todayStr = today.toISOString().split('T')[0];
-  const weekAgoStr = weekAgo.toISOString().split('T')[0];
-
+  console.log('Fetching topics from Airtable...');
+  
   const records = await base('Topicos')
     .select({
-      filterByFormula: `AND(
-        IS_AFTER({Pubdate}, '${weekAgoStr}'),
-        IS_BEFORE({Pubdate}, '${todayStr}')
-      )`,
       sort: [{ field: 'Pubdate', direction: 'desc' }],
     })
     .all();
+  
+  console.log('Received records from Airtable:', records.length);
   
   return records.map((record) => ({
     id: record.id,
