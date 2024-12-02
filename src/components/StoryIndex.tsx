@@ -9,9 +9,9 @@ export const StoryIndex = () => {
     queryFn: fetchTopics,
   });
 
+  // Get translations from the cache
   const { data: translations } = useQuery({
     queryKey: ["translations"],
-    queryFn: () => ({}),
     initialData: {},
   });
 

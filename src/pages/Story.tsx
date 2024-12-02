@@ -11,9 +11,9 @@ const Story = () => {
     queryFn: fetchTopics,
   });
 
+  // Get translations from the cache
   const { data: translations } = useQuery({
     queryKey: ["translations"],
-    queryFn: () => ({}),
     initialData: {},
   });
 
@@ -66,7 +66,7 @@ const Story = () => {
           {story.image && (
             <img
               src={story.image}
-              alt={story.title}
+              alt={translations[story.id] || story.title}
               className="w-full h-96 object-cover rounded-lg my-8"
             />
           )}
