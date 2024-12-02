@@ -10,6 +10,7 @@ interface NewsCardProps {
 export const NewsCard = ({ topic }: NewsCardProps) => {
   const [translatedTitle, setTranslatedTitle] = useState("");
   const [isLoading, setIsLoading] = useState(true);
+  const [isExpanded, setIsExpanded] = useState(false);
 
   const formattedDate = topic.pubDate 
     ? new Date(topic.pubDate).toLocaleDateString('es-ES', {
@@ -83,7 +84,7 @@ export const NewsCard = ({ topic }: NewsCardProps) => {
   }
 
   return (
-    <Card className="h-full overflow-hidden hover:shadow-lg transition-shadow flex flex-col bg-white border-gray-200">
+    <Card className={`h-full overflow-hidden hover:shadow-lg transition-all flex flex-col bg-white border-gray-200 ${isExpanded ? 'h-auto' : ''}`}>
       <CardHeader className="p-0">
         <div className="relative">
           <a href={topic.link} target="_blank" rel="noopener noreferrer">
@@ -118,18 +119,19 @@ export const NewsCard = ({ topic }: NewsCardProps) => {
           </h2>
         </a>
         <div className="prose prose-sm max-w-none text-gray-600">
-          <p className="line-clamp-3 text-base leading-relaxed">
+          <p className={`${isExpanded ? '' : 'line-clamp-3'} text-base leading-relaxed`}>
             {topic.content}
           </p>
         </div>
-        <a
-          href={topic.link}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="mt-4 inline-flex items-center text-primary hover:text-primary/80 transition-colors text-sm font-medium"
+        <button
+          onClick={(e) => {
+            e.preventDefault();
+            setIsExpanded(!isExpanded);
+          }}
+          className="mt-4 inline-flex items-center text-primary hover:text-primary/80 transition-colors text-sm font-medium cursor-pointer"
         >
-          Leer más →
-        </a>
+          {isExpanded ? 'Leer menos ↑' : 'Leer más ↓'}
+        </button>
       </CardContent>
     </Card>
   );
