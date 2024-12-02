@@ -1,18 +1,34 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 export const Footer = () => {
+  const [error, setError] = useState<string | null>(null);
+  
   const contactEmail = import.meta.env.VITE_CONTACT_EMAIL;
   const copyrightText = import.meta.env.VITE_COPYRIGHT_TEXT;
   const subscribeUrl = import.meta.env.VITE_SUBSCRIBE_URL;
   const unsubscribeUrl = import.meta.env.VITE_UNSUBSCRIBE_URL;
-  const footerBgColor = import.meta.env.VITE_FOOTER_BG_COLOR || '#2B2B2B';
-  const footerFontColor = import.meta.env.VITE_FOOTER_FONT_COLOR || '#ffffff';
+  const footerBgColor = import.meta.env.VITE_FOOTER_BG_COLOR;
+  const footerFontColor = import.meta.env.VITE_FOOTER_FONT_COLOR;
 
   console.log('Environment variables in Footer:', {
     FOOTER_BG: footerBgColor,
     FOOTER_FONT: footerFontColor,
     ENV: import.meta.env
   });
+
+  useEffect(() => {
+    if (!footerBgColor || !footerFontColor) {
+      setError('Error: Missing required environment variables for footer colors');
+      console.error('Missing footer environment variables:', {
+        footerBgColor,
+        footerFontColor
+      });
+    }
+  }, [footerBgColor, footerFontColor]);
+
+  if (error) {
+    return <div className="p-4 text-red-500">{error}</div>;
+  }
 
   return (
     <footer 
