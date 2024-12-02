@@ -10,6 +10,7 @@ interface NewsCardProps {
 export const NewsCard = ({ topic }: NewsCardProps) => {
   const [translatedTitle, setTranslatedTitle] = useState("");
   const [isLoading, setIsLoading] = useState(true);
+  const [isHovered, setIsHovered] = useState(false);
 
   const formattedDate = topic.pubDate 
     ? new Date(topic.pubDate).toLocaleDateString('es-ES', {
@@ -80,20 +81,29 @@ export const NewsCard = ({ topic }: NewsCardProps) => {
   }, [topic.title]);
 
   if (isLoading) {
-    return null; // Don't render anything until translation is complete
+    return null;
   }
 
   return (
-    <Card className="h-full overflow-hidden hover:shadow-lg transition-shadow flex flex-col bg-white border-gray-200">
+    <Card 
+      className="h-full overflow-hidden hover:shadow-lg transition-shadow flex flex-col bg-white border-gray-200"
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
       <CardHeader className="p-0">
         <div className="relative">
-          <a href={topic.link} target="_blank" rel="noopener noreferrer">
+          <a href={topic.link} target="_self" rel="noopener">
             <img
-              src={topic.image || "https://images.unsplash.com/photo-1488590528505-98d2b5aba04b"}
+              src={topic.image || import.meta.env.VITE_DEFAULT_NEWS_IMAGE}
               alt={topic.title}
               className="w-full h-48 object-cover hover:opacity-90 transition-opacity"
             />
           </a>
+          {isHovered && (
+            <div className="absolute top-0 left-0 bg-primary/90 text-white px-3 py-1 text-sm m-3 rounded animate-fade-in">
+              Ver más
+            </div>
+          )}
         </div>
       </CardHeader>
       <CardContent className="p-6 flex flex-col flex-grow">
@@ -110,8 +120,8 @@ export const NewsCard = ({ topic }: NewsCardProps) => {
         </div>
         <a
           href={topic.link}
-          target="_blank"
-          rel="noopener noreferrer"
+          target="_self"
+          rel="noopener"
           className="group"
         >
           <h2 className="text-xl font-bold mb-3 leading-tight group-hover:text-primary transition-colors" style={{ color: '#216B67' }}>
@@ -125,8 +135,8 @@ export const NewsCard = ({ topic }: NewsCardProps) => {
         </div>
         <a
           href={topic.link}
-          target="_blank"
-          rel="noopener noreferrer"
+          target="_self"
+          rel="noopener"
           className="mt-4 inline-flex items-center text-primary hover:text-primary/80 transition-colors text-sm font-medium"
         >
           Leer más →

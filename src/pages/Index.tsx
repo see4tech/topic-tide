@@ -14,7 +14,7 @@ const Index = () => {
               <img 
                 src={logoUrl} 
                 alt="See4Tech Logo" 
-                className="h-24 w-auto"
+                className="h-32 w-auto" // Increased height from h-24 to h-32
               />
               <div className="text-left">
                 <h1 className="text-4xl font-bold mb-2">Punto Digital</h1>
