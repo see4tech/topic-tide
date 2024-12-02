@@ -37,11 +37,11 @@ export const fetchTopics = async (): Promise<Topic[]> => {
   
   return records.map((record) => ({
     id: record.id,
-    title: record.get('Title') as string,
-    content: record.get('Content') as string,
-    creator: record.get('Creator') as string,
+    title: record.get('Titulo') as string,
+    content: record.get('Contenido Post') as string,
+    creator: record.get('Creador') as string,
     pubDate: record.get('Pubdate') as string,
-    image: record.get('Image') as string,
+    image: record.get('Imagen') as string,
     link: record.get('Link') as string,
   }));
 };
