@@ -8,7 +8,8 @@ interface NewsCardProps {
 }
 
 export const NewsCard = ({ topic }: NewsCardProps) => {
-  const [translatedTitle, setTranslatedTitle] = useState(topic.title);
+  const [translatedTitle, setTranslatedTitle] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
 
   const formattedDate = topic.pubDate 
     ? new Date(topic.pubDate).toLocaleDateString('es-ES', {
@@ -50,18 +51,25 @@ export const NewsCard = ({ topic }: NewsCardProps) => {
 
           const translation = completion.choices[0]?.message?.content;
           if (translation) {
-            console.log('Translated title:', translation);
             setTranslatedTitle(translation);
           }
+        } else {
+          setTranslatedTitle(topic.title);
         }
       } catch (error) {
         console.error('Translation error:', error);
         setTranslatedTitle(topic.title);
+      } finally {
+        setIsLoading(false);
       }
     };
 
     translateTitle();
   }, [topic.title]);
+
+  if (isLoading) {
+    return null; // Don't render anything until translation is complete
+  }
 
   return (
     <Card className="h-full overflow-hidden hover:shadow-lg transition-shadow flex flex-col bg-white border-gray-200">
@@ -97,7 +105,7 @@ export const NewsCard = ({ topic }: NewsCardProps) => {
           rel="noopener noreferrer"
           className="group"
         >
-          <h2 className="text-xl font-bold mb-3 leading-tight group-hover:text-primary transition-colors">
+          <h2 className="text-xl font-bold mb-3 leading-tight group-hover:text-primary transition-colors" style={{ color: '#216B67' }}>
             {translatedTitle}
           </h2>
         </a>
