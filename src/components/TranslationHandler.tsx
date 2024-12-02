@@ -21,11 +21,14 @@ export const TranslationHandler = ({
 
   useEffect(() => {
     const translateTopics = async () => {
-      if (!topics) return;
+      if (!topics?.length) {
+        console.log('TranslationHandler - No topics to translate');
+        return;
+      }
 
       console.log('TranslationHandler - Starting batch translation for all topics');
       
-      const newTranslations = { ...translations };
+      const newTranslations: Record<string, string> = {};
       let hasNewTranslations = false;
 
       // Sort topics by date to identify the most recent ones
@@ -33,8 +36,8 @@ export const TranslationHandler = ({
         new Date(b.pubDate).getTime() - new Date(a.pubDate).getTime()
       );
 
-      console.log('TranslationHandler - Processing sorted topics. Last two:', 
-        sortedTopics.slice(0, 2).map(t => ({
+      console.log('TranslationHandler - Processing sorted topics:', 
+        sortedTopics.map(t => ({
           id: t.id,
           title: t.title,
           pubDate: t.pubDate
@@ -42,12 +45,15 @@ export const TranslationHandler = ({
       );
 
       for (const topic of sortedTopics) {
-        if (translations[topic.id]) {
-          console.log('TranslationHandler - Using cached translation for:', topic.id);
+        // Check if we already have a translation
+        const existingTranslation = translations[topic.id];
+        if (existingTranslation) {
+          console.log('TranslationHandler - Using existing translation for:', topic.id, existingTranslation);
+          newTranslations[topic.id] = existingTranslation;
           continue;
         }
 
-        console.log('TranslationHandler - Processing topic:', {
+        console.log('TranslationHandler - Processing new topic:', {
           id: topic.id,
           title: topic.title
         });
@@ -58,10 +64,12 @@ export const TranslationHandler = ({
           ...detection
         });
 
-        if (detection.hasEnglishWords || detection.hasEnglishPatterns || detection.shouldForceTranslate) {
-          try {
+        try {
+          let translatedTitle = topic.title;
+          
+          if (detection.hasEnglishWords || detection.hasEnglishPatterns || detection.shouldForceTranslate) {
             console.log('TranslationHandler - Attempting translation for:', topic.title);
-            const translatedTitle = await translateTitle(
+            translatedTitle = await translateTitle(
               topic.title,
               import.meta.env.VITE_OPENAI_API_KEY
             );
@@ -69,38 +77,30 @@ export const TranslationHandler = ({
               original: topic.title,
               translated: translatedTitle
             });
-            
-            newTranslations[topic.id] = translatedTitle;
             hasNewTranslations = true;
-
-            // Update the query cache immediately
-            queryClient.setQueryData(
-              ["translations"],
-              (oldData: Record<string, string> = {}) => ({
-                ...oldData,
-                [topic.id]: translatedTitle
-              })
-            );
-          } catch (error) {
-            console.error('TranslationHandler - Translation error:', error);
-            toast({
-              title: "Error de traducción",
-              description: "No se pudo traducir el título",
-              variant: "destructive",
-            });
+          } else {
+            console.log('TranslationHandler - Text detected as Spanish, keeping original:', topic.title);
           }
-        } else {
-          console.log('TranslationHandler - Text detected as Spanish, skipping translation:', topic.title);
-          newTranslations[topic.id] = topic.title;
           
-          // Update the query cache for Spanish titles too
+          newTranslations[topic.id] = translatedTitle;
+
+          // Update the query cache immediately for each translation
           queryClient.setQueryData(
             ["translations"],
             (oldData: Record<string, string> = {}) => ({
               ...oldData,
-              [topic.id]: topic.title
+              [topic.id]: translatedTitle
             })
           );
+        } catch (error) {
+          console.error('TranslationHandler - Translation error:', error);
+          toast({
+            title: "Error de traducción",
+            description: "No se pudo traducir el título",
+            variant: "destructive",
+          });
+          // Use original title as fallback
+          newTranslations[topic.id] = topic.title;
         }
       }
 
