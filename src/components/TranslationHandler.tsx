@@ -11,8 +11,6 @@ interface TranslationHandlerProps {
   onTranslationsUpdate: (newTranslations: Record<string, string>) => Promise<void>;
 }
 
-const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
-
 export const TranslationHandler = ({ 
   topics, 
   translations, 
@@ -28,32 +26,18 @@ export const TranslationHandler = ({
         return;
       }
 
-      console.log('TranslationHandler - Starting selective translation for new topics');
+      console.log('TranslationHandler - Starting batch translation');
       
-      const newTranslations: Record<string, string> = { ...translations };
+      const newTranslations: Record<string, string> = {};
       let hasNewTranslations = false;
 
-      // Sort topics by date to identify the most recent ones
-      const sortedTopics = [...topics].sort((a, b) => 
-        new Date(b.pubDate).getTime() - new Date(a.pubDate).getTime()
-      );
-
-      // Only process the 5 most recent articles that don't have translations
-      const topicsToTranslate = sortedTopics
-        .filter(topic => !translations[topic.id])
-        .slice(0, 5);
-
-      console.log('TranslationHandler - Processing topics:', 
-        topicsToTranslate.map(t => ({
-          id: t.id,
-          title: t.title,
-          pubDate: t.pubDate
-        }))
-      );
-
-      for (const topic of topicsToTranslate) {
-        // Add a delay between translations to avoid rate limits
-        await delay(1000);
+      for (const topic of topics) {
+        // Check if we already have a translation
+        if (translations[topic.id]) {
+          console.log('TranslationHandler - Using cached translation for:', topic.id);
+          newTranslations[topic.id] = translations[topic.id];
+          continue;
+        }
 
         console.log('TranslationHandler - Processing topic:', {
           id: topic.id,

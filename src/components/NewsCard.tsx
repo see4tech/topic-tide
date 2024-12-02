@@ -1,82 +1,20 @@
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Topic } from "@/lib/airtable";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useQueryClient } from "@tanstack/react-query";
 import { formatDate } from "@/utils/dateFormatter";
-import { detectLanguage } from "@/utils/languageDetection";
-import { translateTitle } from "@/services/translationService";
 
 interface NewsCardProps {
   topic: Topic;
 }
 
 export const NewsCard = ({ topic }: NewsCardProps) => {
-  const [translatedTitle, setTranslatedTitle] = useState("");
-  const [isLoading, setIsLoading] = useState(true);
   const [isExpanded, setIsExpanded] = useState(false);
   const queryClient = useQueryClient();
-
+  const translations = queryClient.getQueryData<Record<string, string>>(["translations"]) || {};
+  const translatedTitle = translations[topic.id] || topic.title;
   const formattedDate = formatDate(topic.pubDate);
-
-  useEffect(() => {
-    const handleTranslation = async () => {
-      const apiKey = import.meta.env.VITE_OPENAI_API_KEY;
-      if (!apiKey) {
-        console.error('OpenAI API key not found');
-        return;
-      }
-
-      try {
-        const translations = queryClient.getQueryData<Record<string, string>>(["translations"]) || {};
-        
-        if (translations[topic.id]) {
-          console.log('Using cached translation for:', topic.id);
-          setTranslatedTitle(translations[topic.id]);
-          setIsLoading(false);
-          return;
-        }
-
-        const {
-          hasEnglishWords,
-          hasEnglishPatterns,
-          hasSpanishSpecificChars,
-          hasSpanishWords,
-          shouldForceTranslate
-        } = detectLanguage(topic.title);
-
-        let finalTranslation = topic.title;
-
-        if (shouldForceTranslate || hasEnglishWords || hasEnglishPatterns) {
-          if (!(hasSpanishSpecificChars && hasSpanishWords) || shouldForceTranslate) {
-            finalTranslation = await translateTitle(topic.title, apiKey);
-          } else {
-            console.log('Text has both English and Spanish indicators, using original');
-          }
-        } else {
-          console.log('Text detected as Spanish or no clear English patterns, using original');
-        }
-
-        queryClient.setQueryData<Record<string, string>>(["translations"], (old = {}) => ({
-          ...old,
-          [topic.id]: finalTranslation
-        }));
-
-        setTranslatedTitle(finalTranslation);
-      } catch (error) {
-        console.error('Translation error:', error);
-        setTranslatedTitle(topic.title);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    handleTranslation();
-  }, [topic.title, topic.id, queryClient]);
-
-  if (isLoading) {
-    return null;
-  }
 
   return (
     <Card className={`h-full overflow-hidden hover:shadow-lg transition-all flex flex-col bg-white border-gray-200 ${isExpanded ? 'h-auto' : ''}`}>
