@@ -23,6 +23,8 @@ export const translateTitle = async (text: string, apiKey: string): Promise<stri
         }
       ],
       model: "gpt-4o-mini",
+      temperature: 0.3,
+      max_tokens: 200
     });
 
     const translation = completion.choices[0]?.message?.content;
@@ -42,7 +44,8 @@ export const translateTitle = async (text: string, apiKey: string): Promise<stri
       text,
       error: error instanceof Error ? error.message : error,
       apiKey: apiKey ? 'Present' : 'Missing',
-      apiKeyLength: apiKey?.length
+      apiKeyLength: apiKey?.length,
+      errorObject: JSON.stringify(error, null, 2)
     });
     return text;
   }
