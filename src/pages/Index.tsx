@@ -18,6 +18,7 @@ const Index = () => {
   };
 
   console.log('Raw Environment Variables:', {
+    LOGO_URL: logoUrl,
     HERO_BG: heroBgColor,
     BODY_BG: bodyBgColor,
     RAW_ENV: import.meta.env
