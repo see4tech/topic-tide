@@ -37,8 +37,8 @@ export const StoryIndex = () => {
         const detection = detectLanguage(topic.title);
         console.log('StoryIndex - Language detection results:', detection);
 
-        // Changed logic to always translate if not in Spanish
-        if (!detection.hasSpanishSpecificChars || detection.hasEnglishWords || detection.hasEnglishPatterns || detection.shouldForceTranslate) {
+        // Always attempt translation for non-Spanish text
+        if (!detection.hasSpanishSpecificChars || detection.hasEnglishWords || detection.hasEnglishPatterns) {
           try {
             console.log('StoryIndex - Translating topic:', topic.title);
             const translatedTitle = await translateTitle(
@@ -46,6 +46,8 @@ export const StoryIndex = () => {
               import.meta.env.VITE_OPENAI_API_KEY
             );
             console.log('StoryIndex - Translation received:', translatedTitle);
+            
+            // Immediately update translations object
             newTranslations[topic.id] = translatedTitle;
             hasNewTranslations = true;
           } catch (error) {
@@ -63,7 +65,7 @@ export const StoryIndex = () => {
 
       if (hasNewTranslations) {
         console.log('StoryIndex - Updating translations cache');
-        // Update the translations cache
+        // Update the translations cache and wait for it
         await refetchTranslations();
       }
     };
