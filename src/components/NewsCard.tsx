@@ -86,7 +86,7 @@ export const NewsCard = ({ topic }: NewsCardProps) => {
     <Card className="h-full overflow-hidden hover:shadow-lg transition-shadow flex flex-col bg-white border-gray-200">
       <CardHeader className="p-0">
         <div className="relative">
-          <a href={topic.link} target="_self" rel="noopener">
+          <a href={topic.link} target="_blank" rel="noopener noreferrer">
             <img
               src={topic.image || import.meta.env.VITE_DEFAULT_NEWS_IMAGE}
               alt={topic.title}
@@ -109,8 +109,8 @@ export const NewsCard = ({ topic }: NewsCardProps) => {
         </div>
         <a
           href={topic.link}
-          target="_self"
-          rel="noopener"
+          target="_blank"
+          rel="noopener noreferrer"
           className="group"
         >
           <h2 className="text-xl font-bold mb-3 leading-tight group-hover:text-primary transition-colors" style={{ color: '#216B67' }}>
@@ -124,8 +124,8 @@ export const NewsCard = ({ topic }: NewsCardProps) => {
         </div>
         <a
           href={topic.link}
-          target="_self"
-          rel="noopener"
+          target="_blank"
+          rel="noopener noreferrer"
           className="mt-4 inline-flex items-center text-primary hover:text-primary/80 transition-colors text-sm font-medium"
         >
           Leer más →
