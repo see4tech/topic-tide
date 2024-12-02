@@ -23,10 +23,10 @@ export const NewsList = () => {
     queryKey: ["topics"],
     queryFn: fetchTopics,
     meta: {
-      onError: () => {
+      onError: (error: Error) => {
         toast({
           title: "Error",
-          description: "Failed to fetch news. Please try again later.",
+          description: "No se pudieron cargar las noticias. Por favor, intente más tarde.",
           variant: "destructive",
         });
       },
@@ -48,11 +48,20 @@ export const NewsList = () => {
     );
   }
 
+  if (error) {
+    return (
+      <div className="text-center py-12">
+        <h2 className="text-2xl font-semibold text-destructive">Error al cargar las noticias</h2>
+        <p className="text-muted-foreground mt-2">Por favor, intente más tarde</p>
+      </div>
+    );
+  }
+
   if (!topics?.length) {
     return (
       <div className="text-center py-12">
-        <h2 className="text-2xl font-semibold">No news available</h2>
-        <p className="text-muted-foreground">Check back later for updates</p>
+        <h2 className="text-2xl font-semibold">No hay noticias disponibles</h2>
+        <p className="text-muted-foreground">Vuelva más tarde para ver actualizaciones</p>
       </div>
     );
   }
