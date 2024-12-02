@@ -4,15 +4,60 @@ import { useParams, Link } from "react-router-dom";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Footer } from "@/components/Footer";
 import { ArrowLeft } from "lucide-react";
+import { useEffect, useState } from "react";
 
 const Story = () => {
   const { id } = useParams();
+  const [fullContent, setFullContent] = useState<string | null>(null);
+  const [isLoadingContent, setIsLoadingContent] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
   const { data: topics, isLoading } = useQuery({
     queryKey: ["topics"],
     queryFn: fetchTopics,
   });
 
   const story = topics?.find(topic => topic.id === id);
+
+  useEffect(() => {
+    const fetchContent = async (url: string) => {
+      setIsLoadingContent(true);
+      try {
+        console.log('Fetching content from:', url);
+        const response = await fetch(url);
+        const html = await response.text();
+        
+        // Create a temporary DOM element to parse the HTML
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(html, 'text/html');
+        
+        // Try to find the main content
+        // This is a simple example - you might need to adjust selectors based on the target sites
+        const article = doc.querySelector('article') || 
+                       doc.querySelector('main') || 
+                       doc.querySelector('.content') ||
+                       doc.querySelector('.post-content');
+                       
+        if (article) {
+          console.log('Content found:', article.textContent);
+          setFullContent(article.textContent);
+        } else {
+          console.log('No content found, using original content');
+          setFullContent(null);
+        }
+      } catch (err) {
+        console.error('Error fetching content:', err);
+        setError("Couldn't fetch the full story. Showing available content instead.");
+        setFullContent(null);
+      } finally {
+        setIsLoadingContent(false);
+      }
+    };
+
+    if (story?.link) {
+      fetchContent(story.link);
+    }
+  }, [story?.link]);
 
   if (isLoading) {
     return (
@@ -94,12 +139,25 @@ const Story = () => {
             />
           )}
 
-          <div 
-            className="prose prose-lg max-w-none"
-            style={{ color: import.meta.env.VITE_TEXT_FONT_COLOR }}
-          >
-            <p className="whitespace-pre-wrap">{story.content}</p>
-          </div>
+          {isLoadingContent ? (
+            <div className="space-y-4">
+              <Skeleton className="h-4 w-full" />
+              <Skeleton className="h-4 w-full" />
+              <Skeleton className="h-4 w-3/4" />
+            </div>
+          ) : (
+            <div 
+              className="prose prose-lg max-w-none"
+              style={{ color: import.meta.env.VITE_TEXT_FONT_COLOR }}
+            >
+              {error && (
+                <p className="text-red-500 mb-4">{error}</p>
+              )}
+              <p className="whitespace-pre-wrap">
+                {fullContent || story.content}
+              </p>
+            </div>
+          )}
 
           {story.link && (
             <a
