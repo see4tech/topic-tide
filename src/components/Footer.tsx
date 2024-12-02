@@ -11,8 +11,7 @@ export const Footer = () => {
   console.log('Raw Footer env values:', {
     FOOTER_BG: footerBgColor,
     FOOTER_FONT: footerFontColor,
-    RAW_ENV: import.meta.env,
-    DIRECT_ACCESS: process.env.VITE_FOOTER_BG_COLOR
+    RAW_ENV: import.meta.env
   });
 
   if (!footerBgColor) throw new Error('VITE_FOOTER_BG_COLOR must be defined in .env');
@@ -21,10 +20,7 @@ export const Footer = () => {
   return (
     <footer 
       className="py-8 mt-12"
-      style={{ 
-        backgroundColor: `${footerBgColor}`,
-        color: `${footerFontColor}`
-      }}
+      style={{ backgroundColor: footerBgColor, color: footerFontColor }}
     >
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">

@@ -13,8 +13,7 @@ const Index = () => {
     HERO_BG: heroBgColor,
     BODY_BG: bodyBgColor,
     HERO_FONT: heroFontColor,
-    RAW_ENV: import.meta.env,
-    DIRECT_ACCESS: process.env.VITE_HERO_BG_COLOR
+    RAW_ENV: import.meta.env
   });
 
   if (!heroBgColor) throw new Error('VITE_HERO_BG_COLOR must be defined in .env');
@@ -25,10 +24,7 @@ const Index = () => {
     <div style={{ backgroundColor: bodyBgColor }} className="min-h-screen flex flex-col">
       <header 
         className="py-12"
-        style={{ 
-          backgroundColor: `${heroBgColor}`,
-          color: `${heroFontColor}`
-        }}
+        style={{ backgroundColor: heroBgColor, color: heroFontColor }}
       >
         <div className="container mx-auto px-4">
           <div className="flex flex-col md:flex-row items-center justify-center md:justify-between">
