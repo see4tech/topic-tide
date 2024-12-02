@@ -1,8 +1,9 @@
-import { Button } from "./ui/button";
+import React, { useState } from "react";
 
 export const Footer = () => {
   const contactEmail = import.meta.env.VITE_CONTACT_EMAIL;
   const copyrightText = import.meta.env.VITE_COPYRIGHT_TEXT;
+  const [isHovered, setIsHovered] = useState(false);
 
   return (
     <footer className="bg-[#216B67] text-white py-8 mt-12">
@@ -16,16 +17,21 @@ export const Footer = () => {
               </a>
             </p>
           </div>
-          <div>
+          <div 
+            onMouseEnter={() => setIsHovered(true)}
+            onMouseLeave={() => setIsHovered(false)}
+          >
             <h3 className="font-bold mb-4">Newsletter</h3>
-            <div className="space-x-4">
-              <Button variant="outline" className="bg-white hover:bg-gray-100">
-                Suscribirse
-              </Button>
-              <Button variant="outline" className="bg-white hover:bg-gray-100">
-                Desuscribirse
-              </Button>
-            </div>
+            {isHovered && (
+              <div className="space-x-4 animate-fade-in">
+                <a href="#" className="text-white hover:underline">
+                  Suscribirse
+                </a>
+                <a href="#" className="text-white hover:underline">
+                  Desuscribirse
+                </a>
+              </div>
+            )}
           </div>
           <div>
             <p className="text-sm mt-4">{copyrightText}</p>
