@@ -1,13 +1,15 @@
 import OpenAI from "openai";
 
 export const translateTitle = async (text: string, apiKey: string): Promise<string> => {
-  console.log('Attempting to translate:', text);
+  console.log('Starting translation attempt for:', text);
   
   try {
     const openai = new OpenAI({
       apiKey: apiKey,
       dangerouslyAllowBrowser: true
     });
+
+    console.log('OpenAI client initialized, attempting translation...');
 
     const completion = await openai.chat.completions.create({
       messages: [
@@ -24,8 +26,9 @@ export const translateTitle = async (text: string, apiKey: string): Promise<stri
     });
 
     const translation = completion.choices[0]?.message?.content;
+    
     if (translation) {
-      console.log('Translation received:', {
+      console.log('Translation successful:', {
         original: text,
         translated: translation
       });
@@ -37,7 +40,9 @@ export const translateTitle = async (text: string, apiKey: string): Promise<stri
   } catch (error) {
     console.error('Translation error:', {
       text,
-      error: error instanceof Error ? error.message : error
+      error: error instanceof Error ? error.message : error,
+      apiKey: apiKey ? 'Present' : 'Missing',
+      apiKeyLength: apiKey?.length
     });
     return text;
   }
