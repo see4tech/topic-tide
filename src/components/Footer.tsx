@@ -18,8 +18,8 @@ export const Footer = () => {
     <footer 
       className="py-8 mt-12"
       style={{ 
-        backgroundColor: footerBgColor,
-        color: footerFontColor
+        backgroundColor: footerBgColor || '#2B2B2B',
+        color: footerFontColor || '#ffffff'
       }}
     >
       <div className="container mx-auto px-4">
