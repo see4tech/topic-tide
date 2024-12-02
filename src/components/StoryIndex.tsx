@@ -10,12 +10,13 @@ export const StoryIndex = () => {
     queryFn: fetchTopics,
   });
 
-  const { data: translations, refetch: refetchTranslations } = useQuery({
+  const { data: translations = {}, refetch: refetchTranslations } = useQuery({
     queryKey: ["translations"],
     initialData: {},
   });
 
   const handleTranslationsUpdate = async (newTranslations: Record<string, string>) => {
+    console.log('StoryIndex - Updating translations:', newTranslations);
     await refetchTranslations();
   };
 
