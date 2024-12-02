@@ -27,9 +27,9 @@ export interface Topic {
 export const fetchTopics = async (): Promise<Topic[]> => {
   console.log('Fetching topics from Airtable...');
   try {
-    const records = await base('topics')
+    const records = await base('Topicos')
       .select({
-        filterByFormula: '{postear} = 1',
+        filterByFormula: '{Postear} = TRUE()',
         sort: [{ field: 'Titulo', direction: 'desc' }],
       })
       .all();
