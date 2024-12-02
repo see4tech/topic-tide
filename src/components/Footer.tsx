@@ -5,9 +5,18 @@ export const Footer = () => {
   const copyrightText = import.meta.env.VITE_COPYRIGHT_TEXT;
   const subscribeUrl = import.meta.env.VITE_SUBSCRIBE_URL;
   const unsubscribeUrl = import.meta.env.VITE_UNSUBSCRIBE_URL;
+  const footerBgColor = import.meta.env.VITE_FOOTER_BG_COLOR || '#216B67';
+
+  // Ensure the color starts with #
+  const formattedFooterBgColor = footerBgColor.startsWith('#') ? footerBgColor : `#${footerBgColor}`;
+
+  console.log('Footer Background Color:', formattedFooterBgColor); // Debug log
 
   return (
-    <footer className="bg-[#216B67] text-white py-8 mt-12">
+    <footer 
+      className="text-gray-800 py-8 mt-12"
+      style={{ backgroundColor: formattedFooterBgColor }}
+    >
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           <div>
@@ -23,13 +32,13 @@ export const Footer = () => {
             <div className="space-x-4">
               <a 
                 href={subscribeUrl} 
-                className="text-white hover:underline"
+                className="hover:underline"
               >
                 Suscribirse
               </a>
               <a 
                 href={unsubscribeUrl} 
-                className="text-white hover:underline"
+                className="hover:underline"
               >
                 Desuscribirse
               </a>

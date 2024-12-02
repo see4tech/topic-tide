@@ -17,8 +17,11 @@ const Index = () => {
     return brightness > 155;
   };
 
+  // Ensure the color starts with #
   const formattedHeroBgColor = heroBgColor.startsWith('#') ? heroBgColor : `#${heroBgColor}`;
   const isLightBg = isLightColor(formattedHeroBgColor);
+
+  console.log('Hero Background Color:', formattedHeroBgColor); // Debug log
 
   return (
     <div className="min-h-screen flex flex-col" style={{ backgroundColor: bodyBgColor }}>
