@@ -1,18 +1,16 @@
 import { NewsList } from "@/components/NewsList";
+import { StoryIndex } from "@/components/StoryIndex";
 import { Footer } from "@/components/Footer";
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
 
 const Index = () => {
+  const [showIndex, setShowIndex] = useState(false);
   const logoUrl = import.meta.env.VITE_LOGO_URL;
   const tagline = import.meta.env.VITE_SITE_TAGLINE;
   const heroBgColor = import.meta.env.VITE_HERO_BG_COLOR;
   const bodyBgColor = import.meta.env.VITE_BODY_BG_COLOR;
   const heroFontColor = import.meta.env.VITE_HERO_FONT_COLOR;
-
-  console.log('Raw environment variables in Index:', {
-    VITE_HERO_BG_COLOR: import.meta.env.VITE_HERO_BG_COLOR,
-    VITE_BODY_BG_COLOR: import.meta.env.VITE_BODY_BG_COLOR,
-    VITE_HERO_FONT_COLOR: import.meta.env.VITE_HERO_FONT_COLOR
-  });
 
   return (
     <div 
@@ -45,8 +43,18 @@ const Index = () => {
         </div>
       </header>
 
+      <div className="container mx-auto px-4 py-4">
+        <Button
+          onClick={() => setShowIndex(!showIndex)}
+          className="mb-4"
+          variant="outline"
+        >
+          {showIndex ? "Ver noticias" : "Ver índice de historias"}
+        </Button>
+      </div>
+
       <main className="container mx-auto px-4 py-8 flex-grow text-gray-900">
-        <NewsList />
+        {showIndex ? <StoryIndex /> : <NewsList />}
       </main>
 
       <Footer />
