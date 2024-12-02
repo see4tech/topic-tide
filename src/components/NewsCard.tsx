@@ -29,17 +29,29 @@ export const NewsCard = ({ topic }: NewsCardProps) => {
       }
 
       try {
-        const englishPattern = /^[a-zA-Z0-9\s,.'"-]+$/;
-        const hasEnglishChars = englishPattern.test(topic.title);
-        const spanishCommonWords = /\b(el|la|los|las|un|una|unos|unas|y|en|de|para|por|con|sin)\b/i;
+        // More comprehensive English detection
+        const englishPattern = /^[a-zA-Z0-9\s,.'"-]*$/;
+        const spanishChars = /[áéíóúñü¿¡]/i;
+        const spanishCommonWords = /\b(el|la|los|las|un|una|unos|unas|y|en|de|para|por|con|sin|pero|que|como|este|esta|estos|estas)\b/i;
+        
+        console.log('Analyzing title:', topic.title);
+        
+        const hasOnlyEnglishChars = englishPattern.test(topic.title);
+        const hasSpanishSpecificChars = spanishChars.test(topic.title);
         const hasSpanishWords = spanishCommonWords.test(topic.title);
+        
+        console.log('Language analysis:', {
+          hasOnlyEnglishChars,
+          hasSpanishSpecificChars,
+          hasSpanishWords
+        });
 
-        console.log('Title:', topic.title);
-        console.log('Has English chars:', hasEnglishChars);
-        console.log('Has Spanish words:', hasSpanishWords);
-
-        if (hasEnglishChars && !hasSpanishWords) {
-          console.log('Translating title...');
+        // If text has Spanish-specific characters or common Spanish words, consider it Spanish
+        if (hasSpanishSpecificChars || hasSpanishWords) {
+          console.log('Text detected as Spanish, using original');
+          setTranslatedTitle(topic.title);
+        } else if (hasOnlyEnglishChars) {
+          console.log('Text detected as English, translating...');
           const openai = new OpenAI({
             apiKey: apiKey,
             dangerouslyAllowBrowser: true
@@ -65,7 +77,7 @@ export const NewsCard = ({ topic }: NewsCardProps) => {
             setTranslatedTitle(translation);
           }
         } else {
-          console.log('Text appears to be in Spanish, using original');
+          console.log('Language detection inconclusive, using original');
           setTranslatedTitle(topic.title);
         }
       } catch (error) {
