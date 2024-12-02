@@ -10,7 +10,6 @@ interface NewsCardProps {
 export const NewsCard = ({ topic }: NewsCardProps) => {
   const [translatedTitle, setTranslatedTitle] = useState(topic.title);
 
-  // Format the date if it exists
   const formattedDate = topic.pubDate 
     ? new Date(topic.pubDate).toLocaleDateString('es-ES', {
         day: '2-digit',
@@ -28,7 +27,6 @@ export const NewsCard = ({ topic }: NewsCardProps) => {
       }
 
       try {
-        // Simple check if the text might be in English (contains common English words)
         const commonEnglishWords = /\b(the|is|are|what|how|why|when|who|this|that|with)\b/i;
         if (commonEnglishWords.test(topic.title)) {
           const openai = new OpenAI({
@@ -47,7 +45,7 @@ export const NewsCard = ({ topic }: NewsCardProps) => {
                 content: topic.title
               }
             ],
-            model: "gpt-4o-mini",
+            model: "gpt-4",
           });
 
           const translation = completion.choices[0]?.message?.content;
@@ -58,47 +56,64 @@ export const NewsCard = ({ topic }: NewsCardProps) => {
         }
       } catch (error) {
         console.error('Translation error:', error);
-        setTranslatedTitle(topic.title); // Fallback to original title
+        setTranslatedTitle(topic.title);
       }
     };
 
     translateTitle();
   }, [topic.title]);
 
-  console.log('Raw pubDate:', topic.pubDate);
-  console.log('Formatted date:', formattedDate);
-
   return (
-    <Card className="h-full overflow-hidden hover:shadow-lg transition-shadow flex flex-col">
+    <Card className="h-full overflow-hidden hover:shadow-lg transition-shadow flex flex-col bg-white border-gray-200">
       <CardHeader className="p-0">
-        <a href={topic.link} target="_blank" rel="noopener noreferrer">
-          <img
-            src={topic.image || "https://images.unsplash.com/photo-1488590528505-98d2b5aba04b"}
-            alt={topic.title}
-            className="w-full h-48 object-cover"
-          />
-        </a>
+        <div className="relative">
+          <a href={topic.link} target="_blank" rel="noopener noreferrer">
+            <img
+              src={topic.image || "https://images.unsplash.com/photo-1488590528505-98d2b5aba04b"}
+              alt={topic.title}
+              className="w-full h-48 object-cover hover:opacity-90 transition-opacity"
+            />
+          </a>
+          <div className="absolute top-0 left-0 bg-primary/90 text-white px-3 py-1 text-sm m-3 rounded">
+            TECNOLOGÍA
+          </div>
+        </div>
       </CardHeader>
       <CardContent className="p-6 flex flex-col flex-grow">
+        <div className="mb-3 text-sm text-muted-foreground flex items-center">
+          <time dateTime={topic.pubDate} className="font-medium">
+            {formattedDate}
+          </time>
+          {topic.creator && (
+            <>
+              <span className="mx-2">•</span>
+              <span className="font-medium text-primary">{topic.creator}</span>
+            </>
+          )}
+        </div>
         <a
           href={topic.link}
           target="_blank"
           rel="noopener noreferrer"
-          className="block mb-4"
+          className="group"
         >
-          <h2 className="text-lg font-semibold hover:text-primary leading-relaxed" style={{ color: '#216B67' }}>
+          <h2 className="text-xl font-bold mb-3 leading-tight group-hover:text-primary transition-colors">
             {translatedTitle}
           </h2>
         </a>
-        <p className="text-muted-foreground mb-8 line-clamp-3 flex-grow">
-          {topic.content}
-        </p>
-        <div className="flex justify-between items-center text-sm text-muted-foreground border-t pt-4 mt-auto">
-          <time dateTime={topic.pubDate} className="font-medium">
-            {formattedDate}
-          </time>
-          <span>{topic.creator}</span>
+        <div className="prose prose-sm max-w-none text-gray-600">
+          <p className="line-clamp-3 text-base leading-relaxed">
+            {topic.content}
+          </p>
         </div>
+        <a
+          href={topic.link}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="mt-4 inline-flex items-center text-primary hover:text-primary/80 transition-colors text-sm font-medium"
+        >
+          Leer más →
+        </a>
       </CardContent>
     </Card>
   );
