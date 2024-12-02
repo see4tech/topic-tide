@@ -22,8 +22,8 @@ export const Footer = () => {
   return (
     <footer 
       style={{ 
-        backgroundColor: footerBgColor || '#2B2B2B',
-        color: footerFontColor || '#ffffff'
+        backgroundColor: footerBgColor,
+        color: footerFontColor
       }}
       className="py-8 mt-12"
     >

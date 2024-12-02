@@ -24,15 +24,15 @@ const Index = () => {
   return (
     <div 
       style={{ 
-        backgroundColor: bodyBgColor || '#ffffff',
-        color: heroFontColor || '#000000'
+        backgroundColor: bodyBgColor,
+        color: heroFontColor
       }} 
       className="min-h-screen flex flex-col"
     >
       <header 
         style={{ 
-          backgroundColor: heroBgColor || '#2B2B2B',
-          color: heroFontColor || '#ffffff'
+          backgroundColor: heroBgColor,
+          color: heroFontColor
         }}
         className="py-12"
       >
