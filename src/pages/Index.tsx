@@ -1,10 +1,7 @@
 import { NewsList } from "@/components/NewsList";
 import { Footer } from "@/components/Footer";
-import { useEffect, useState } from "react";
 
 const Index = () => {
-  const [error, setError] = useState<string | null>(null);
-
   const logoUrl = import.meta.env.VITE_LOGO_URL;
   const tagline = import.meta.env.VITE_SITE_TAGLINE;
   const heroBgColor = import.meta.env.VITE_HERO_BG_COLOR;
@@ -18,21 +15,6 @@ const Index = () => {
     HERO_FONT: heroFontColor,
     ENV: import.meta.env
   });
-
-  useEffect(() => {
-    if (!heroBgColor || !bodyBgColor || !heroFontColor) {
-      setError('Error: Missing required environment variables for colors');
-      console.error('Missing environment variables:', {
-        heroBgColor,
-        bodyBgColor,
-        heroFontColor
-      });
-    }
-  }, [heroBgColor, bodyBgColor, heroFontColor]);
-
-  if (error) {
-    return <div className="p-4 text-red-500">{error}</div>;
-  }
 
   return (
     <div style={{ backgroundColor: bodyBgColor }} className="min-h-screen flex flex-col">
