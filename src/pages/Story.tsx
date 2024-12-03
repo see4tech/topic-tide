@@ -14,6 +14,10 @@ const Story = () => {
 
   const story = topics?.find((t) => t.id === id);
 
+  // Add debug logging
+  console.log('Story image URL:', story?.image);
+  console.log('Default image URL:', import.meta.env.VITE_DEFAULT_NEWS_IMAGE);
+
   if (!story) {
     return (
       <div className="container mx-auto px-4 py-8">
@@ -65,15 +69,17 @@ const Story = () => {
             </time>
           </div>
 
-          {story.image && (
-            <div className="mb-8">
-              <img
-                src={story.image || import.meta.env.VITE_DEFAULT_NEWS_IMAGE}
-                alt={story.title}
-                className="w-full h-[400px] object-cover rounded-lg shadow-lg"
-              />
-            </div>
-          )}
+          <div className="mb-8">
+            <img
+              src={story.image || import.meta.env.VITE_DEFAULT_NEWS_IMAGE}
+              alt={story.title}
+              className="w-full h-[400px] object-cover rounded-lg shadow-lg"
+              onError={(e) => {
+                console.log('Image failed to load, using default image');
+                e.currentTarget.src = import.meta.env.VITE_DEFAULT_NEWS_IMAGE;
+              }}
+            />
+          </div>
 
           <div 
             className="prose prose-lg max-w-none mb-8"
