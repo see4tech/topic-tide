@@ -67,7 +67,7 @@ export const createSubscriber = async (name: string, email: string): Promise<voi
           Nombre: name,
           Email: email,
           'Fecha Subscripcion': new Date().toISOString(),
-          Status: 'Activo',
+          Estado: 'Activo',
         },
       },
     ]);
