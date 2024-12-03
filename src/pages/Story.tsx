@@ -66,11 +66,13 @@ const Story = () => {
           </div>
 
           {story.image && (
-            <img
-              src={story.image}
-              alt={story.title}
-              className="w-full h-96 object-cover rounded-lg my-8"
-            />
+            <div className="mb-8">
+              <img
+                src={story.image || import.meta.env.VITE_DEFAULT_NEWS_IMAGE}
+                alt={story.title}
+                className="w-full h-[400px] object-cover rounded-lg shadow-lg"
+              />
+            </div>
           )}
 
           <div 
