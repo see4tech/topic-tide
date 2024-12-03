@@ -21,7 +21,7 @@ export function NewsletterModal({ open, onOpenChange }: NewsletterModalProps) {
     setIsSubmitting(true);
     
     try {
-      console.log('Starting subscription process...');
+      console.log('Starting subscription process...', { name, email });
       
       if (!email) {
         toast({
@@ -33,7 +33,9 @@ export function NewsletterModal({ open, onOpenChange }: NewsletterModalProps) {
       }
 
       // Check if email already exists
+      console.log('Checking if email exists...');
       const emailExists = await checkEmailExists(email);
+      console.log('Email exists check result:', emailExists);
       
       if (emailExists) {
         toast({
@@ -45,6 +47,7 @@ export function NewsletterModal({ open, onOpenChange }: NewsletterModalProps) {
       }
 
       // Create subscriber in Airtable
+      console.log('Creating subscriber...');
       await createSubscriber(name, email);
       console.log('Subscriber created in Airtable successfully');
 
@@ -91,6 +94,10 @@ export function NewsletterModal({ open, onOpenChange }: NewsletterModalProps) {
         
         if (error.message.includes('Network') || error.message.includes('CORS')) {
           errorMessage = "Error de conexión. Por favor, verifica tu conexión a internet.";
+        } else if (error.message.includes('Invalid API key')) {
+          errorMessage = "Error de autenticación con Airtable. Por favor, contacta al administrador.";
+        } else if (error.message.includes('Table not found')) {
+          errorMessage = "Error de configuración. Por favor, contacta al administrador.";
         }
       }
       

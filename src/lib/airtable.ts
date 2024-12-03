@@ -39,29 +39,42 @@ export const fetchTopics = async (): Promise<Topic[]> => {
 };
 
 export const checkEmailExists = async (email: string): Promise<boolean> => {
-  console.log('Checking if email exists in Airtable...');
-  
-  const records = await base('Subscriptores')
-    .select({
-      filterByFormula: `{Email} = '${email}'`,
-      maxRecords: 1,
-    })
-    .all();
+  try {
+    console.log('Checking if email exists in Airtable...', email);
+    
+    const records = await base('Subscriptores')
+      .select({
+        filterByFormula: `{Email} = '${email}'`,
+        maxRecords: 1,
+      })
+      .all();
 
-  return records.length > 0;
+    console.log('Email check result:', records.length > 0);
+    return records.length > 0;
+  } catch (error) {
+    console.error('Error checking email existence:', error);
+    throw error;
+  }
 };
 
 export const createSubscriber = async (name: string, email: string): Promise<void> => {
-  console.log('Creating new subscriber in Airtable...');
-  
-  await base('Subscriptores').create([
-    {
-      fields: {
-        Nombre: name,
-        Email: email,
-        'Fecha Subscripcion': new Date().toISOString(),
-        Status: 'Activo',
+  try {
+    console.log('Creating new subscriber in Airtable...', { name, email });
+    
+    const result = await base('Subscriptores').create([
+      {
+        fields: {
+          Nombre: name,
+          Email: email,
+          'Fecha Subscripcion': new Date().toISOString(),
+          Status: 'Activo',
+        },
       },
-    },
-  ]);
+    ]);
+
+    console.log('Subscriber created successfully:', result);
+  } catch (error) {
+    console.error('Error creating subscriber:', error);
+    throw error;
+  }
 };
