@@ -29,8 +29,8 @@ export const fetchTopics = async (): Promise<Topic[]> => {
   
   return records.map((record) => ({
     id: record.id,
-    title: record.get('Titulo') as string,
-    content: record.get('Contenido Post') as string,
+    title: record.get('Titulo Traducido') as string || record.get('Titulo') as string,
+    content: record.get('Contenido Noticioso') as string || record.get('Contenido Post') as string,
     creator: record.get('Creador') as string,
     pubDate: record.get('Pubdate') as string,
     image: record.get('Imagen') as string,
