@@ -99,3 +99,9 @@
     @apply bg-background text-foreground;
   }
 }
+
+@layer components {
+  .toast-success {
+    @apply bg-[#216A67] text-white border-[#E7EF62];
+  }
+}

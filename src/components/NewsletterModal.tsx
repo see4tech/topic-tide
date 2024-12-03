@@ -74,8 +74,10 @@ export function NewsletterModal({ open, onOpenChange }: NewsletterModalProps) {
       */
 
       toast({
+        variant: "success",
         title: "¡Gracias por suscribirte!",
         description: "Recibirás nuestras actualizaciones pronto.",
+        className: "bg-[#216A67] text-white border-[#E7EF62]",
       });
       
       // Reset form
