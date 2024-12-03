@@ -37,3 +37,31 @@ export const fetchTopics = async (): Promise<Topic[]> => {
     link: record.get('Link') as string,
   }));
 };
+
+export const checkEmailExists = async (email: string): Promise<boolean> => {
+  console.log('Checking if email exists in Airtable...');
+  
+  const records = await base('Subscriptores')
+    .select({
+      filterByFormula: `{Email} = '${email}'`,
+      maxRecords: 1,
+    })
+    .all();
+
+  return records.length > 0;
+};
+
+export const createSubscriber = async (name: string, email: string): Promise<void> => {
+  console.log('Creating new subscriber in Airtable...');
+  
+  await base('Subscriptores').create([
+    {
+      fields: {
+        Nombre: name,
+        Email: email,
+        'Fecha Subscripcion': new Date().toISOString(),
+        Status: 'Activo',
+      },
+    },
+  ]);
+};

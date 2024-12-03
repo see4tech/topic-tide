@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import { useToast } from "@/components/ui/use-toast";
+import { checkEmailExists, createSubscriber } from "@/lib/airtable";
 
 interface NewsletterModalProps {
   open: boolean;
@@ -12,15 +13,35 @@ interface NewsletterModalProps {
 export function NewsletterModal({ open, onOpenChange }: NewsletterModalProps) {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
+    setIsSubmitting(true);
     
-    const listid = 2;
-    const sender = "noticias@see4.tech";
-
     try {
+      console.log('Starting subscription process...');
+      
+      // Check if email already exists
+      const emailExists = await checkEmailExists(email);
+      
+      if (emailExists) {
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: "Este correo electrónico ya está suscrito.",
+        });
+        return;
+      }
+
+      // Create subscriber in Airtable
+      await createSubscriber(name, email);
+
+      // Make the n8n webhook call
+      const listid = 2;
+      const sender = "noticias@see4.tech";
+
       const response = await fetch("https://n8n.see4.tech/webhook/1b2667ae-be75-4e1a-999b-d384001d0ab3", {
         method: "POST",
         headers: {
@@ -35,12 +56,9 @@ export function NewsletterModal({ open, onOpenChange }: NewsletterModalProps) {
           title: "¡Gracias por suscribirte!",
           description: "Recibirás nuestras actualizaciones pronto.",
         });
+        onOpenChange(false);
       } else {
-        toast({
-          variant: "destructive",
-          title: "Error",
-          description: "No se pudo completar la suscripción. Inténtalo más tarde.",
-        });
+        throw new Error('Failed to complete subscription');
       }
     } catch (error) {
       console.error("Error:", error);
@@ -49,6 +67,8 @@ export function NewsletterModal({ open, onOpenChange }: NewsletterModalProps) {
         title: "Error",
         description: "Ocurrió un error inesperado. Por favor, inténtalo más tarde.",
       });
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -76,6 +96,7 @@ export function NewsletterModal({ open, onOpenChange }: NewsletterModalProps) {
               value={name}
               onChange={(e) => setName(e.target.value)}
               className="bg-[#1a1a1a] border-[#444] text-white placeholder:text-[#777] focus:border-[#E7EF62] focus:ring-[#E7EF62]"
+              disabled={isSubmitting}
             />
             <Input
               type="email"
@@ -84,12 +105,14 @@ export function NewsletterModal({ open, onOpenChange }: NewsletterModalProps) {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               className="bg-[#1a1a1a] border-[#444] text-white placeholder:text-[#777] focus:border-[#E7EF62] focus:ring-[#E7EF62]"
+              disabled={isSubmitting}
             />
             <Button
               type="submit"
               className="bg-[#E7EF62] text-[#216A67] border-2 border-[#E7EF62] rounded-full font-bold uppercase px-6 py-3 text-base hover:bg-[#216A67] hover:text-[#333] hover:border-[#216A67] transition-colors"
+              disabled={isSubmitting}
             >
-              Suscribirme
+              {isSubmitting ? "Procesando..." : "Suscribirme"}
             </Button>
           </form>
 
