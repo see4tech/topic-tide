@@ -27,15 +27,23 @@ export const fetchTopics = async (): Promise<Topic[]> => {
   
   console.log('Received records from Airtable:', records.length);
   
-  return records.map((record) => ({
-    id: record.id,
-    title: record.get('Titulo Traducido') as string || record.get('Titulo') as string,
-    content: record.get('Contenido Noticioso') as string || record.get('Contenido Post') as string,
-    creator: record.get('Creador') as string,
-    pubDate: record.get('Pubdate') as string,
-    image: record.get('Imagen') as string,
-    link: record.get('Link') as string,
-  }));
+  return records.map((record) => {
+    // Add debug logging to check the values
+    console.log('Title fields:', {
+      traducido: record.get('Titulo Traducido'),
+      original: record.get('Titulo')
+    });
+    
+    return {
+      id: record.id,
+      title: record.get('Titulo Traducido')?.toString() || record.get('Titulo')?.toString() || '',
+      content: record.get('Contenido Noticioso')?.toString() || record.get('Contenido Post')?.toString() || '',
+      creator: record.get('Creador') as string,
+      pubDate: record.get('Pubdate') as string,
+      image: record.get('Imagen') as string,
+      link: record.get('Link') as string,
+    };
+  });
 };
 
 export const checkEmailExists = async (email: string): Promise<boolean> => {
