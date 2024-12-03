@@ -2,6 +2,7 @@ import { useParams, Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { fetchTopics } from "@/lib/airtable";
 import { ArrowLeft } from "lucide-react";
+import { formatDate } from "@/utils/dateFormatter";
 
 const Story = () => {
   const { id } = useParams();
@@ -24,6 +25,8 @@ const Story = () => {
     );
   }
 
+  const formattedDate = formatDate(story.pubDate);
+
   return (
     <div className="min-h-screen" style={{ backgroundColor: import.meta.env.VITE_BODY_BG_COLOR }}>
       <div className="container mx-auto px-4 py-8">
@@ -44,16 +47,21 @@ const Story = () => {
             {story.title}
           </h1>
 
-          <div className="flex items-center gap-4 text-sm">
-            <span style={{ color: import.meta.env.VITE_AUTHOR_FONT_COLOR }}>
-              Por {story.creator}
-            </span>
+          <div className="flex flex-wrap items-center gap-4 text-sm mb-8">
+            {story.creator && (
+              <span 
+                className="font-medium"
+                style={{ color: import.meta.env.VITE_AUTHOR_FONT_COLOR }}
+              >
+                Por {story.creator}
+              </span>
+            )}
             <time 
               dateTime={story.pubDate}
               className="text-sm"
               style={{ color: import.meta.env.VITE_PUBDATE_FONT_COLOR }}
             >
-              {new Date(story.pubDate).toLocaleDateString('es-ES')}
+              {formattedDate}
             </time>
           </div>
 
