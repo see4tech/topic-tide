@@ -23,6 +23,15 @@ export function NewsletterModal({ open, onOpenChange }: NewsletterModalProps) {
     try {
       console.log('Starting subscription process...');
       
+      if (!email) {
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: "Por favor ingresa un correo electrónico válido.",
+        });
+        return;
+      }
+
       // Check if email already exists
       const emailExists = await checkEmailExists(email);
       
@@ -37,11 +46,13 @@ export function NewsletterModal({ open, onOpenChange }: NewsletterModalProps) {
 
       // Create subscriber in Airtable
       await createSubscriber(name, email);
+      console.log('Subscriber created in Airtable successfully');
 
       // Make the n8n webhook call
       const listid = 2;
       const sender = "noticias@see4.tech";
 
+      console.log('Making webhook call to n8n...');
       const response = await fetch("https://n8n.see4.tech/webhook/1b2667ae-be75-4e1a-999b-d384001d0ab3", {
         method: "POST",
         headers: {
@@ -50,22 +61,41 @@ export function NewsletterModal({ open, onOpenChange }: NewsletterModalProps) {
         body: JSON.stringify({ name, email, listid, sender }),
       });
 
-      if (response.ok) {
-        window.location.href = "https://n8n.see4.tech/webhook/2235c3f1-5b0a-489e-a284-c8c962d8c555?subscribir=false";
-        toast({
-          title: "¡Gracias por suscribirte!",
-          description: "Recibirás nuestras actualizaciones pronto.",
-        });
-        onOpenChange(false);
-      } else {
-        throw new Error('Failed to complete subscription');
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
       }
+
+      const responseData = await response.json();
+      console.log('Webhook response:', responseData);
+
+      toast({
+        title: "¡Gracias por suscribirte!",
+        description: "Recibirás nuestras actualizaciones pronto.",
+      });
+      
+      // Reset form
+      setName("");
+      setEmail("");
+      onOpenChange(false);
+      
     } catch (error) {
-      console.error("Error:", error);
+      console.error("Error details:", error);
+      
+      let errorMessage = "Ocurrió un error inesperado. Por favor, inténtalo más tarde.";
+      
+      if (error instanceof Error) {
+        console.error("Error type:", error.name);
+        console.error("Error message:", error.message);
+        
+        if (error.message.includes('Network') || error.message.includes('CORS')) {
+          errorMessage = "Error de conexión. Por favor, verifica tu conexión a internet.";
+        }
+      }
+      
       toast({
         variant: "destructive",
         title: "Error",
-        description: "Ocurrió un error inesperado. Por favor, inténtalo más tarde.",
+        description: errorMessage,
       });
     } finally {
       setIsSubmitting(false);
