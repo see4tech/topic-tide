@@ -48,7 +48,8 @@ export function NewsletterModal({ open, onOpenChange }: NewsletterModalProps) {
       await createSubscriber(name, email);
       console.log('Subscriber created in Airtable successfully');
 
-      // Make the n8n webhook call
+      // Commented out n8n webhook call
+      /*
       const listid = 2;
       const sender = "noticias@see4.tech";
 
@@ -67,6 +68,7 @@ export function NewsletterModal({ open, onOpenChange }: NewsletterModalProps) {
 
       const responseData = await response.json();
       console.log('Webhook response:', responseData);
+      */
 
       toast({
         title: "¡Gracias por suscribirte!",
