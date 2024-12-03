@@ -3,9 +3,11 @@ import { StoryIndex } from "@/components/StoryIndex";
 import { Footer } from "@/components/Footer";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { NewsletterModal } from "@/components/NewsletterModal";
 
 const Index = () => {
   const [showIndex, setShowIndex] = useState(false);
+  const [showNewsletterModal, setShowNewsletterModal] = useState(false);
   const logoUrl = import.meta.env.VITE_LOGO_URL;
   const tagline = import.meta.env.VITE_SITE_TAGLINE;
   const heroBgColor = import.meta.env.VITE_HERO_BG_COLOR;
@@ -39,6 +41,12 @@ const Index = () => {
                 <p className="text-xl opacity-90">{tagline}</p>
               </div>
             </div>
+            <Button
+              onClick={() => setShowNewsletterModal(true)}
+              className="bg-[#E7EF62] text-[#216A67] border-2 border-[#E7EF62] rounded-full font-bold uppercase px-6 py-3 text-base hover:bg-[#216A67] hover:text-[#333] hover:border-[#216A67] transition-colors"
+            >
+              Suscribirse
+            </Button>
           </div>
         </div>
       </header>
@@ -56,6 +64,11 @@ const Index = () => {
       <main className="container mx-auto px-4 py-8 flex-grow text-gray-900">
         {showIndex ? <StoryIndex /> : <NewsList />}
       </main>
+
+      <NewsletterModal 
+        open={showNewsletterModal} 
+        onOpenChange={setShowNewsletterModal} 
+      />
 
       <Footer />
     </div>
