@@ -20,6 +20,7 @@ export const fetchTopics = async (): Promise<Topic[]> => {
   
   const records = await base('Topicos')
     .select({
+      filterByFormula: '{Postear} = 1',
       sort: [{ field: 'Pubdate', direction: 'desc' }],
     })
     .all();
