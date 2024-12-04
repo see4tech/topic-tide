@@ -213,18 +213,18 @@
 // };
 
 // export default Story;
-import React from "react";
+// import React from "react";
 import { useParams, Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { fetchTopics } from "@/lib/airtable";
 import { ArrowLeft } from "lucide-react";
 import { formatDate } from "@/utils/dateFormatter";
 
-// Function to split the content based on the labels (Resumen, Detalle, Importancia)
-const splitContent = (content: string, section: string) => {
-  const regex = new RegExp(`(?<=<br>\\s*${section}:)(.*?)(?=<br>\\s*(Resumen:|Detalle:|Importancia:|$))`, "gs");
-  const match = content.match(regex);
-  return match ? match[0].trim() : "";
+// Function to extract content based on section (Resumen, Detalle, Importancia)
+const extractContentForSection = (content: string, section: string) => {
+  const sectionRegex = new RegExp(`(<br>\\s*${section}:)(.*?)(?=<br>\\s*(Resumen:|Detalle:|Importancia:|$))`, "gs");
+  const match = content.match(sectionRegex);
+  return match ? match[0].replace(/<br>/g, "") : "";  // Removes line breaks and returns the content
 };
 
 const Story = () => {
@@ -302,18 +302,18 @@ const Story = () => {
 
           {/* Add bold for Resumen */}
           <p><strong>Resumen:</strong></p>
-          {/* Format content with line breaks for Resumen */}
-          <p>{splitContent(story.contentSnippet, "Resumen")}</p>
+          {/* Extract and display the 'Resumen' content */}
+          <p>{extractContentForSection(story.contentSnippet, "Resumen")}</p>
 
           {/* Add bold for Detalle */}
           <p><strong>Detalle:</strong></p>
-          {/* Format content with line breaks for Detalle */}
-          <p>{splitContent(story.contentSnippet, "Detalle")}</p>
+          {/* Extract and display the 'Detalle' content */}
+          <p>{extractContentForSection(story.contentSnippet, "Detalle")}</p>
 
           {/* Add bold for Importancia */}
           <p><strong>Importancia:</strong></p>
-          {/* Format content with line breaks for Importancia */}
-          <p>{splitContent(story.contentSnippet, "Importancia")}</p>
+          {/* Extract and display the 'Importancia' content */}
+          <p>{extractContentForSection(story.contentSnippet, "Importancia")}</p>
 
           {story.link && (
             <a
