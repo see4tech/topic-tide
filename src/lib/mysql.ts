@@ -21,12 +21,15 @@ export interface Topic {
 
 // Function to fetch topics from MySQL
 export const fetchTopics = async (): Promise<Topic[]> => {
-  console.log('Attempting to connect to MySQL...');
-  const connection = await mysql.createConnection(dbConfig);
-
+  console.log('Attempting to connect to MySQL...', dbConfig.host);
+  let connection;
+  
   try {
+    connection = await mysql.createConnection(dbConfig);
+    console.log('Successfully connected to MySQL');
+    
     console.log('Executing MySQL query...');
-    const [rows] = await connection.execute(
+    const [rows] = await connection.execute<mysql.RowDataPacket[]>(
       `SELECT 
         id, 
         COALESCE(Titulo_Traducido, Titulo) AS title, 
@@ -41,29 +44,44 @@ export const fetchTopics = async (): Promise<Topic[]> => {
        ORDER BY Pubdate DESC`
     );
 
-    console.log('Received records from MySQL:', Array.isArray(rows) ? rows.length : 0);
+    console.log('Received records from MySQL:', rows?.length || 0);
     
     if (!Array.isArray(rows)) {
       console.log('Query result is not an array, returning empty array');
       return [];
     }
 
-    return rows as Topic[];
+    const topics = rows.map(row => ({
+      id: row.id,
+      title: row.title,
+      content: row.content,
+      creator: row.creator,
+      pubDate: row.pubDate,
+      image: row.image,
+      link: row.link,
+      contentSnippet: row.contentSnippet
+    }));
+
+    return topics;
   } catch (error) {
     console.error('Error fetching topics from MySQL:', error);
     throw error;
   } finally {
-    await connection.end();
+    if (connection) {
+      console.log('Closing MySQL connection');
+      await connection.end();
+    }
   }
 };
 
 // Function to check if an email exists in the Subscribers table
 export const checkEmailExists = async (email: string): Promise<boolean> => {
   console.log('Checking if email exists in MySQL...', email);
-  const connection = await mysql.createConnection(dbConfig);
+  let connection;
 
   try {
-    const [rows] = await connection.execute(
+    connection = await mysql.createConnection(dbConfig);
+    const [rows] = await connection.execute<mysql.RowDataPacket[]>(
       `SELECT 1 
        FROM Subscriptores 
        WHERE Email = ? 
@@ -78,16 +96,19 @@ export const checkEmailExists = async (email: string): Promise<boolean> => {
     console.error('Error checking email existence in MySQL:', error);
     throw error;
   } finally {
-    await connection.end();
+    if (connection) {
+      await connection.end();
+    }
   }
 };
 
 // Function to create a new subscriber in MySQL
 export const createSubscriber = async (name: string, email: string): Promise<void> => {
   console.log('Creating new subscriber in MySQL...', { name, email });
-  const connection = await mysql.createConnection(dbConfig);
+  let connection;
 
   try {
+    connection = await mysql.createConnection(dbConfig);
     await connection.execute(
       `INSERT INTO Subscriptores (Nombre, Email, Fecha_Subscripcion, Estado) 
        VALUES (?, ?, ?, ?)`, 
@@ -99,6 +120,8 @@ export const createSubscriber = async (name: string, email: string): Promise<voi
     console.error('Error creating subscriber in MySQL:', error);
     throw error;
   } finally {
-    await connection.end();
+    if (connection) {
+      await connection.end();
+    }
   }
 };
