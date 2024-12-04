@@ -1,8 +1,8 @@
-import { useParams, Link } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
-import { fetchTopics } from "@/lib/airtable";
-import { ArrowLeft } from "lucide-react";
-import { formatDate } from "@/utils/dateFormatter";
+// import { useParams, Link } from "react-router-dom";
+// import { useQuery } from "@tanstack/react-query";
+// import { fetchTopics } from "@/lib/airtable";
+// import { ArrowLeft } from "lucide-react";
+// import { formatDate } from "@/utils/dateFormatter";
 
 // const Story = () => {
 //   const { id } = useParams();
@@ -104,6 +104,12 @@ import { formatDate } from "@/utils/dateFormatter";
 //     </div>
 //   );
 // };
+import { useParams, Link } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
+import { fetchTopics } from "@/lib/airtable";
+import { ArrowLeft } from "lucide-react";
+import { formatDate } from "@/utils/dateFormatter";
+
 const Story = () => {
   const { id } = useParams();
   
@@ -112,11 +118,13 @@ const Story = () => {
     queryFn: fetchTopics,
   });
 
-  const story = topics?.find((t) => t.id === id);
+  // Log to debug
+  console.log('ID from useParams:', id);  // Log the ID coming from URL params
+  console.log('Fetched topics:', topics);  // Log all the topics
 
-  // Add debug logging to check the value of contentSnippet
-  console.log('Story object:', story);
+  const story = topics?.find((t) => t.id === String(id)); // Ensure both are the same type
 
+  // If no story is found, return a 404-like view
   if (!story) {
     return (
       <div className="container mx-auto px-4 py-8">
@@ -128,6 +136,7 @@ const Story = () => {
     );
   }
 
+  // Format the date
   const formattedDate = formatDate(story.pubDate);
 
   return (
@@ -184,12 +193,8 @@ const Story = () => {
             className="prose prose-lg max-w-none mb-8"
             style={{ color: import.meta.env.VITE_TEXT_FONT_COLOR }}
           >
-            {/* Check if contentSnippet exists and display it */}
-            {story.contentSnippet ? (
-              <p>{story.contentSnippet}</p>
-            ) : (
-              <p>No content available for this article.</p>
-            )}
+            {/* Display content snippet */}
+            <p>{story.contentSnippet}</p>
           </div>
 
           {story.link && (
