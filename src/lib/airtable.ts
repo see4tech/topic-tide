@@ -35,9 +35,16 @@ export const fetchTopics = async (): Promise<Topic[]> => {
     });
     
     return {
+      // id: record.id,
+      // title: record.get('Titulo Traducido')?.toString() || record.get('Titulo')?.toString() || '',
+      // content: record.get('Contenido Noticioso')?.toString() || record.get('Contenido Post')?.toString() || '',
+      // creator: record.get('Creador') as string,
+      // pubDate: record.get('Pubdate') as string,
+      // image: record.get('Imagen') as string,
+      // link: record.get('Link') as string,
       id: record.id,
       title: record.get('Titulo Traducido')?.toString() || record.get('Titulo')?.toString() || '',
-      content: record.get('Contenido Noticioso')?.toString() || record.get('Contenido Post')?.toString() || '',
+      content: record.get('Contenido Noticioso')?.toString(),
       creator: record.get('Creador') as string,
       pubDate: record.get('Pubdate') as string,
       image: record.get('Imagen') as string,
