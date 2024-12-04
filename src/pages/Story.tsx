@@ -309,19 +309,23 @@ const Story = () => {
             className="prose prose-lg max-w-none mb-8"
             style={{ color: import.meta.env.VITE_TEXT_FONT_COLOR }}
           >
-            {/* Display content from 'Contenido Noticioso' */}
+            {/* Display Resumen */}
             <strong>Resumen:</strong>
             <br />
             {formatTextWithLineBreaks(story.contentSnippet)} {/* Displaying content from contentSnippet */}
-
+            
             <br />
             <br /> {/* Adds space between Resumen and Detalle */}
+            
+            {/* Display Detalle */}
             <strong>Detalle:</strong>
             <br />
             {formatTextWithLineBreaks(story.content)} {/* Displaying content from content */}
 
             <br />
             <br /> {/* Adds space between Detalle and Importancia */}
+            
+            {/* Display Importancia */}
             <strong>Importancia:</strong>
             <br />
             {formatTextWithLineBreaks(story.content)} {/* Displaying content again if needed */}
