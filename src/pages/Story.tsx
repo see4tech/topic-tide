@@ -1,6 +1,11 @@
+// import { useParams, Link } from "react-router-dom";
+// import { useQuery } from "@tanstack/react-query";
+// import { fetchTopics } from "@/lib/airtable";
+// import { ArrowLeft } from "lucide-react";
+// import { formatDate } from "@/utils/dateFormatter";
 import { useParams, Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import { fetchTopics } from "@/lib/airtable";
+import { fetchTopics } from "@/lib/mysql"; // Update to use the MySQL implementation
 import { ArrowLeft } from "lucide-react";
 import { formatDate } from "@/utils/dateFormatter";
 

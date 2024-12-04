@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
-import { fetchTopics } from "@/lib/airtable";
+// import { fetchTopics } from "@/lib/airtable";
+import { fetchTopics } from "@/lib/mysql";
 import { Skeleton } from "@/components/ui/skeleton";
 import { StoryIndexItem } from "./StoryIndexItem";
 
