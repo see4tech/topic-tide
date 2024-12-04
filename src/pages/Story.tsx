@@ -204,11 +204,14 @@ const Story = () => {
             style={{ color: import.meta.env.VITE_TEXT_FONT_COLOR }}
             dangerouslySetInnerHTML={{ __html: highlightHeadings(story.contenidoNoticioso) }} // Render HTML with line breaks and highlighted headings
           /> */}
+   
+          console.log('contenidoNoticioso value:', story?.contenidoNoticioso);
+
           <div 
             className="prose prose-lg max-w-none mb-8"
             style={{ color: import.meta.env.VITE_TEXT_FONT_COLOR }}
             dangerouslySetInnerHTML={{
-              __html: highlightHeadings(story?.contenidoNoticioso || '')  // Provide an empty string as fallback
+              __html: highlightHeadings(story?.contenidoNoticioso || '')  // Provide fallback value
             }} 
           />
 
