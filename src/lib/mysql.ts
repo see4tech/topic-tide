@@ -1,12 +1,4 @@
-import mysql from "mysql2/promise";
-
-// Load environment variables for database connection
-const dbConfig = {
-  host: import.meta.env.VITE_MYSQL_HOST,
-  user: import.meta.env.VITE_MYSQL_USER,
-  password: import.meta.env.VITE_MYSQL_PASSWORD,
-  database: import.meta.env.VITE_MYSQL_DATABASE,
-};
+import mysql from 'mysql2/promise';
 
 export interface Topic {
   id: string;
@@ -19,16 +11,28 @@ export interface Topic {
   contentSnippet: string;
 }
 
+const dbConfig = {
+  host: import.meta.env.VITE_MYSQL_HOST,
+  user: import.meta.env.VITE_MYSQL_USER,
+  password: import.meta.env.VITE_MYSQL_PASSWORD,
+  database: import.meta.env.VITE_MYSQL_DATABASE,
+};
+
+// Function to create a connection pool instead of individual connections
+const pool = mysql.createPool({
+  ...dbConfig,
+  waitForConnections: true,
+  connectionLimit: 10,
+  queueLimit: 0
+});
+
 // Function to fetch topics from MySQL
 export const fetchTopics = async (): Promise<Topic[]> => {
-  console.log('Attempting to connect to MySQL...', dbConfig.host);
-  const connection = await mysql.createConnection(dbConfig);
+  console.log('Fetching topics using connection pool...');
   
   try {
-    console.log('Successfully connected to MySQL');
-    
     console.log('Executing MySQL query...');
-    const [rows] = await connection.execute(
+    const [rows] = await pool.execute(
       `SELECT 
         id, 
         COALESCE(Titulo_Traducido, Titulo) AS title, 
@@ -50,36 +54,30 @@ export const fetchTopics = async (): Promise<Topic[]> => {
       return [];
     }
 
-    const topics = rows.map(row => ({
-      id: row.id,
-      title: row.title,
-      content: row.content,
-      creator: row.creator,
-      pubDate: row.pubDate,
-      image: row.image,
-      link: row.link,
-      contentSnippet: row.contentSnippet
+    const topics = rows.map((row: any) => ({
+      id: row.id?.toString() || '',
+      title: row.title || '',
+      content: row.content || '',
+      creator: row.creator || '',
+      pubDate: row.pubDate?.toISOString() || new Date().toISOString(),
+      image: row.image || '',
+      link: row.link || '',
+      contentSnippet: row.contentSnippet || ''
     }));
 
     return topics;
   } catch (error) {
     console.error('Error fetching topics from MySQL:', error);
     throw error;
-  } finally {
-    if (connection) {
-      console.log('Closing MySQL connection');
-      await connection.end();
-    }
   }
 };
 
 // Function to check if an email exists in the Subscribers table
 export const checkEmailExists = async (email: string): Promise<boolean> => {
   console.log('Checking if email exists in MySQL...', email);
-  const connection = await mysql.createConnection(dbConfig);
 
   try {
-    const [rows] = await connection.execute(
+    const [rows] = await pool.execute(
       `SELECT 1 
        FROM Subscriptores 
        WHERE Email = ? 
@@ -93,18 +91,15 @@ export const checkEmailExists = async (email: string): Promise<boolean> => {
   } catch (error) {
     console.error('Error checking email existence in MySQL:', error);
     throw error;
-  } finally {
-    await connection.end();
   }
 };
 
 // Function to create a new subscriber in MySQL
 export const createSubscriber = async (name: string, email: string): Promise<void> => {
   console.log('Creating new subscriber in MySQL...', { name, email });
-  const connection = await mysql.createConnection(dbConfig);
 
   try {
-    await connection.execute(
+    await pool.execute(
       `INSERT INTO Subscriptores (Nombre, Email, Fecha_Subscripcion, Estado) 
        VALUES (?, ?, ?, ?)`, 
       [name, email, new Date().toISOString(), 'Activo']
@@ -114,7 +109,5 @@ export const createSubscriber = async (name: string, email: string): Promise<voi
   } catch (error) {
     console.error('Error creating subscriber in MySQL:', error);
     throw error;
-  } finally {
-    await connection.end();
   }
 };
