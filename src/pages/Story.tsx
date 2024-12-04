@@ -214,17 +214,44 @@
 
 // export default Story;
 // import React from "react";
+import React from "react";
 import { useParams, Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { fetchTopics } from "@/lib/airtable";
 import { ArrowLeft } from "lucide-react";
 import { formatDate } from "@/utils/dateFormatter";
 
-// Function to extract content based on section (Resumen, Detalle, Importancia)
-const extractContentForSection = (content: string, section: string) => {
-  const sectionRegex = new RegExp(`(<br>\\s*${section}:)(.*?)(?=<br>\\s*(Resumen:|Detalle:|Importancia:|$))`, "gs");
-  const match = content.match(sectionRegex);
-  return match ? match[0].replace(/<br>/g, "") : "";  // Removes line breaks and returns the content
+// Function to format the content with the appropriate sections
+const formatContent = (content: string) => {
+  // Split the content based on section headers
+  const sections = {
+    resumen: '',
+    detalle: '',
+    importancia: ''
+  };
+
+  // Extract the text for Resumen, Detalle, and Importancia
+  const resumenMatch = content.match(/Resumen:<br>(.*?)<br><br>/s);
+  const detalleMatch = content.match(/Detalle:<br>(.*?)<br><br>/s);
+  const importanciaMatch = content.match(/Importancia:<br>(.*?)(?=<br><br>|$)/s);
+
+  if (resumenMatch) sections.resumen = resumenMatch[1].trim();
+  if (detalleMatch) sections.detalle = detalleMatch[1].trim();
+  if (importanciaMatch) sections.importancia = importanciaMatch[1].trim();
+
+  // Return the formatted string with bold titles and proper line breaks
+  return (
+    <>
+      <p><strong>Resumen:</strong></p>
+      <p>{sections.resumen}</p>
+
+      <p><strong>Detalle:</strong></p>
+      <p>{sections.detalle}</p>
+
+      <p><strong>Importancia:</strong></p>
+      <p>{sections.importancia}</p>
+    </>
+  );
 };
 
 const Story = () => {
@@ -300,20 +327,13 @@ const Story = () => {
             />
           </div>
 
-          {/* Add bold for Resumen */}
-          <p><strong>Resumen:</strong></p>
-          {/* Extract and display the 'Resumen' content */}
-          <p>{extractContentForSection(story.contentSnippet, "Resumen")}</p>
-
-          {/* Add bold for Detalle */}
-          <p><strong>Detalle:</strong></p>
-          {/* Extract and display the 'Detalle' content */}
-          <p>{extractContentForSection(story.contentSnippet, "Detalle")}</p>
-
-          {/* Add bold for Importancia */}
-          <p><strong>Importancia:</strong></p>
-          {/* Extract and display the 'Importancia' content */}
-          <p>{extractContentForSection(story.contentSnippet, "Importancia")}</p>
+          {/* Display formatted content with the proper sections */}
+          <div
+            className="prose prose-lg max-w-none mb-8"
+            style={{ color: import.meta.env.VITE_TEXT_FONT_COLOR }}
+          >
+            {formatContent(story.contentSnippet)}
+          </div>
 
           {story.link && (
             <a
