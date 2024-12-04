@@ -140,12 +140,23 @@ const Story = () => {
   const formattedDate = formatDate(story.pubDate);
 
   const convertNewlinesToBr = (text) => {
-    return text.split("\n").map((line, index) => (
-      <span key={index}>
-        {line}
-        <br />
-      </span>
-    ));
+    return text.split("\n").map((line, index) => {
+      // If it's a bullet point (line starts with '- ' or similar), return a <li> wrapped line.
+      if (line.startsWith("- ") || line.startsWith("* ")) {
+        return (
+          <li key={index} style={{ listStyleType: "disc" }}>
+            {line.substring(2)} {/* Remove the '-' or '*' from the start of the line */}
+          </li>
+        );
+      }
+      // Otherwise, return a span with a line break
+      return (
+        <span key={index}>
+          {line}
+          <br />
+        </span>
+      );
+    });
   };
 
   return (
