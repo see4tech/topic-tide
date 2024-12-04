@@ -40,7 +40,7 @@ export const fetchTopics = async (): Promise<Topic[]> => {
        ORDER BY Pubdate DESC`
     );
 
-    console.log('Received records from MySQL:', rows.length);
+    console.log('Received records from MySQL:', Array.isArray(rows) ? rows.length : 0);
     return rows as Topic[];
   } catch (error) {
     console.error('Error fetching topics from MySQL:', error);
@@ -64,7 +64,7 @@ export const checkEmailExists = async (email: string): Promise<boolean> => {
       [email]
     );
 
-    const emailExists = rows.length > 0;
+    const emailExists = Array.isArray(rows) && rows.length > 0;
     console.log('Email check result:', emailExists);
     return emailExists;
   } catch (error) {

@@ -32,13 +32,14 @@ export const NewsList = () => {
         throw error;
       }
     },
-    onError: (error) => {
-      console.error("React Query Error:", error);
-      toast({
-        title: "Error",
-        description: "No se pudieron cargar las noticias. Por favor, intente más tarde.",
-        variant: "destructive",
-      });
+    meta: {
+      onError: () => {
+        toast({
+          title: "Error",
+          description: "No se pudieron cargar las noticias. Por favor, intente más tarde.",
+          variant: "destructive",
+        });
+      },
     },
   });
 
@@ -85,7 +86,7 @@ export const NewsList = () => {
     <div className="space-y-8">
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 animate-fade-in">
         {currentTopics.map((topic) => (
-          <NewsCard key={topic.id} topic={topic || {}} />
+          <NewsCard key={topic.id} topic={topic} />
         ))}
       </div>
 
