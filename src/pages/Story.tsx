@@ -213,12 +213,19 @@
 // };
 
 // export default Story;
-import React from "react";  // Ensure React is imported
+import React from "react";
 import { useParams, Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { fetchTopics } from "@/lib/airtable";
 import { ArrowLeft } from "lucide-react";
 import { formatDate } from "@/utils/dateFormatter";
+
+// Function to split the content based on the labels (Resumen, Detalle, Importancia)
+const splitContent = (content: string, section: string) => {
+  const regex = new RegExp(`(?<=<br>\\s*${section}:)(.*?)(?=<br>\\s*(Resumen:|Detalle:|Importancia:|$))`, "gs");
+  const match = content.match(regex);
+  return match ? match[0].trim() : "";
+};
 
 const Story = () => {
   const { id } = useParams();
@@ -243,22 +250,12 @@ const Story = () => {
 
   const formattedDate = formatDate(story.pubDate);
 
-  const formatTextWithLineBreaks = (text: string) => {
-    // Replace <br> tags with line breaks and return it as formatted JSX
-    return text.split("<br>").map((str, index) => (
-      <React.Fragment key={index}>
-        {str}
-        <br />
-      </React.Fragment>
-    ));
-  };
-
   return (
     <div className="min-h-screen" style={{ backgroundColor: import.meta.env.VITE_BODY_BG_COLOR }}>
       <div className="container mx-auto px-4 py-8">
         <div className="max-w-4xl mx-auto">
-          <Link 
-            to="/" 
+          <Link
+            to="/"
             className="inline-flex items-center gap-2 mb-6 hover:underline"
             style={{ color: import.meta.env.VITE_TITLE_FONT_COLOR }}
           >
@@ -266,7 +263,7 @@ const Story = () => {
             Volver a Noticias
           </Link>
 
-          <h1 
+          <h1
             className="text-4xl font-bold mb-4"
             style={{ color: import.meta.env.VITE_TITLE_FONT_COLOR }}
           >
@@ -275,14 +272,14 @@ const Story = () => {
 
           <div className="flex flex-wrap items-center gap-4 text-sm mb-8">
             {story.creator && (
-              <span 
+              <span
                 className="font-medium"
                 style={{ color: import.meta.env.VITE_AUTHOR_FONT_COLOR }}
               >
                 Por {story.creator}
               </span>
             )}
-            <time 
+            <time
               dateTime={story.pubDate}
               className="text-sm"
               style={{ color: import.meta.env.VITE_PUBDATE_FONT_COLOR }}
@@ -303,25 +300,20 @@ const Story = () => {
             />
           </div>
 
-          <div 
-            className="prose prose-lg max-w-none mb-8"
-            style={{ color: import.meta.env.VITE_TEXT_FONT_COLOR }}
-          >
-            {/* Add bold for Resumen */}
-            <p><strong>Resumen:</strong></p>
-            {/* Format content with line breaks for Resumen */}
-            {formatTextWithLineBreaks(story.contentSnippet)}
+          {/* Add bold for Resumen */}
+          <p><strong>Resumen:</strong></p>
+          {/* Format content with line breaks for Resumen */}
+          <p>{splitContent(story.contentSnippet, "Resumen")}</p>
 
-            {/* Add bold for Detalle */}
-            <p><strong>Detalle:</strong></p>
-            {/* Format content with line breaks for Detalle */}
-            {formatTextWithLineBreaks(story.contentSnippet)}
+          {/* Add bold for Detalle */}
+          <p><strong>Detalle:</strong></p>
+          {/* Format content with line breaks for Detalle */}
+          <p>{splitContent(story.contentSnippet, "Detalle")}</p>
 
-            {/* Add bold for Importancia */}
-            <p><strong>Importancia:</strong></p>
-            {/* Format content with line breaks for Importancia */}
-            {formatTextWithLineBreaks(story.contentSnippet)}
-          </div>
+          {/* Add bold for Importancia */}
+          <p><strong>Importancia:</strong></p>
+          {/* Format content with line breaks for Importancia */}
+          <p>{splitContent(story.contentSnippet, "Importancia")}</p>
 
           {story.link && (
             <a
