@@ -1,3 +1,4 @@
+// 
 import { useQuery } from "@tanstack/react-query";
 // import { fetchTopics } from "@/lib/airtable";
 import { fetchTopics } from "@/lib/mysql";
@@ -19,18 +20,27 @@ const ITEMS_PER_PAGE = 6;
 export const NewsList = () => {
   const { toast } = useToast();
   const [currentPage, setCurrentPage] = useState(1);
-  
+
   const { data: topics, isLoading, error } = useQuery({
     queryKey: ["topics"],
-    queryFn: fetchTopics,
-    meta: {
-      onError: (error: Error) => {
-        toast({
-          title: "Error",
-          description: "No se pudieron cargar las noticias. Por favor, intente más tarde.",
-          variant: "destructive",
-        });
-      },
+    queryFn: async () => {
+      try {
+        console.log("Fetching topics...");
+        const topics = await fetchTopics();
+        console.log("Fetched topics:", topics);
+        return topics;
+      } catch (error) {
+        console.error("Error fetching topics:", error);
+        throw error;
+      }
+    },
+    onError: (error) => {
+      console.error("React Query Error:", error);
+      toast({
+        title: "Error",
+        description: "No se pudieron cargar las noticias. Por favor, intente más tarde.",
+        variant: "destructive",
+      });
     },
   });
 
@@ -59,6 +69,7 @@ export const NewsList = () => {
   }
 
   if (!topics?.length) {
+    console.log("No topics available.");
     return (
       <div className="text-center py-12">
         <h2 className="text-2xl font-semibold">No hay noticias disponibles</h2>
@@ -76,21 +87,21 @@ export const NewsList = () => {
     <div className="space-y-8">
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 animate-fade-in">
         {currentTopics.map((topic) => (
-          <NewsCard key={topic.id} topic={topic} />
+          <NewsCard key={topic.id} topic={topic || {}} />
         ))}
       </div>
-      
+
       {totalPages > 1 && (
         <Pagination className="justify-center">
           <PaginationContent>
             <PaginationItem>
-              <PaginationPrevious 
-                onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+              <PaginationPrevious
+                onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
                 className={currentPage === 1 ? "pointer-events-none opacity-50" : "cursor-pointer"}
                 style={{ color: import.meta.env.VITE_PAGINATION_FONT_COLOR }}
               />
             </PaginationItem>
-            
+
             {[...Array(totalPages)].map((_, i) => (
               <PaginationItem key={i}>
                 <PaginationLink
@@ -103,10 +114,10 @@ export const NewsList = () => {
                 </PaginationLink>
               </PaginationItem>
             ))}
-            
+
             <PaginationItem>
               <PaginationNext
-                onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
                 className={currentPage === totalPages ? "pointer-events-none opacity-50" : "cursor-pointer"}
                 style={{ color: import.meta.env.VITE_PAGINATION_FONT_COLOR }}
               />
