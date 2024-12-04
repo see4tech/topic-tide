@@ -244,6 +244,7 @@ const Story = () => {
   const formattedDate = formatDate(story.pubDate);
 
   const formatTextWithLineBreaks = (text: string) => {
+    // Replace <br> tags with line breaks and return it as formatted JSX
     return text.split("<br>").map((str, index) => (
       <React.Fragment key={index}>
         {str}
