@@ -118,13 +118,12 @@ const Story = () => {
     queryFn: fetchTopics,
   });
 
-  // Log to debug
-  console.log('ID from useParams:', id);  // Log the ID coming from URL params
-  console.log('Fetched topics:', topics);  // Log all the topics
+  const story = topics?.find((t) => t.id === id);
 
-  const story = topics?.find((t) => t.id === String(id)); // Ensure both are the same type
+  // Add debug logging
+  console.log('Story image URL:', story?.image);
+  console.log('Default image URL:', import.meta.env.VITE_DEFAULT_NEWS_IMAGE);
 
-  // If no story is found, return a 404-like view
   if (!story) {
     return (
       <div className="container mx-auto px-4 py-8">
@@ -136,7 +135,6 @@ const Story = () => {
     );
   }
 
-  // Format the date
   const formattedDate = formatDate(story.pubDate);
 
   return (
@@ -193,8 +191,8 @@ const Story = () => {
             className="prose prose-lg max-w-none mb-8"
             style={{ color: import.meta.env.VITE_TEXT_FONT_COLOR }}
           >
-            {/* Display content snippet */}
-            <p>{story.contentSnippet}</p>
+            {/* Display content from 'Contenido Noticioso' */}
+            <p>{story.content}</p>
           </div>
 
           {story.link && (

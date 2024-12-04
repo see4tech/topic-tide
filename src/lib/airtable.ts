@@ -127,15 +127,16 @@ export const fetchTopics = async (): Promise<Topic[]> => {
   console.log('Received records from Airtable:', records.length);
   
   return records.map((record) => {
-    console.log('Record data:', {
-      title: record.get('Titulo Traducido'),
-      contentSnippet: record.get('Contenido Post'),
-    });
+    // Add debug logging to check the values
+    // console.log('Title fields:', {
+    //   traducido: record.get('Titulo Traducido'),
+    //   original: record.get('Titulo')
+    // });
     
     return {
       id: record.id,
       title: record.get('Titulo Traducido')?.toString() || record.get('Titulo')?.toString() || '',
-      content: record.get('Contenido Noticioso')?.toString(), // Use 'Contenido Noticioso' for content
+      content: record.get('Contenido Noticioso')?.toString(), // Correctly mapped to 'Contenido Noticioso'
       creator: record.get('Creador') as string,
       pubDate: record.get('Pubdate') as string,
       image: record.get('Imagen') as string,
@@ -143,4 +144,45 @@ export const fetchTopics = async (): Promise<Topic[]> => {
       contentSnippet: record.get('Contenido Post')?.toString(),
     };
   });
+};
+
+export const checkEmailExists = async (email: string): Promise<boolean> => {
+  try {
+    console.log('Checking if email exists in Airtable...', email);
+    
+    const records = await base('Subscriptores')
+      .select({
+        filterByFormula: `{Email} = '${email}'`,
+        maxRecords: 1,
+      })
+      .all();
+
+    console.log('Email check result:', records.length > 0);
+    return records.length > 0;
+  } catch (error) {
+    console.error('Error checking email existence:', error);
+    throw error;
+  }
+};
+
+export const createSubscriber = async (name: string, email: string): Promise<void> => {
+  try {
+    console.log('Creating new subscriber in Airtable...', { name, email });
+    
+    const result = await base('Subscriptores').create([
+      {
+        fields: {
+          Nombre: name,
+          Email: email,
+          'Fecha Subscripcion': new Date().toISOString(),
+          Estado: 'Activo',
+        },
+      },
+    ]);
+
+    console.log('Subscriber created successfully:', result);
+  } catch (error) {
+    console.error('Error creating subscriber:', error);
+    throw error;
+  }
 };
