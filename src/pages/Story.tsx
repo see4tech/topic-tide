@@ -314,12 +314,12 @@ const Story = () => {
             {/* Add bold for Detalle */}
             <p><strong>Detalle:</strong></p>
             {/* Format content with line breaks for Detalle */}
-            {formatTextWithLineBreaks(story.content)}
+            {formatTextWithLineBreaks(story.contentSnippet)}
 
             {/* Add bold for Importancia */}
             <p><strong>Importancia:</strong></p>
             {/* Format content with line breaks for Importancia */}
-            {formatTextWithLineBreaks(story.content)}
+            {formatTextWithLineBreaks(story.contentSnippet)}
           </div>
 
           {story.link && (
