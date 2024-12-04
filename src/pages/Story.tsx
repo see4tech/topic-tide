@@ -243,7 +243,7 @@ const Story = () => {
 
   const formattedDate = formatDate(story.pubDate);
 
-  // Function to replace <br> tags and return the proper JSX
+  // Function to replace <br> tags and return proper JSX with spaces between sections
   const formatTextWithLineBreaks = (text: string) => {
     if (!text) return null;
     return text.split("<br>").map((line, index) => {
@@ -310,7 +310,6 @@ const Story = () => {
             className="prose prose-lg max-w-none mb-8"
             style={{ color: import.meta.env.VITE_TEXT_FONT_COLOR }}
           >
-            {/* Display content from 'Contenido Noticioso' */}
             <div>
               {/* Make Resumen, Detalle, and Importancia bold */}
               <strong>Resumen:</strong>
@@ -318,14 +317,16 @@ const Story = () => {
               {formatTextWithLineBreaks(story.contentSnippet)}
 
               <br />
+              <br /> {/* Adds space between Resumen and Detalle */}
               <strong>Detalle:</strong>
               <br />
               {formatTextWithLineBreaks(story.content)}
 
               <br />
+              <br /> {/* Adds space between Detalle and Importancia */}
               <strong>Importancia:</strong>
               <br />
-              {formatTextWithLineBreaks(story.content)} {/* If you want to show the same content */}
+              {formatTextWithLineBreaks(story.content)} {/* Displaying content again if needed */}
             </div>
           </div>
 
