@@ -85,7 +85,7 @@ const Story = () => {
             className="prose prose-lg max-w-none mb-8"
             style={{ color: import.meta.env.VITE_TEXT_FONT_COLOR }}
           >
-            <p>{story.content}</p>
+            <p>{story.contentSnippet}</p>
           </div>
 
           {story.link && (
