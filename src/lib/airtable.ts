@@ -13,7 +13,6 @@ export interface Topic {
   pubDate: string;
   image?: string;
   link?: string;
-  contentSnippet: string;
 }
 
 export const fetchTopics = async (): Promise<Topic[]> => {
@@ -45,7 +44,7 @@ export const fetchTopics = async (): Promise<Topic[]> => {
       // link: record.get('Link') as string,
       id: record.id,
       title: record.get('Titulo Traducido')?.toString() || record.get('Titulo')?.toString() || '',
-      content: record.get('Contenido Noticioso') as string,
+      content: record.get('Contenido Noticioso')?.toString(),
       creator: record.get('Creador') as string,
       pubDate: record.get('Pubdate') as string,
       image: record.get('Imagen') as string,
