@@ -243,11 +243,17 @@ const Story = () => {
 
   const formattedDate = formatDate(story.pubDate);
 
-  // Function to split the text and insert <br> tags for line breaks
+  // Function to replace <br> tags and return the proper JSX
   const formatTextWithLineBreaks = (text: string) => {
-    return text.split('<br>').map((line, index) => (
-      <p key={index}>{line}</p> // Wrap each line in a <p> tag for proper rendering
-    ));
+    if (!text) return null;
+    return text.split("<br>").map((line, index) => {
+      return (
+        <span key={index}>
+          {line}
+          {index < text.split("<br>").length - 1 && <br />} {/* Render <br> after each line except the last */}
+        </span>
+      );
+    });
   };
 
   return (
@@ -305,7 +311,22 @@ const Story = () => {
             style={{ color: import.meta.env.VITE_TEXT_FONT_COLOR }}
           >
             {/* Display content from 'Contenido Noticioso' */}
-            <div>{formatTextWithLineBreaks(story.contentSnippet)}</div>
+            <div>
+              {/* Make Resumen, Detalle, and Importancia bold */}
+              <strong>Resumen:</strong>
+              <br />
+              {formatTextWithLineBreaks(story.contentSnippet)}
+
+              <br />
+              <strong>Detalle:</strong>
+              <br />
+              {formatTextWithLineBreaks(story.content)}
+
+              <br />
+              <strong>Importancia:</strong>
+              <br />
+              {formatTextWithLineBreaks(story.content)} {/* If you want to show the same content */}
+            </div>
           </div>
 
           {story.link && (
