@@ -213,13 +213,13 @@
 // };
 
 // export default Story;
+import React from "react";  // <-- Added import for React
 import { useParams, Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { fetchTopics } from "@/lib/airtable";
 import { ArrowLeft } from "lucide-react";
 import { formatDate } from "@/utils/dateFormatter";
-import React from "react";
- 
+
 const Story = () => {
   const { id } = useParams();
   
@@ -306,21 +306,17 @@ const Story = () => {
             className="prose prose-lg max-w-none mb-8"
             style={{ color: import.meta.env.VITE_TEXT_FONT_COLOR }}
           >
-            {/* Display the sections with bold headings */}
-            <p>
-              <strong>Resumen:</strong>
-              {formatTextWithLineBreaks(story.contentSnippet)}
-            </p>
+            <p><strong>Resumen:</strong></p>
+            {/* Format content with line breaks */}
+            {formatTextWithLineBreaks(story.contentSnippet)}
 
-            <p>
-              <strong>Detalle:</strong>
-              {formatTextWithLineBreaks(story.content)}
-            </p>
+            <p><strong>Detalle:</strong></p>
+            {/* Format content with line breaks for Detalle */}
+            {formatTextWithLineBreaks(story.content)}
 
-            <p>
-              <strong>Importancia:</strong>
-              {formatTextWithLineBreaks(story.content)}
-            </p>
+            <p><strong>Importancia:</strong></p>
+            {/* Format content with line breaks for Importancia */}
+            {formatTextWithLineBreaks(story.content)}
           </div>
 
           {story.link && (
