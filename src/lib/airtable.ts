@@ -13,6 +13,7 @@ export interface Topic {
   pubDate: string;
   image?: string;
   link?: string;
+  contentSnippet?: string;
 }
 
 export const fetchTopics = async (): Promise<Topic[]> => {
