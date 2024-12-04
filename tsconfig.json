@@ -1,3 +1,22 @@
+// {
+//   "files": [],
+//   "references": [
+//     { "path": "./tsconfig.app.json" },
+//     { "path": "./tsconfig.node.json" }
+//   ],
+//   "compilerOptions": {
+//     "baseUrl": ".",
+//     "paths": {
+//       "@/*": ["./src/*"]
+//     },
+//     "noImplicitAny": false,
+//     "noUnusedParameters": false,
+//     "skipLibCheck": true,
+//     "allowJs": true,
+//     "noUnusedLocals": false,
+//     "strictNullChecks": false
+//   }
+// }
 {
   "files": [],
   "references": [
@@ -9,10 +28,19 @@
     "paths": {
       "@/*": ["./src/*"]
     },
+    "module": "esnext", // Ensures compatibility with ES modules
+    "moduleResolution": "node", // Required for Node.js modules
+    "target": "esnext", // Ensures modern JavaScript features
+    "allowSyntheticDefaultImports": true, // Allows default imports for CommonJS modules
+    "esModuleInterop": true, // Enables compatibility between ES Modules and CommonJS
+    "resolveJsonModule": true, // Enables importing JSON files
+    "skipLibCheck": true, // Skips type checking of declaration files
+    "strict": true, // Enables all strict type-checking options
+    "forceConsistentCasingInFileNames": true, // Enforces case-sensitive module resolution
+    "isolatedModules": true, // Ensures each file can be treated as a module
+    "allowJs": true,
     "noImplicitAny": false,
     "noUnusedParameters": false,
-    "skipLibCheck": true,
-    "allowJs": true,
     "noUnusedLocals": false,
     "strictNullChecks": false
   }
