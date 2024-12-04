@@ -136,7 +136,7 @@ export const fetchTopics = async (): Promise<Topic[]> => {
     return {
       id: record.id,
       title: record.get('Titulo Traducido')?.toString() || record.get('Titulo')?.toString() || '',
-      content: record.get('Contenido Post')?.toString(), // Correctly mapped to 'Contenido Noticioso'
+      content: record.get('Contenido Post')?.toString(), 
       creator: record.get('Creador') as string,
       pubDate: record.get('Pubdate') as string,
       image: record.get('Imagen') as string,
