@@ -135,6 +135,14 @@ const Story = () => {
 
   const formattedDate = formatDate(story.pubDate);
 
+  // Helper function to highlight "Resumen", "Detalle", and "Importancia"
+  const highlightHeadings = (text) => {
+    return text
+      .replace(/(Resumen:)/g, '<span class="highlight-heading">$1</span>') // Highlight 'Resumen'
+      .replace(/(Detalle:)/g, '<span class="highlight-heading">$1</span>') // Highlight 'Detalle'
+      .replace(/(Importancia:)/g, '<span class="highlight-heading">$1</span>'); // Highlight 'Importancia'
+  };
+
   return (
     <div className="min-h-screen" style={{ backgroundColor: import.meta.env.VITE_BODY_BG_COLOR }}>
       <div className="container mx-auto px-4 py-8">
@@ -188,7 +196,7 @@ const Story = () => {
           <div 
             className="prose prose-lg max-w-none mb-8"
             style={{ color: import.meta.env.VITE_TEXT_FONT_COLOR }}
-            dangerouslySetInnerHTML={{ __html: story.content }} // Inject raw HTML
+            dangerouslySetInnerHTML={{ __html: highlightHeadings(story.contenidoNoticioso) }} // Render HTML with highlighted headings
           />
 
           {story.link && (
