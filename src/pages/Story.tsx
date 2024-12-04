@@ -112,11 +112,14 @@ import { fetchTopics } from "@/lib/airtable";
 import { ArrowLeft } from "lucide-react";
 import { formatDate } from "@/utils/dateFormatter";
 
-// Helper function to highlight "Resumen", "Detalle", and "Importancia"
 const highlightHeadings = (text: string | undefined) => {
-  // If text is undefined, return an empty string
-  if (!text) return '';
+  // If text is undefined or null, return an empty string or a fallback text
+  if (!text) {
+    console.error('highlightHeadings received undefined or null:', text);
+    return ''; // Or return a fallback string like "Content unavailable"
+  }
 
+  // Proceed with the replace logic if text is valid
   return text
     .replace(/(Resumen:)/g, '<span class="highlight-heading">$1</span>')  // Highlight 'Resumen'
     .replace(/(Detalle:)/g, '<span class="highlight-heading">$1</span>')  // Highlight 'Detalle'
@@ -197,10 +200,16 @@ const Story = () => {
             />
           </div>
 
-          <div 
+          {/* <div 
             className="prose prose-lg max-w-none mb-8"
             style={{ color: import.meta.env.VITE_TEXT_FONT_COLOR }}
             dangerouslySetInnerHTML={{ __html: highlightHeadings(story.contenidoNoticioso) }} // Render HTML with line breaks and highlighted headings
+          /> */}
+          <div 
+            className="prose prose-lg max-w-none mb-8"
+            style={{ color: import.meta.env.VITE_TEXT_FONT_COLOR }}
+            dangerouslySetInnerHTML={{ __html: highlightHeadings(story?.contenidoNoticioso || '')  // Provide an empty string fallback
+            }} 
           />
 
           {story.link && (
