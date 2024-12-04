@@ -1,4 +1,3 @@
-// import * as mysql from 'mysql2/promise';
 import mysql from "mysql2/promise";
 
 // Load environment variables for database connection
