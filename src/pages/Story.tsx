@@ -213,7 +213,7 @@
 // };
 
 // export default Story;
-import React from "react";  // <-- Added import for React
+import React from "react";  // Ensure React is imported
 import { useParams, Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { fetchTopics } from "@/lib/airtable";
@@ -244,7 +244,7 @@ const Story = () => {
   const formattedDate = formatDate(story.pubDate);
 
   const formatTextWithLineBreaks = (text: string) => {
-    return text.split("\n").map((str, index) => (
+    return text.split("<br>").map((str, index) => (
       <React.Fragment key={index}>
         {str}
         <br />
@@ -306,14 +306,17 @@ const Story = () => {
             className="prose prose-lg max-w-none mb-8"
             style={{ color: import.meta.env.VITE_TEXT_FONT_COLOR }}
           >
+            {/* Add bold for Resumen */}
             <p><strong>Resumen:</strong></p>
-            {/* Format content with line breaks */}
+            {/* Format content with line breaks for Resumen */}
             {formatTextWithLineBreaks(story.contentSnippet)}
 
+            {/* Add bold for Detalle */}
             <p><strong>Detalle:</strong></p>
             {/* Format content with line breaks for Detalle */}
             {formatTextWithLineBreaks(story.content)}
 
+            {/* Add bold for Importancia */}
             <p><strong>Importancia:</strong></p>
             {/* Format content with line breaks for Importancia */}
             {formatTextWithLineBreaks(story.content)}
