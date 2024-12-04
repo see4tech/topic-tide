@@ -218,7 +218,8 @@ import { useQuery } from "@tanstack/react-query";
 import { fetchTopics } from "@/lib/airtable";
 import { ArrowLeft } from "lucide-react";
 import { formatDate } from "@/utils/dateFormatter";
-
+import React from "react";
+ 
 const Story = () => {
   const { id } = useParams();
   
@@ -242,17 +243,13 @@ const Story = () => {
 
   const formattedDate = formatDate(story.pubDate);
 
-  // Function to replace <br> tags and return proper JSX with spaces between sections
   const formatTextWithLineBreaks = (text: string) => {
-    if (!text) return null;
-    return text.split("<br>").map((line, index) => {
-      return (
-        <span key={index}>
-          {line}
-          {index < text.split("<br>").length - 1 && <br />} {/* Render <br> after each line except the last */}
-        </span>
-      );
-    });
+    return text.split("\n").map((str, index) => (
+      <React.Fragment key={index}>
+        {str}
+        <br />
+      </React.Fragment>
+    ));
   };
 
   return (
@@ -309,26 +306,21 @@ const Story = () => {
             className="prose prose-lg max-w-none mb-8"
             style={{ color: import.meta.env.VITE_TEXT_FONT_COLOR }}
           >
-            {/* Display Resumen */}
-            <strong>Resumen:</strong>
-            <br />
-            {formatTextWithLineBreaks(story.contentSnippet)} {/* Displaying content from contentSnippet */}
-            
-            <br />
-            <br /> {/* Adds space between Resumen and Detalle */}
-            
-            {/* Display Detalle */}
-            <strong>Detalle:</strong>
-            <br />
-            {formatTextWithLineBreaks(story.content)} {/* Displaying content from content */}
+            {/* Display the sections with bold headings */}
+            <p>
+              <strong>Resumen:</strong>
+              {formatTextWithLineBreaks(story.contentSnippet)}
+            </p>
 
-            <br />
-            <br /> {/* Adds space between Detalle and Importancia */}
-            
-            {/* Display Importancia */}
-            <strong>Importancia:</strong>
-            <br />
-            {formatTextWithLineBreaks(story.content)} {/* Displaying content again if needed */}
+            <p>
+              <strong>Detalle:</strong>
+              {formatTextWithLineBreaks(story.content)}
+            </p>
+
+            <p>
+              <strong>Importancia:</strong>
+              {formatTextWithLineBreaks(story.content)}
+            </p>
           </div>
 
           {story.link && (
