@@ -192,7 +192,7 @@ const Story = () => {
             style={{ color: import.meta.env.VITE_TEXT_FONT_COLOR }}
           >
             {/* Display content from 'Contenido Noticioso' */}
-            <p>{story.content}</p>
+            <p>{story.contentSnippet}</p>
           </div>
 
           {story.link && (

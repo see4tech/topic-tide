@@ -111,7 +111,7 @@ export interface Topic {
   pubDate: string;
   image?: string;
   link?: string;
-  contentSnippet?: string;
+  contentSnippet: string;
 }
 
 export const fetchTopics = async (): Promise<Topic[]> => {
@@ -136,12 +136,12 @@ export const fetchTopics = async (): Promise<Topic[]> => {
     return {
       id: record.id,
       title: record.get('Titulo Traducido')?.toString() || record.get('Titulo')?.toString() || '',
-      content: record.get('Contenido Noticioso')?.toString(), // Correctly mapped to 'Contenido Noticioso'
+      content: record.get('Contenido Post')?.toString(), // Correctly mapped to 'Contenido Noticioso'
       creator: record.get('Creador') as string,
       pubDate: record.get('Pubdate') as string,
       image: record.get('Imagen') as string,
       link: record.get('Link') as string,
-      contentSnippet: record.get('Contenido Post')?.toString(),
+      contentSnippet: record.get('Contenido Noticioso')?.toString(),
     };
   });
 };
