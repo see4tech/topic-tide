@@ -49,6 +49,7 @@ export const fetchTopics = async (): Promise<Topic[]> => {
       pubDate: record.get('Pubdate') as string,
       image: record.get('Imagen') as string,
       link: record.get('Link') as string,
+      contentSnippet: record.get('Contenido Post')?.toString(),
     };
   });
 };
