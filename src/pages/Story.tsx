@@ -112,11 +112,15 @@ import { fetchTopics } from "@/lib/airtable";
 import { ArrowLeft } from "lucide-react";
 import { formatDate } from "@/utils/dateFormatter";
 
-const highlightHeadings = (text: string) => {
+// Helper function to highlight "Resumen", "Detalle", and "Importancia"
+const highlightHeadings = (text: string | undefined) => {
+  // If text is undefined, return an empty string
+  if (!text) return '';
+
   return text
-    .replace(/(Resumen:)/g, '<span class="highlight-heading">$1</span>')
-    .replace(/(Detalle:)/g, '<span class="highlight-heading">$1</span>')
-    .replace(/(Importancia:)/g, '<span class="highlight-heading">$1</span>');
+    .replace(/(Resumen:)/g, '<span class="highlight-heading">$1</span>')  // Highlight 'Resumen'
+    .replace(/(Detalle:)/g, '<span class="highlight-heading">$1</span>')  // Highlight 'Detalle'
+    .replace(/(Importancia:)/g, '<span class="highlight-heading">$1</span>');  // Highlight 'Importancia'
 };
 
 
