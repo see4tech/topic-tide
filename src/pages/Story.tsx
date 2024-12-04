@@ -135,42 +135,6 @@ const Story = () => {
 
   const formattedDate = formatDate(story.pubDate);
 
-  const convertNewlinesToBr = (text) => {
-    const lines = text.split("\n");
-
-    let result = [];
-    let inList = false;
-
-    lines.forEach((line, index) => {
-      if (line.startsWith("- ") || line.startsWith("* ")) {
-        if (!inList) {
-          result.push(<ul key={index}>);  // Start a <ul> list
-          inList = true;
-        }
-        result.push(
-          <li key={index}>{line.substring(2)}</li> // Remove the bullet character and add <li>
-        );
-      } else {
-        if (inList) {
-          result.push(<ul key={index} />);
-          inList = false;
-        }
-        result.push(
-          <span key={index}>
-            {line}
-            <br />
-          </span>
-        );
-      }
-    });
-
-    if (inList) {
-      result.push(<ul key="end" />);
-    }
-
-    return result;
-  };
-
   return (
     <div className="min-h-screen" style={{ backgroundColor: import.meta.env.VITE_BODY_BG_COLOR }}>
       <div className="container mx-auto px-4 py-8">
@@ -224,9 +188,8 @@ const Story = () => {
           <div 
             className="prose prose-lg max-w-none mb-8"
             style={{ color: import.meta.env.VITE_TEXT_FONT_COLOR }}
-          >
-            {convertNewlinesToBr(story.content)}
-          </div>
+            dangerouslySetInnerHTML={{ __html: story.content }} // Inject raw HTML
+          />
 
           {story.link && (
             <a
