@@ -122,10 +122,6 @@ const Story = () => {
 
   const story = topics?.find((t) => t.id === id);
 
-  // Add debug logging
-  console.log('Story image URL:', story?.image);
-  console.log('Default image URL:', import.meta.env.VITE_DEFAULT_NEWS_IMAGE);
-
   if (!story) {
     return (
       <div className="container mx-auto px-4 py-8">
@@ -140,23 +136,39 @@ const Story = () => {
   const formattedDate = formatDate(story.pubDate);
 
   const convertNewlinesToBr = (text) => {
-    return text.split("\n").map((line, index) => {
-      // If it's a bullet point (line starts with '- ' or similar), return a <li> wrapped line.
+    const lines = text.split("\n");
+
+    let result = [];
+    let inList = false;
+
+    lines.forEach((line, index) => {
       if (line.startsWith("- ") || line.startsWith("* ")) {
-        return (
-          <li key={index} style={{ listStyleType: "disc" }}>
-            {line.substring(2)} {/* Remove the '-' or '*' from the start of the line */}
-          </li>
+        if (!inList) {
+          result.push(<ul key={index}>);  // Start a <ul> list
+          inList = true;
+        }
+        result.push(
+          <li key={index}>{line.substring(2)}</li> // Remove the bullet character and add <li>
+        );
+      } else {
+        if (inList) {
+          result.push(<ul key={index} />);
+          inList = false;
+        }
+        result.push(
+          <span key={index}>
+            {line}
+            <br />
+          </span>
         );
       }
-      // Otherwise, return a span with a line break
-      return (
-        <span key={index}>
-          {line}
-          <br />
-        </span>
-      );
     });
+
+    if (inList) {
+      result.push(<ul key="end" />);
+    }
+
+    return result;
   };
 
   return (
