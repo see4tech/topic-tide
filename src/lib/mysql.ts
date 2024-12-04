@@ -22,10 +22,9 @@ export interface Topic {
 // Function to fetch topics from MySQL
 export const fetchTopics = async (): Promise<Topic[]> => {
   console.log('Attempting to connect to MySQL...', dbConfig.host);
-  let connection;
+  const connection = await mysql.createConnection(dbConfig);
   
   try {
-    connection = await mysql.createConnection(dbConfig);
     console.log('Successfully connected to MySQL');
     
     console.log('Executing MySQL query...');
@@ -44,7 +43,7 @@ export const fetchTopics = async (): Promise<Topic[]> => {
        ORDER BY Pubdate DESC`
     );
 
-    console.log('Received records from MySQL:', rows?.length || 0);
+    console.log('Received records from MySQL:', Array.isArray(rows) ? rows.length : 0);
     
     if (!Array.isArray(rows)) {
       console.log('Query result is not an array, returning empty array');
@@ -77,10 +76,9 @@ export const fetchTopics = async (): Promise<Topic[]> => {
 // Function to check if an email exists in the Subscribers table
 export const checkEmailExists = async (email: string): Promise<boolean> => {
   console.log('Checking if email exists in MySQL...', email);
-  let connection;
+  const connection = await mysql.createConnection(dbConfig);
 
   try {
-    connection = await mysql.createConnection(dbConfig);
     const [rows] = await connection.execute(
       `SELECT 1 
        FROM Subscriptores 
@@ -96,19 +94,16 @@ export const checkEmailExists = async (email: string): Promise<boolean> => {
     console.error('Error checking email existence in MySQL:', error);
     throw error;
   } finally {
-    if (connection) {
-      await connection.end();
-    }
+    await connection.end();
   }
 };
 
 // Function to create a new subscriber in MySQL
 export const createSubscriber = async (name: string, email: string): Promise<void> => {
   console.log('Creating new subscriber in MySQL...', { name, email });
-  let connection;
+  const connection = await mysql.createConnection(dbConfig);
 
   try {
-    connection = await mysql.createConnection(dbConfig);
     await connection.execute(
       `INSERT INTO Subscriptores (Nombre, Email, Fecha_Subscripcion, Estado) 
        VALUES (?, ?, ?, ?)`, 
@@ -120,8 +115,6 @@ export const createSubscriber = async (name: string, email: string): Promise<voi
     console.error('Error creating subscriber in MySQL:', error);
     throw error;
   } finally {
-    if (connection) {
-      await connection.end();
-    }
+    await connection.end();
   }
 };
