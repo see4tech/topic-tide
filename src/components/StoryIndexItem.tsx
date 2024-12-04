@@ -1,5 +1,4 @@
 import { Link } from "react-router-dom";
-// import { Topic } from "@/lib/airtable";
 import { Topic } from "@/lib/mysql";
 
 interface StoryIndexItemProps {

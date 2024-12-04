@@ -1,5 +1,4 @@
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-// import { Topic } from "@/lib/airtable";
 import { Topic } from "@/lib/mysql";
 import { useState } from "react";
 import { Link } from "react-router-dom";

@@ -1,6 +1,4 @@
-// 
 import { useQuery } from "@tanstack/react-query";
-// import { fetchTopics } from "@/lib/airtable";
 import { fetchTopics } from "@/lib/mysql";
 import { NewsCard } from "./NewsCard";
 import { Skeleton } from "@/components/ui/skeleton";
