@@ -29,10 +29,10 @@ export const fetchTopics = async (): Promise<Topic[]> => {
   
   return records.map((record) => {
     // Add debug logging to check the values
-    console.log('Title fields:', {
-      traducido: record.get('Titulo Traducido'),
-      original: record.get('Titulo')
-    });
+    // console.log('Title fields:', {
+    //   traducido: record.get('Titulo Traducido'),
+    //   original: record.get('Titulo')
+    // });
     
     return {
       // id: record.id,
