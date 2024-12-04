@@ -112,6 +112,14 @@ import { fetchTopics } from "@/lib/airtable";
 import { ArrowLeft } from "lucide-react";
 import { formatDate } from "@/utils/dateFormatter";
 
+const highlightHeadings = (text: string) => {
+  return text
+    .replace(/(Resumen:)/g, '<span class="highlight-heading">$1</span>')
+    .replace(/(Detalle:)/g, '<span class="highlight-heading">$1</span>')
+    .replace(/(Importancia:)/g, '<span class="highlight-heading">$1</span>');
+};
+
+
 const Story = () => {
   const { id } = useParams();
   
