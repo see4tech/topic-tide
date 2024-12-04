@@ -135,12 +135,12 @@ export const fetchTopics = async (): Promise<Topic[]> => {
     return {
       id: record.id,
       title: record.get('Titulo Traducido')?.toString() || record.get('Titulo')?.toString() || '',
-      content: record.get('Contenido Post')?.toString(),
+      content: record.get('Contenido Noticioso')?.toString(), // Use 'Contenido Noticioso' for content
       creator: record.get('Creador') as string,
       pubDate: record.get('Pubdate') as string,
       image: record.get('Imagen') as string,
       link: record.get('Link') as string,
-      contentSnippet: record.get('Contenido Noticioso')?.toString(),
+      contentSnippet: record.get('Contenido Post')?.toString(),
     };
   });
 };
