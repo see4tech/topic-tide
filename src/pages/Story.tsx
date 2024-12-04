@@ -113,6 +113,20 @@ import { ArrowLeft } from "lucide-react";
 import { formatDate } from "@/utils/dateFormatter";
 import React from "react"; // Ensure React is imported if necessary
 
+const formatTextWithLineBreaks = (text) => {
+  // Ensure text is a string before attempting to split and handle undefined cases
+  if (!text || typeof text !== 'string') {
+    return null; // Or you could return an empty string if you prefer
+  }
+
+  return text.split("\n").map((str, index) => (
+    <React.Fragment key={index}>
+      {str}
+      <br />
+    </React.Fragment>
+  ));
+};
+
 const Story = () => {
   const { id } = useParams();
   
@@ -135,16 +149,6 @@ const Story = () => {
   }
 
   const formattedDate = formatDate(story.pubDate);
-
-  // Convert line breaks to <br /> elements
-  const formatTextWithLineBreaks = (text) => {
-    return text.split("\n").map((str, index) => (
-      <React.Fragment key={index}>
-        {str}
-        <br />
-      </React.Fragment>
-    ));
-  };
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: import.meta.env.VITE_BODY_BG_COLOR }}>
