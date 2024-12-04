@@ -221,39 +221,6 @@ import { fetchTopics } from "@/lib/airtable";
 import { ArrowLeft } from "lucide-react";
 import { formatDate } from "@/utils/dateFormatter";
 
-// Function to format the content with the appropriate sections
-const formatContent = (content: string) => {
-  // Split the content based on section headers
-  const sections = {
-    resumen: '',
-    detalle: '',
-    importancia: ''
-  };
-
-  // Extract the text for Resumen, Detalle, and Importancia
-  const resumenMatch = content.match(/Resumen:<br>(.*?)<br><br>/s);
-  const detalleMatch = content.match(/Detalle:<br>(.*?)<br><br>/s);
-  const importanciaMatch = content.match(/Importancia:<br>(.*?)(?=<br><br>|$)/s);
-
-  if (resumenMatch) sections.resumen = resumenMatch[1].trim();
-  if (detalleMatch) sections.detalle = detalleMatch[1].trim();
-  if (importanciaMatch) sections.importancia = importanciaMatch[1].trim();
-
-  // Return the formatted string with bold titles and proper line breaks
-  return (
-    <>
-      <p><strong>Resumen:</strong></p>
-      <p>{sections.resumen}</p>
-
-      <p><strong>Detalle:</strong></p>
-      <p>{sections.detalle}</p>
-
-      <p><strong>Importancia:</strong></p>
-      <p>{sections.importancia}</p>
-    </>
-  );
-};
-
 const Story = () => {
   const { id } = useParams();
   
@@ -327,13 +294,12 @@ const Story = () => {
             />
           </div>
 
-          {/* Display formatted content with the proper sections */}
+          {/* Display contentSnippet exactly as it comes */}
           <div
             className="prose prose-lg max-w-none mb-8"
             style={{ color: import.meta.env.VITE_TEXT_FONT_COLOR }}
-          >
-            {formatContent(story.contentSnippet)}
-          </div>
+            dangerouslySetInnerHTML={{ __html: story.contentSnippet }} // Display raw HTML from contentSnippet
+          />
 
           {story.link && (
             <a
