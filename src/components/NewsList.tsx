@@ -16,6 +16,7 @@ import {
 const ITEMS_PER_PAGE = 6;
 
 export const NewsList = () => {
+  console.log("NewsList component rendering");
   const { toast } = useToast();
   const [currentPage, setCurrentPage] = useState(1);
 
@@ -43,6 +44,10 @@ export const NewsList = () => {
     },
   });
 
+  console.log("Current topics state:", topics);
+  console.log("Loading state:", isLoading);
+  console.log("Error state:", error);
+
   if (isLoading) {
     return (
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 animate-fade-in">
@@ -59,6 +64,7 @@ export const NewsList = () => {
   }
 
   if (error) {
+    console.error("Error in NewsList:", error);
     return (
       <div className="text-center py-12">
         <h2 className="text-2xl font-semibold text-destructive">Error al cargar las noticias</h2>
@@ -67,8 +73,8 @@ export const NewsList = () => {
     );
   }
 
-  if (!topics?.length) {
-    console.log("No topics available.");
+  if (!topics || !Array.isArray(topics) || topics.length === 0) {
+    console.log("No topics available or invalid topics data");
     return (
       <div className="text-center py-12">
         <h2 className="text-2xl font-semibold">No hay noticias disponibles</h2>
@@ -81,6 +87,8 @@ export const NewsList = () => {
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
   const endIndex = startIndex + ITEMS_PER_PAGE;
   const currentTopics = topics.slice(startIndex, endIndex);
+
+  console.log("Rendering topics:", currentTopics);
 
   return (
     <div className="space-y-8">

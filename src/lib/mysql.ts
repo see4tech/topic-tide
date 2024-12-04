@@ -21,10 +21,11 @@ export interface Topic {
 
 // Function to fetch topics from MySQL
 export const fetchTopics = async (): Promise<Topic[]> => {
-  console.log('Fetching topics from MySQL...');
+  console.log('Attempting to connect to MySQL...');
   const connection = await mysql.createConnection(dbConfig);
 
   try {
+    console.log('Executing MySQL query...');
     const [rows] = await connection.execute(
       `SELECT 
         id, 
@@ -41,6 +42,12 @@ export const fetchTopics = async (): Promise<Topic[]> => {
     );
 
     console.log('Received records from MySQL:', Array.isArray(rows) ? rows.length : 0);
+    
+    if (!Array.isArray(rows)) {
+      console.log('Query result is not an array, returning empty array');
+      return [];
+    }
+
     return rows as Topic[];
   } catch (error) {
     console.error('Error fetching topics from MySQL:', error);
@@ -81,13 +88,13 @@ export const createSubscriber = async (name: string, email: string): Promise<voi
   const connection = await mysql.createConnection(dbConfig);
 
   try {
-    const result = await connection.execute(
+    await connection.execute(
       `INSERT INTO Subscriptores (Nombre, Email, Fecha_Subscripcion, Estado) 
        VALUES (?, ?, ?, ?)`, 
       [name, email, new Date().toISOString(), 'Activo']
     );
 
-    console.log('Subscriber created successfully:', result);
+    console.log('Subscriber created successfully');
   } catch (error) {
     console.error('Error creating subscriber in MySQL:', error);
     throw error;
