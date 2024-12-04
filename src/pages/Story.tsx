@@ -111,6 +111,7 @@ import { useQuery } from "@tanstack/react-query";
 import { fetchTopics } from "@/lib/airtable";
 import { ArrowLeft } from "lucide-react";
 import { formatDate } from "@/utils/dateFormatter";
+import React from "react"; // Ensure React is imported if necessary
 
 const Story = () => {
   const { id } = useParams();
@@ -134,6 +135,16 @@ const Story = () => {
   }
 
   const formattedDate = formatDate(story.pubDate);
+
+  // Convert line breaks to <br /> elements
+  const formatTextWithLineBreaks = (text) => {
+    return text.split("\n").map((str, index) => (
+      <React.Fragment key={index}>
+        {str}
+        <br />
+      </React.Fragment>
+    ));
+  };
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: import.meta.env.VITE_BODY_BG_COLOR }}>
@@ -188,8 +199,9 @@ const Story = () => {
           <div 
             className="prose prose-lg max-w-none mb-8"
             style={{ color: import.meta.env.VITE_TEXT_FONT_COLOR }}
-            dangerouslySetInnerHTML={{ __html: story.contenidoNoticioso }} // Render HTML with line breaks
-          />
+          >
+            <p>{formatTextWithLineBreaks(story.contenidoNoticioso)}</p>
+          </div>
 
           {story.link && (
             <a
