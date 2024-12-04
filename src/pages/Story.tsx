@@ -213,7 +213,6 @@
 // };
 
 // export default Story;
-
 import { useParams, Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { fetchTopics } from "@/lib/airtable";
@@ -310,24 +309,22 @@ const Story = () => {
             className="prose prose-lg max-w-none mb-8"
             style={{ color: import.meta.env.VITE_TEXT_FONT_COLOR }}
           >
-            <div>
-              {/* Make Resumen, Detalle, and Importancia bold */}
-              <strong>Resumen:</strong>
-              <br />
-              {formatTextWithLineBreaks(story.contentSnippet)}
+            {/* Display content from 'Contenido Noticioso' */}
+            <strong>Resumen:</strong>
+            <br />
+            {formatTextWithLineBreaks(story.contentSnippet)} {/* Displaying content from contentSnippet */}
 
-              <br />
-              <br /> {/* Adds space between Resumen and Detalle */}
-              <strong>Detalle:</strong>
-              <br />
-              {formatTextWithLineBreaks(story.content)}
+            <br />
+            <br /> {/* Adds space between Resumen and Detalle */}
+            <strong>Detalle:</strong>
+            <br />
+            {formatTextWithLineBreaks(story.content)} {/* Displaying content from content */}
 
-              <br />
-              <br /> {/* Adds space between Detalle and Importancia */}
-              <strong>Importancia:</strong>
-              <br />
-              {formatTextWithLineBreaks(story.content)} {/* Displaying content again if needed */}
-            </div>
+            <br />
+            <br /> {/* Adds space between Detalle and Importancia */}
+            <strong>Importancia:</strong>
+            <br />
+            {formatTextWithLineBreaks(story.content)} {/* Displaying content again if needed */}
           </div>
 
           {story.link && (
