@@ -214,7 +214,6 @@
 
 // export default Story;
 // import React from "react";
-import React from "react";
 import { useParams, Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { fetchTopics } from "@/lib/airtable";
@@ -294,11 +293,11 @@ const Story = () => {
             />
           </div>
 
-          {/* Display contentSnippet exactly as it comes */}
+          {/* Render contentSnippet with the HTML line breaks */}
           <div
             className="prose prose-lg max-w-none mb-8"
             style={{ color: import.meta.env.VITE_TEXT_FONT_COLOR }}
-            dangerouslySetInnerHTML={{ __html: story.contentSnippet }} // Display raw HTML from contentSnippet
+            dangerouslySetInnerHTML={{ __html: story.contentSnippet }} // Display raw HTML
           />
 
           {story.link && (
