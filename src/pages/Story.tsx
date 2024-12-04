@@ -188,7 +188,7 @@ const Story = () => {
           <div 
             className="prose prose-lg max-w-none mb-8"
             style={{ color: import.meta.env.VITE_TEXT_FONT_COLOR }}
-            dangerouslySetInnerHTML={{ __html: story.contenidoNoticioso }} // Render HTML with line breaks
+            dangerouslySetInnerHTML={{ __html: highlightHeadings(story.contenidoNoticioso) }} // Render HTML with line breaks and highlighted headings
           />
 
           {story.link && (
