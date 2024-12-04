@@ -29,7 +29,7 @@ export const fetchTopics = async (): Promise<Topic[]> => {
     console.log('Successfully connected to MySQL');
     
     console.log('Executing MySQL query...');
-    const [rows] = await connection.execute<mysql.RowDataPacket[]>(
+    const [rows] = await connection.execute(
       `SELECT 
         id, 
         COALESCE(Titulo_Traducido, Titulo) AS title, 
@@ -81,7 +81,7 @@ export const checkEmailExists = async (email: string): Promise<boolean> => {
 
   try {
     connection = await mysql.createConnection(dbConfig);
-    const [rows] = await connection.execute<mysql.RowDataPacket[]>(
+    const [rows] = await connection.execute(
       `SELECT 1 
        FROM Subscriptores 
        WHERE Email = ? 
