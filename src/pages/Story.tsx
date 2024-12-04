@@ -132,13 +132,7 @@ const Story = () => {
       </div>
     );
   }
-  // Helper function to highlight "Resumen", "Detalle", and "Importancia"
-  const highlightHeadings = (text) => {
-    return text
-      .replace(/(Resumen:)/g, '<span class="highlight-heading">$1</span>') // Highlight 'Resumen'
-      .replace(/(Detalle:)/g, '<span class="highlight-heading">$1</span>') // Highlight 'Detalle'
-      .replace(/(Importancia:)/g, '<span class="highlight-heading">$1</span>'); // Highlight 'Importancia'
-  };
+ 
   const formattedDate = formatDate(story.pubDate);
 
   return (
