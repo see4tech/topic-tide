@@ -45,7 +45,7 @@ export const fetchTopics = async (): Promise<Topic[]> => {
       // link: record.get('Link') as string,
       id: record.id,
       title: record.get('Titulo Traducido')?.toString() || record.get('Titulo')?.toString() || '',
-      content: record.get('Contenido Noticioso'),
+      content: record.get('Contenido Noticioso') as string,
       creator: record.get('Creador') as string,
       pubDate: record.get('Pubdate') as string,
       image: record.get('Imagen') as string,
