@@ -112,20 +112,19 @@ import { fetchTopics } from "@/lib/airtable";
 import { ArrowLeft } from "lucide-react";
 import { formatDate } from "@/utils/dateFormatter";
 
-const highlightHeadings = (text: string | undefined) => {
-  // If text is undefined or null, return an empty string or a fallback text
+const highlightHeadings = (text: string | undefined | null) => {
+  // If text is undefined or null, return an empty string
   if (!text) {
-    console.error('highlightHeadings received undefined or null:', text);
-    return ''; // Or return a fallback string like "Content unavailable"
+    console.error('highlightHeadings received undefined or null:', text); // Log the issue for debugging
+    return '';  // Fallback value
   }
 
-  // Proceed with the replace logic if text is valid
+  // Proceed with replacing 'Resumen:', 'Detalle:', and 'Importancia:'
   return text
     .replace(/(Resumen:)/g, '<span class="highlight-heading">$1</span>')  // Highlight 'Resumen'
     .replace(/(Detalle:)/g, '<span class="highlight-heading">$1</span>')  // Highlight 'Detalle'
     .replace(/(Importancia:)/g, '<span class="highlight-heading">$1</span>');  // Highlight 'Importancia'
 };
-
 
 const Story = () => {
   const { id } = useParams();
@@ -208,7 +207,8 @@ const Story = () => {
           <div 
             className="prose prose-lg max-w-none mb-8"
             style={{ color: import.meta.env.VITE_TEXT_FONT_COLOR }}
-            dangerouslySetInnerHTML={{ __html: highlightHeadings(story?.contenidoNoticioso || '')  // Provide an empty string fallback
+            dangerouslySetInnerHTML={{
+              __html: highlightHeadings(story?.contenidoNoticioso || '')  // Provide an empty string as fallback
             }} 
           />
 
