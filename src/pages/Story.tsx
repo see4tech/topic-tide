@@ -3,14 +3,31 @@ import { useQuery } from "@tanstack/react-query";
 import { fetchTopics } from "@/lib/mysql";
 import { ArrowLeft } from "lucide-react";
 import { formatDate } from "@/utils/dateFormatter";
+import { useToast } from "@/components/ui/use-toast";
+
+const REFETCH_INTERVAL = 5 * 60 * 1000; // 5 minutes
 
 const Story = () => {
   const { id } = useParams();
+  const { toast } = useToast();
   console.log("Looking for story with ID:", id);
   
   const { data: topics, isLoading, error } = useQuery({
     queryKey: ["topics"],
     queryFn: fetchTopics,
+    refetchInterval: REFETCH_INTERVAL,
+    refetchOnWindowFocus: true,
+    meta: {
+      onSettled: (data, error) => {
+        if (error) {
+          toast({
+            title: "Error",
+            description: "No se pudo cargar la historia. Por favor, intente más tarde.",
+            variant: "destructive",
+          });
+        }
+      },
+    },
   });
 
   console.log("Fetched topics:", topics);

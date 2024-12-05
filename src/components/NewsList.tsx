@@ -14,13 +14,14 @@ import {
 } from "@/components/ui/pagination";
 
 const ITEMS_PER_PAGE = 6;
+const REFETCH_INTERVAL = 5 * 60 * 1000; // 5 minutes
 
 export const NewsList = () => {
   console.log("NewsList component rendering");
   const { toast } = useToast();
   const [currentPage, setCurrentPage] = useState(1);
 
-  const { data: topics, isLoading, error } = useQuery({
+  const { data: topics, isLoading, error, isError } = useQuery({
     queryKey: ["topics"],
     queryFn: async () => {
       try {
@@ -33,13 +34,17 @@ export const NewsList = () => {
         throw error;
       }
     },
+    refetchInterval: REFETCH_INTERVAL,
+    refetchOnWindowFocus: true,
     meta: {
-      onError: () => {
-        toast({
-          title: "Error",
-          description: "No se pudieron cargar las noticias. Por favor, intente más tarde.",
-          variant: "destructive",
-        });
+      onSettled: (data, error) => {
+        if (error) {
+          toast({
+            title: "Error",
+            description: "No se pudieron cargar las noticias. Por favor, intente más tarde.",
+            variant: "destructive",
+          });
+        }
       },
     },
   });
