@@ -68,7 +68,7 @@ export const NewsCard = ({ topic }: NewsCardProps) => {
             className={`${isExpanded ? '' : 'line-clamp-3'} text-base leading-relaxed`}
             style={{ color: import.meta.env.VITE_TEXT_FONT_COLOR }}
           >
-            {topic.contenidoNoticioso}
+            {topic.contenidoPost}
           </p>
         </div>
         <button
