@@ -1,5 +1,4 @@
-import mysql from 'mysql2/promise';
-
+// Mock data interface
 export interface Topic {
   id: string;
   title: string;
@@ -11,89 +10,43 @@ export interface Topic {
   contentSnippet: string;
 }
 
-const dbConfig = {
-  host: import.meta.env.VITE_MYSQL_HOST,
-  user: import.meta.env.VITE_MYSQL_USER,
-  password: import.meta.env.VITE_MYSQL_PASSWORD,
-  database: import.meta.env.VITE_MYSQL_DATABASE,
-};
+// Mock data
+const mockTopics: Topic[] = [
+  {
+    id: "1",
+    title: "Sample Technology News",
+    content: "This is a sample technology news article content. It contains interesting information about recent developments in tech.",
+    creator: "John Doe",
+    pubDate: new Date().toISOString(),
+    image: import.meta.env.VITE_DEFAULT_NEWS_IMAGE,
+    contentSnippet: "Sample technology news snippet"
+  },
+  {
+    id: "2",
+    title: "Another Tech Update",
+    content: "Another interesting technology update with detailed information about innovations.",
+    creator: "Jane Smith",
+    pubDate: new Date().toISOString(),
+    image: import.meta.env.VITE_DEFAULT_NEWS_IMAGE,
+    contentSnippet: "Another tech update snippet"
+  }
+];
 
-console.log('Creating MySQL connection pool with config:', {
-  host: dbConfig.host,
-  user: dbConfig.user,
-  database: dbConfig.database
-});
-
-const pool = mysql.createPool({
-  ...dbConfig,
-  waitForConnections: true,
-  connectionLimit: 10,
-  queueLimit: 0
-});
+console.log('Mock data initialized:', mockTopics);
 
 export const fetchTopics = async (): Promise<Topic[]> => {
-  console.log('Fetching topics from MySQL...');
-  
-  try {
-    const [rows] = await pool.execute(
-      'SELECT id, COALESCE(Titulo_Traducido, Titulo) AS title, Contenido_Post AS content, Creador AS creator, Pubdate AS pubDate, Imagen AS image, Link AS link, Contenido_Noticioso AS contentSnippet FROM Topicos WHERE Postear = 1 ORDER BY Pubdate DESC'
-    );
-
-    console.log('Raw MySQL response:', rows);
-
-    if (!Array.isArray(rows)) {
-      console.log('Query result is not an array');
-      return [];
-    }
-
-    const topics = rows.map((row: any) => ({
-      id: row.id?.toString() || '',
-      title: row.title || '',
-      content: row.content || '',
-      creator: row.creator || '',
-      pubDate: row.pubDate instanceof Date ? row.pubDate.toISOString() : new Date().toISOString(),
-      image: row.image || '',
-      link: row.link || '',
-      contentSnippet: row.contentSnippet || ''
-    }));
-
-    console.log('Processed topics:', topics);
-    return topics;
-  } catch (error) {
-    console.error('Error in fetchTopics:', error);
-    throw error;
-  }
+  console.log('Fetching mock topics...');
+  // Simulate network delay
+  await new Promise(resolve => setTimeout(resolve, 500));
+  return mockTopics;
 };
 
 export const checkEmailExists = async (email: string): Promise<boolean> => {
-  console.log('Checking email existence:', email);
-  
-  try {
-    const [rows] = await pool.execute(
-      'SELECT 1 FROM Subscriptores WHERE Email = ? LIMIT 1',
-      [email]
-    );
-    
-    const exists = Array.isArray(rows) && rows.length > 0;
-    console.log('Email exists:', exists);
-    return exists;
-  } catch (error) {
-    console.error('Error checking email:', error);
-    throw error;
-  }
+  console.log('Checking email existence (mock):', email);
+  return false;
 };
 
 export const createSubscriber = async (name: string, email: string): Promise<void> => {
-  console.log('Creating new subscriber:', { name, email });
-  
-  try {
-    await pool.execute(
-      'INSERT INTO Subscriptores (Nombre, Email, Fecha_Subscripcion, Estado) VALUES (?, ?, NOW(), ?)',
-      [name, email, 'Activo']
-    );
-    console.log('Subscriber created successfully');
-  } catch (error) {
-    console.error('Error creating subscriber:', error);
-    throw error;
-  }
+  console.log('Creating new subscriber (mock):', { name, email });
+  return;
 };
