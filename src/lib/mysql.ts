@@ -14,21 +14,30 @@ export interface Topic {
 const mockTopics: Topic[] = [
   {
     id: "1",
-    title: "Sample Technology News",
-    content: "This is a sample technology news article content. It contains interesting information about recent developments in tech.",
-    creator: "John Doe",
+    title: "La Inteligencia Artificial revoluciona la industria tecnológica",
+    content: "Los últimos avances en IA están transformando la manera en que interactuamos con la tecnología. Desde asistentes virtuales más inteligentes hasta sistemas de automatización más sofisticados, la IA está presente en cada vez más aspectos de nuestra vida digital.",
+    creator: "María González",
     pubDate: new Date().toISOString(),
-    image: import.meta.env.VITE_DEFAULT_NEWS_IMAGE,
-    contentSnippet: "Sample technology news snippet"
+    image: "https://images.unsplash.com/photo-1677442136019-21780ecad995",
+    contentSnippet: "Los últimos avances en IA están transformando la industria tecnológica"
   },
   {
     id: "2",
-    title: "Another Tech Update",
-    content: "Another interesting technology update with detailed information about innovations.",
-    creator: "Jane Smith",
+    title: "El futuro de la computación cuántica",
+    content: "Los investigadores han logrado nuevos avances significativos en el campo de la computación cuántica. Estos desarrollos prometen revolucionar áreas como la criptografía y el procesamiento de datos masivos.",
+    creator: "Carlos Rodríguez",
     pubDate: new Date().toISOString(),
-    image: import.meta.env.VITE_DEFAULT_NEWS_IMAGE,
-    contentSnippet: "Another tech update snippet"
+    image: "https://images.unsplash.com/photo-1635070041078-e363dbe005cb",
+    contentSnippet: "Nuevos avances en computación cuántica"
+  },
+  {
+    id: "3",
+    title: "Ciberseguridad en la era digital",
+    content: "Con el aumento de las amenazas cibernéticas, las empresas están invirtiendo más que nunca en seguridad digital. Expertos recomiendan nuevas estrategias para proteger datos sensibles.",
+    creator: "Ana Martínez",
+    pubDate: new Date().toISOString(),
+    image: "https://images.unsplash.com/photo-1563986768609-322da13575f3",
+    contentSnippet: "Aumentan las inversiones en ciberseguridad"
   }
 ];
 
