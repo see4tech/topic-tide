@@ -18,8 +18,8 @@ export const NewsCard = ({ topic }: NewsCardProps) => {
         <div className="relative">
           <Link to={`/story/${topic.id}`}>
             <img
-              src={topic.image || import.meta.env.VITE_DEFAULT_NEWS_IMAGE}
-              alt={topic.title}
+              src={topic.imagen || import.meta.env.VITE_DEFAULT_NEWS_IMAGE}
+              alt={topic.tituloTraducido}
               className="w-full h-48 object-cover hover:opacity-90 transition-opacity"
             />
           </Link>
@@ -40,14 +40,14 @@ export const NewsCard = ({ topic }: NewsCardProps) => {
           >
             {formattedDate}
           </time>
-          {topic.creator && (
+          {topic.creador && (
             <>
               <span className="mx-2">•</span>
               <span 
                 className="font-medium"
                 style={{ color: import.meta.env.VITE_AUTHOR_FONT_COLOR }}
               >
-                {topic.creator}
+                {topic.creador}
               </span>
             </>
           )}
@@ -60,7 +60,7 @@ export const NewsCard = ({ topic }: NewsCardProps) => {
             className="text-xl font-bold mb-3 leading-tight group-hover:text-primary transition-colors"
             style={{ color: import.meta.env.VITE_TITLE_FONT_COLOR }}
           >
-            {topic.title}
+            {topic.tituloTraducido}
           </h2>
         </Link>
         <div className="prose prose-sm max-w-none">
@@ -68,7 +68,7 @@ export const NewsCard = ({ topic }: NewsCardProps) => {
             className={`${isExpanded ? '' : 'line-clamp-3'} text-base leading-relaxed`}
             style={{ color: import.meta.env.VITE_TEXT_FONT_COLOR }}
           >
-            {topic.content}
+            {topic.contenidoNoticioso}
           </p>
         </div>
         <button

@@ -1,61 +1,57 @@
-// Mock data interface
 export interface Topic {
   id: string;
-  title: string;
-  content: string;
-  creator?: string;
+  titulo: string;
+  tituloTraducido: string;
+  postear: number;
+  posteadoInstagram: number;
+  posteadoLinkedin: number;
+  posteadoX: number;
+  link: string;
+  posteadoNewsletter: number;
+  contenidoNoticioso: string;
+  contenidoPost: string;
+  contenidoResumido: string;
+  contenidoCompleto: string;
   pubDate: string;
-  image?: string;
-  link?: string;
-  contentSnippet: string;
+  creador: string;
+  imagen: string;
+  rss: string;
+  hashtags: string;
+  HTML: string;
+  promptImagen: string;
+  categoria: string;
 }
 
-// Mock data
-const mockTopics: Topic[] = [
-  {
-    id: "1",
-    title: "La Inteligencia Artificial revoluciona la industria tecnológica",
-    content: "Los últimos avances en IA están transformando la manera en que interactuamos con la tecnología. Desde asistentes virtuales más inteligentes hasta sistemas de automatización más sofisticados, la IA está presente en cada vez más aspectos de nuestra vida digital.",
-    creator: "María González",
-    pubDate: new Date().toISOString(),
-    image: "https://images.unsplash.com/photo-1677442136019-21780ecad995",
-    contentSnippet: "Los últimos avances en IA están transformando la industria tecnológica"
-  },
-  {
-    id: "2",
-    title: "El futuro de la computación cuántica",
-    content: "Los investigadores han logrado nuevos avances significativos en el campo de la computación cuántica. Estos desarrollos prometen revolucionar áreas como la criptografía y el procesamiento de datos masivos.",
-    creator: "Carlos Rodríguez",
-    pubDate: new Date().toISOString(),
-    image: "https://images.unsplash.com/photo-1635070041078-e363dbe005cb",
-    contentSnippet: "Nuevos avances en computación cuántica"
-  },
-  {
-    id: "3",
-    title: "Ciberseguridad en la era digital",
-    content: "Con el aumento de las amenazas cibernéticas, las empresas están invirtiendo más que nunca en seguridad digital. Expertos recomiendan nuevas estrategias para proteger datos sensibles.",
-    creator: "Ana Martínez",
-    pubDate: new Date().toISOString(),
-    image: "https://images.unsplash.com/photo-1563986768609-322da13575f3",
-    contentSnippet: "Aumentan las inversiones en ciberseguridad"
-  }
-];
-
-console.log('Mock data initialized:', mockTopics);
+const API_URL = "https://api.see4.tech/v1/news";
 
 export const fetchTopics = async (): Promise<Topic[]> => {
-  console.log('Fetching mock topics...');
-  // Simulate network delay
-  await new Promise(resolve => setTimeout(resolve, 500));
-  return mockTopics;
+  console.log('Fetching topics from API...');
+  try {
+    const response = await fetch(API_URL, {
+      headers: {
+        'x-api-key': import.meta.env.VITE_API_KEY || '',
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    console.log('Fetched topics:', data);
+    return data;
+  } catch (error) {
+    console.error('Error fetching topics:', error);
+    throw error;
+  }
 };
 
 export const checkEmailExists = async (email: string): Promise<boolean> => {
-  console.log('Checking email existence (mock):', email);
+  console.log('Checking email existence:', email);
   return false;
 };
 
 export const createSubscriber = async (name: string, email: string): Promise<void> => {
-  console.log('Creating new subscriber (mock):', { name, email });
+  console.log('Creating new subscriber:', { name, email });
   return;
 };
