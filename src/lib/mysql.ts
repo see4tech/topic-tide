@@ -1,4 +1,4 @@
-import mysql from 'mysql2/promise';
+import * as mysql from 'mysql2/promise';
 
 export interface Topic {
   id: string;
@@ -18,7 +18,7 @@ const dbConfig = {
   database: import.meta.env.VITE_MYSQL_DATABASE,
 };
 
-// Function to create a connection pool instead of individual connections
+// Create a connection pool
 const pool = mysql.createPool({
   ...dbConfig,
   waitForConnections: true,
@@ -78,10 +78,7 @@ export const checkEmailExists = async (email: string): Promise<boolean> => {
 
   try {
     const [rows] = await pool.execute(
-      `SELECT 1 
-       FROM Subscriptores 
-       WHERE Email = ? 
-       LIMIT 1`, 
+      'SELECT 1 FROM Subscriptores WHERE Email = ? LIMIT 1',
       [email]
     );
 
@@ -100,8 +97,7 @@ export const createSubscriber = async (name: string, email: string): Promise<voi
 
   try {
     await pool.execute(
-      `INSERT INTO Subscriptores (Nombre, Email, Fecha_Subscripcion, Estado) 
-       VALUES (?, ?, ?, ?)`, 
+      'INSERT INTO Subscriptores (Nombre, Email, Fecha_Subscripcion, Estado) VALUES (?, ?, ?, ?)',
       [name, email, new Date().toISOString(), 'Activo']
     );
 
