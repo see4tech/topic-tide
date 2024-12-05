@@ -6,7 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import Story from "./pages/Story";
 
-// Create a client with proper configuration
+console.log("Creating QueryClient");
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -18,7 +18,7 @@ const queryClient = new QueryClient({
 });
 
 const App = () => {
-  console.log("App component rendering");
+  console.log("Rendering App component");
   
   return (
     <QueryClientProvider client={queryClient}>
