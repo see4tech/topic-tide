@@ -6,13 +6,36 @@ import { formatDate } from "@/utils/dateFormatter";
 
 const Story = () => {
   const { id } = useParams();
+  console.log("Looking for story with ID:", id);
   
-  const { data: topics } = useQuery({
+  const { data: topics, isLoading, error } = useQuery({
     queryKey: ["topics"],
     queryFn: fetchTopics,
   });
 
-  const story = topics?.find((t) => t.id === id);
+  console.log("Fetched topics:", topics);
+
+  const story = topics?.find((t) => t.id.toString() === id);
+  console.log("Found story:", story);
+
+  if (isLoading) {
+    return (
+      <div className="container mx-auto px-4 py-8">
+        <h1>Cargando...</h1>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="container mx-auto px-4 py-8">
+        <h1>Error al cargar la historia</h1>
+        <Link to="/" className="text-blue-500 hover:underline">
+          Volver a la página principal
+        </Link>
+      </div>
+    );
+  }
 
   if (!story) {
     return (
@@ -77,7 +100,6 @@ const Story = () => {
             />
           </div>
 
-          {/* Render contenidoNoticioso with the HTML line breaks */}
           <div
             className="prose prose-lg max-w-none mb-8"
             style={{ color: import.meta.env.VITE_TEXT_FONT_COLOR }}
