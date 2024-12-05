@@ -16,7 +16,7 @@ export const StoryIndexItem = ({ topic }: StoryIndexItemProps) => {
           className="text-xl font-semibold"
           style={{ color: import.meta.env.VITE_TITLE_FONT_COLOR }}
         >
-          {topic.title}
+          {topic.tituloTraducido || topic.titulo}
         </h2>
         <time 
           dateTime={topic.pubDate}

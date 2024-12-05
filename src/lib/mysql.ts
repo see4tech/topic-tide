@@ -22,12 +22,10 @@ export interface Topic {
   categoria: string;
 }
 
-const API_URL = "https://api.see4.tech/v1/news";
-
 export const fetchTopics = async (): Promise<Topic[]> => {
   console.log('Fetching topics from API...');
   try {
-    const response = await fetch(API_URL, {
+    const response = await fetch(import.meta.env.VITE_API_URL, {
       headers: {
         'x-api-key': import.meta.env.VITE_API_KEY || '',
       },

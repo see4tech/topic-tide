@@ -1,11 +1,6 @@
-// import { useParams, Link } from "react-router-dom";
-// import { useQuery } from "@tanstack/react-query";
-// import { fetchTopics } from "@/lib/airtable";
-// import { ArrowLeft } from "lucide-react";
-// import { formatDate } from "@/utils/dateFormatter";
 import { useParams, Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import { fetchTopics } from "@/lib/mysql"; // Update to use the MySQL implementation
+import { fetchTopics } from "@/lib/mysql";
 import { ArrowLeft } from "lucide-react";
 import { formatDate } from "@/utils/dateFormatter";
 
@@ -49,16 +44,16 @@ const Story = () => {
             className="text-4xl font-bold mb-4"
             style={{ color: import.meta.env.VITE_TITLE_FONT_COLOR }}
           >
-            {story.title}
+            {story.tituloTraducido || story.titulo}
           </h1>
 
           <div className="flex flex-wrap items-center gap-4 text-sm mb-8">
-            {story.creator && (
+            {story.creador && (
               <span
                 className="font-medium"
                 style={{ color: import.meta.env.VITE_AUTHOR_FONT_COLOR }}
               >
-                Por {story.creator}
+                Por {story.creador}
               </span>
             )}
             <time
@@ -72,8 +67,8 @@ const Story = () => {
 
           <div className="mb-8">
             <img
-              src={story.image || import.meta.env.VITE_DEFAULT_NEWS_IMAGE}
-              alt={story.title}
+              src={story.imagen || import.meta.env.VITE_DEFAULT_NEWS_IMAGE}
+              alt={story.tituloTraducido || story.titulo}
               className="w-full h-[400px] object-cover rounded-lg shadow-lg"
               onError={(e) => {
                 console.log('Image failed to load, using default image');
@@ -82,11 +77,11 @@ const Story = () => {
             />
           </div>
 
-          {/* Render contentSnippet with the HTML line breaks */}
+          {/* Render contenidoNoticioso with the HTML line breaks */}
           <div
             className="prose prose-lg max-w-none mb-8"
             style={{ color: import.meta.env.VITE_TEXT_FONT_COLOR }}
-            dangerouslySetInnerHTML={{ __html: story.contentSnippet }} // Display raw HTML
+            dangerouslySetInnerHTML={{ __html: story.contenidoNoticioso }}
           />
 
           {story.link && (
