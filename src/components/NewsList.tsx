@@ -93,11 +93,11 @@ export const NewsList = () => {
   // Group topics by puntuacion
   const groupedTopics = topics.reduce((acc, topic) => {
     const score = topic.puntuacion || 0;
-    if (score === 1) {
+    if (score <= 2) {
       acc.high.push(topic);
-    } else if (score === 2) {
+    } else if (score <= 4) {
       acc.medium.push(topic);
-    } else if (score === 3) {
+    } else {
       acc.low.push(topic);
     }
     return acc;
@@ -126,33 +126,43 @@ export const NewsList = () => {
   const endIndex = startIndex + ITEMS_PER_PAGE;
   const currentTopics = filteredTopics.slice(startIndex, endIndex);
 
+  const allTopicsCount = topics.length;
+
   return (
     <div className="space-y-12">
-      <div className="flex items-center gap-4 flex-wrap">
+      <div className="flex items-center justify-between">
         <Button
-          variant={selectedScore === "high" ? "default" : "outline"}
-          onClick={() => setSelectedScore("high")}
+          variant="outline"
+          onClick={() => setShowIndex(!showIndex)}
         >
-          Noticias Destacadas ({groupedTopics.high.length})
+          Ver índice de historias
         </Button>
-        <Button
-          variant={selectedScore === "medium" ? "default" : "outline"}
-          onClick={() => setSelectedScore("medium")}
-        >
-          Noticias Relevantes ({groupedTopics.medium.length})
-        </Button>
-        <Button
-          variant={selectedScore === "low" ? "default" : "outline"}
-          onClick={() => setSelectedScore("low")}
-        >
-          Otras Noticias ({groupedTopics.low.length})
-        </Button>
-        <Button
-          variant={selectedScore === "all" ? "default" : "outline"}
-          onClick={() => setSelectedScore("all")}
-        >
-          Todas las noticias
-        </Button>
+        <div className="flex items-center gap-4">
+          <Button
+            variant={selectedScore === "high" ? "default" : "outline"}
+            onClick={() => setSelectedScore("high")}
+          >
+            Noticias Destacadas ({groupedTopics.high.length})
+          </Button>
+          <Button
+            variant={selectedScore === "medium" ? "default" : "outline"}
+            onClick={() => setSelectedScore("medium")}
+          >
+            Noticias Relevantes ({groupedTopics.medium.length})
+          </Button>
+          <Button
+            variant={selectedScore === "low" ? "default" : "outline"}
+            onClick={() => setSelectedScore("low")}
+          >
+            Otras Noticias ({groupedTopics.low.length})
+          </Button>
+          <Button
+            variant={selectedScore === "all" ? "default" : "outline"}
+            onClick={() => setSelectedScore("all")}
+          >
+            Todas las noticias ({allTopicsCount})
+          </Button>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 animate-fade-in">
