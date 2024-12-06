@@ -88,20 +88,68 @@ export const NewsList = () => {
     );
   }
 
-  const totalPages = Math.ceil(topics.length / ITEMS_PER_PAGE);
+  // Group topics by puntuacion
+  const groupedTopics = topics.reduce((acc, topic) => {
+    const score = topic.puntuacion || 0;
+    if (score >= 8) {
+      acc.high.push(topic);
+    } else if (score >= 5) {
+      acc.medium.push(topic);
+    } else {
+      acc.low.push(topic);
+    }
+    return acc;
+  }, { high: [], medium: [], low: [] });
+
+  // Calculate pagination for all groups combined
+  const allTopics = [...groupedTopics.high, ...groupedTopics.medium, ...groupedTopics.low];
+  const totalPages = Math.ceil(allTopics.length / ITEMS_PER_PAGE);
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
   const endIndex = startIndex + ITEMS_PER_PAGE;
-  const currentTopics = topics.slice(startIndex, endIndex);
+  const currentTopics = allTopics.slice(startIndex, endIndex);
 
-  console.log("Rendering topics:", currentTopics);
+  console.log("Rendering grouped topics:", groupedTopics);
 
   return (
-    <div className="space-y-8">
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 animate-fade-in">
-        {currentTopics.map((topic) => (
-          <NewsCard key={topic.id} topic={topic} />
-        ))}
-      </div>
+    <div className="space-y-12">
+      {groupedTopics.high.length > 0 && (
+        <section>
+          <h2 className="text-2xl font-bold mb-6" style={{ color: import.meta.env.VITE_TITLE_FONT_COLOR }}>
+            Noticias Destacadas
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 animate-fade-in">
+            {currentTopics.filter(topic => (topic.puntuacion || 0) >= 8).map((topic) => (
+              <NewsCard key={topic.id} topic={topic} />
+            ))}
+          </div>
+        </section>
+      )}
+
+      {groupedTopics.medium.length > 0 && (
+        <section>
+          <h2 className="text-2xl font-bold mb-6" style={{ color: import.meta.env.VITE_TITLE_FONT_COLOR }}>
+            Noticias Relevantes
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 animate-fade-in">
+            {currentTopics.filter(topic => (topic.puntuacion || 0) >= 5 && (topic.puntuacion || 0) < 8).map((topic) => (
+              <NewsCard key={topic.id} topic={topic} />
+            ))}
+          </div>
+        </section>
+      )}
+
+      {groupedTopics.low.length > 0 && (
+        <section>
+          <h2 className="text-2xl font-bold mb-6" style={{ color: import.meta.env.VITE_TITLE_FONT_COLOR }}>
+            Otras Noticias
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 animate-fade-in">
+            {currentTopics.filter(topic => (topic.puntuacion || 0) < 5).map((topic) => (
+              <NewsCard key={topic.id} topic={topic} />
+            ))}
+          </div>
+        </section>
+      )}
 
       {totalPages > 1 && (
         <Pagination className="justify-center">

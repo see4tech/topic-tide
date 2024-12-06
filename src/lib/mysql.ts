@@ -20,6 +20,7 @@ export interface Topic {
   HTML: string;
   promptImagen: string;
   categoria: string;
+  puntuacion?: number;
 }
 
 export const fetchTopics = async (): Promise<Topic[]> => {
