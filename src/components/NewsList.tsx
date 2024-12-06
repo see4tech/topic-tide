@@ -93,15 +93,17 @@ export const NewsList = () => {
   // Group topics by puntuacion
   const groupedTopics = topics.reduce((acc, topic) => {
     const score = topic.puntuacion || 0;
-    if (score >= 8) {
+    if (score === 1) {
       acc.high.push(topic);
-    } else if (score >= 5) {
+    } else if (score === 2) {
       acc.medium.push(topic);
-    } else {
+    } else if (score === 3) {
       acc.low.push(topic);
     }
     return acc;
   }, { high: [], medium: [], low: [] });
+
+  console.log("Grouped topics by puntuacion:", groupedTopics);
 
   // Filter topics based on selected score group
   let filteredTopics = [];
@@ -123,8 +125,6 @@ export const NewsList = () => {
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
   const endIndex = startIndex + ITEMS_PER_PAGE;
   const currentTopics = filteredTopics.slice(startIndex, endIndex);
-
-  console.log("Rendering grouped topics:", groupedTopics);
 
   return (
     <div className="space-y-12">
