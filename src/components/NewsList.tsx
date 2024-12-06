@@ -21,7 +21,7 @@ export const NewsList = () => {
   console.log("NewsList component rendering");
   const { toast } = useToast();
   const [currentPage, setCurrentPage] = useState(1);
-  const [selectedScore, setSelectedScore] = useState<string>("all");
+  const [selectedScore, setSelectedScore] = useState<string>("high");
 
   const { data: topics, isLoading, error, isError } = useQuery({
     queryKey: ["topics"],
@@ -130,12 +130,6 @@ export const NewsList = () => {
     <div className="space-y-12">
       <div className="flex items-center gap-4 flex-wrap">
         <Button
-          variant={selectedScore === "all" ? "default" : "outline"}
-          onClick={() => setSelectedScore("all")}
-        >
-          Todas las noticias
-        </Button>
-        <Button
           variant={selectedScore === "high" ? "default" : "outline"}
           onClick={() => setSelectedScore("high")}
         >
@@ -152,6 +146,12 @@ export const NewsList = () => {
           onClick={() => setSelectedScore("low")}
         >
           Otras Noticias ({groupedTopics.low.length})
+        </Button>
+        <Button
+          variant={selectedScore === "all" ? "default" : "outline"}
+          onClick={() => setSelectedScore("all")}
+        >
+          Todas las noticias
         </Button>
       </div>
 
