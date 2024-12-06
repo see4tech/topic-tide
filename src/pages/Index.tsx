@@ -2,7 +2,6 @@ import { NewsList } from "@/components/NewsList";
 import { StoryIndex } from "@/components/StoryIndex";
 import { Footer } from "@/components/Footer";
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
 import { NewsletterModal } from "@/components/NewsletterModal";
 
 const Index = () => {
@@ -51,18 +50,15 @@ const Index = () => {
         </div>
       </header>
 
-      <div className="container mx-auto px-4 py-4">
-        <Button
-          onClick={() => setShowIndex(!showIndex)}
-          className="mb-4"
-          variant="outline"
-        >
-          {showIndex ? "Ver noticias" : "Ver índice de historias"}
-        </Button>
-      </div>
-
       <main className="container mx-auto px-4 py-8 flex-grow text-gray-900">
-        {showIndex ? <StoryIndex /> : <NewsList />}
+        {showIndex ? (
+          <StoryIndex />
+        ) : (
+          <NewsList 
+            showIndex={showIndex}
+            setShowIndex={setShowIndex}
+          />
+        )}
       </main>
 
       <NewsletterModal 

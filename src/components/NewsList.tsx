@@ -17,7 +17,12 @@ import {
 const ITEMS_PER_PAGE = 6;
 const REFETCH_INTERVAL = 5 * 60 * 1000; // 5 minutes
 
-export const NewsList = () => {
+interface NewsListProps {
+  showIndex: boolean;
+  setShowIndex: (show: boolean) => void;
+}
+
+export const NewsList = ({ showIndex, setShowIndex }: NewsListProps) => {
   console.log("NewsList component rendering");
   const { toast } = useToast();
   const [currentPage, setCurrentPage] = useState(1);
