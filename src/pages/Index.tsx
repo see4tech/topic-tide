@@ -2,6 +2,7 @@ import { NewsList } from "@/components/NewsList";
 import { StoryIndex } from "@/components/StoryIndex";
 import { Footer } from "@/components/Footer";
 import { useState } from "react";
+import { Button } from "@/components/ui/button";
 import { NewsletterModal } from "@/components/NewsletterModal";
 
 const Index = () => {
