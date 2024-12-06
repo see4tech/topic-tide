@@ -23,11 +23,30 @@ export interface Topic {
 }
 
 export const fetchTopics = async (): Promise<Topic[]> => {
+  const apiUrl = import.meta.env.VITE_API_URL;
+  const apiKey = import.meta.env.VITE_API_KEY;
+  
+  console.log('Environment variables:', {
+    apiUrl,
+    apiKeyExists: !!apiKey,
+    allEnvVars: import.meta.env
+  });
+
+  if (!apiUrl) {
+    console.error('API URL is not defined in environment variables');
+    throw new Error('API URL is not configured');
+  }
+
+  if (!apiKey) {
+    console.error('API Key is not defined in environment variables');
+    throw new Error('API Key is not configured');
+  }
+
   console.log('Fetching topics from API...');
   try {
-    const response = await fetch(import.meta.env.VITE_API_URL, {
+    const response = await fetch(apiUrl, {
       headers: {
-        'x-api-key': import.meta.env.VITE_API_KEY || '',
+        'x-api-key': apiKey,
       },
     });
 
