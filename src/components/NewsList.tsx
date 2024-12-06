@@ -12,6 +12,7 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 const ITEMS_PER_PAGE = 6;
 const REFETCH_INTERVAL = 5 * 60 * 1000; // 5 minutes
@@ -20,6 +21,7 @@ export const NewsList = () => {
   console.log("NewsList component rendering");
   const { toast } = useToast();
   const [currentPage, setCurrentPage] = useState(1);
+  const [selectedCategory, setSelectedCategory] = useState<string>("all");
 
   const { data: topics, isLoading, error, isError } = useQuery({
     queryKey: ["topics"],
@@ -88,8 +90,16 @@ export const NewsList = () => {
     );
   }
 
+  // Get unique categories
+  const categories = ["all", ...new Set(topics.map(topic => topic.categoria))];
+
+  // Filter topics by category if selected
+  const filteredTopics = selectedCategory === "all" 
+    ? topics 
+    : topics.filter(topic => topic.categoria === selectedCategory);
+
   // Group topics by puntuacion
-  const groupedTopics = topics.reduce((acc, topic) => {
+  const groupedTopics = filteredTopics.reduce((acc, topic) => {
     const score = topic.puntuacion || 0;
     if (score >= 8) {
       acc.high.push(topic);
@@ -101,7 +111,7 @@ export const NewsList = () => {
     return acc;
   }, { high: [], medium: [], low: [] });
 
-  // Calculate pagination for all groups combined
+  // Combine all topics in the desired order (high priority first)
   const allTopics = [...groupedTopics.high, ...groupedTopics.medium, ...groupedTopics.low];
   const totalPages = Math.ceil(allTopics.length / ITEMS_PER_PAGE);
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
@@ -112,6 +122,21 @@ export const NewsList = () => {
 
   return (
     <div className="space-y-12">
+      <div className="w-full max-w-xs">
+        <Select value={selectedCategory} onValueChange={setSelectedCategory}>
+          <SelectTrigger>
+            <SelectValue placeholder="Seleccionar categoría" />
+          </SelectTrigger>
+          <SelectContent>
+            {categories.map((category) => (
+              <SelectItem key={category} value={category}>
+                {category === "all" ? "Todas las categorías" : category}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </div>
+
       {groupedTopics.high.length > 0 && (
         <section>
           <h2 className="text-2xl font-bold mb-6" style={{ color: import.meta.env.VITE_TITLE_FONT_COLOR }}>
