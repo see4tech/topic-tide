@@ -4,6 +4,7 @@ import { NewsCard } from "./NewsCard";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useToast } from "@/components/ui/use-toast";
 import { useState } from "react";
+import { Button } from "@/components/ui/button";
 import {
   Pagination,
   PaginationContent,
@@ -12,7 +13,6 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 const ITEMS_PER_PAGE = 6;
 const REFETCH_INTERVAL = 5 * 60 * 1000; // 5 minutes
@@ -21,7 +21,7 @@ export const NewsList = () => {
   console.log("NewsList component rendering");
   const { toast } = useToast();
   const [currentPage, setCurrentPage] = useState(1);
-  const [selectedCategory, setSelectedCategory] = useState<string>("all");
+  const [selectedScore, setSelectedScore] = useState<string>("all");
 
   const { data: topics, isLoading, error, isError } = useQuery({
     queryKey: ["topics"],
@@ -90,16 +90,8 @@ export const NewsList = () => {
     );
   }
 
-  // Get unique categories
-  const categories = ["all", ...new Set(topics.map(topic => topic.categoria))];
-
-  // Filter topics by category if selected
-  const filteredTopics = selectedCategory === "all" 
-    ? topics 
-    : topics.filter(topic => topic.categoria === selectedCategory);
-
   // Group topics by puntuacion
-  const groupedTopics = filteredTopics.reduce((acc, topic) => {
+  const groupedTopics = topics.reduce((acc, topic) => {
     const score = topic.puntuacion || 0;
     if (score >= 8) {
       acc.high.push(topic);
@@ -111,70 +103,63 @@ export const NewsList = () => {
     return acc;
   }, { high: [], medium: [], low: [] });
 
-  // Combine all topics in the desired order (high priority first)
-  const allTopics = [...groupedTopics.high, ...groupedTopics.medium, ...groupedTopics.low];
-  const totalPages = Math.ceil(allTopics.length / ITEMS_PER_PAGE);
+  // Filter topics based on selected score group
+  let filteredTopics = [];
+  switch (selectedScore) {
+    case 'high':
+      filteredTopics = groupedTopics.high;
+      break;
+    case 'medium':
+      filteredTopics = groupedTopics.medium;
+      break;
+    case 'low':
+      filteredTopics = groupedTopics.low;
+      break;
+    default:
+      filteredTopics = [...groupedTopics.high, ...groupedTopics.medium, ...groupedTopics.low];
+  }
+
+  const totalPages = Math.ceil(filteredTopics.length / ITEMS_PER_PAGE);
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
   const endIndex = startIndex + ITEMS_PER_PAGE;
-  const currentTopics = allTopics.slice(startIndex, endIndex);
+  const currentTopics = filteredTopics.slice(startIndex, endIndex);
 
   console.log("Rendering grouped topics:", groupedTopics);
 
   return (
     <div className="space-y-12">
-      <div className="w-full max-w-xs">
-        <Select value={selectedCategory} onValueChange={setSelectedCategory}>
-          <SelectTrigger>
-            <SelectValue placeholder="Seleccionar categoría" />
-          </SelectTrigger>
-          <SelectContent>
-            {categories.map((category) => (
-              <SelectItem key={category} value={category}>
-                {category === "all" ? "Todas las categorías" : category}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+      <div className="flex items-center gap-4 flex-wrap">
+        <Button
+          variant={selectedScore === "all" ? "default" : "outline"}
+          onClick={() => setSelectedScore("all")}
+        >
+          Todas las noticias
+        </Button>
+        <Button
+          variant={selectedScore === "high" ? "default" : "outline"}
+          onClick={() => setSelectedScore("high")}
+        >
+          Noticias Destacadas ({groupedTopics.high.length})
+        </Button>
+        <Button
+          variant={selectedScore === "medium" ? "default" : "outline"}
+          onClick={() => setSelectedScore("medium")}
+        >
+          Noticias Relevantes ({groupedTopics.medium.length})
+        </Button>
+        <Button
+          variant={selectedScore === "low" ? "default" : "outline"}
+          onClick={() => setSelectedScore("low")}
+        >
+          Otras Noticias ({groupedTopics.low.length})
+        </Button>
       </div>
 
-      {groupedTopics.high.length > 0 && (
-        <section>
-          <h2 className="text-2xl font-bold mb-6" style={{ color: import.meta.env.VITE_TITLE_FONT_COLOR }}>
-            Noticias Destacadas
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 animate-fade-in">
-            {currentTopics.filter(topic => (topic.puntuacion || 0) >= 8).map((topic) => (
-              <NewsCard key={topic.id} topic={topic} />
-            ))}
-          </div>
-        </section>
-      )}
-
-      {groupedTopics.medium.length > 0 && (
-        <section>
-          <h2 className="text-2xl font-bold mb-6" style={{ color: import.meta.env.VITE_TITLE_FONT_COLOR }}>
-            Noticias Relevantes
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 animate-fade-in">
-            {currentTopics.filter(topic => (topic.puntuacion || 0) >= 5 && (topic.puntuacion || 0) < 8).map((topic) => (
-              <NewsCard key={topic.id} topic={topic} />
-            ))}
-          </div>
-        </section>
-      )}
-
-      {groupedTopics.low.length > 0 && (
-        <section>
-          <h2 className="text-2xl font-bold mb-6" style={{ color: import.meta.env.VITE_TITLE_FONT_COLOR }}>
-            Otras Noticias
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 animate-fade-in">
-            {currentTopics.filter(topic => (topic.puntuacion || 0) < 5).map((topic) => (
-              <NewsCard key={topic.id} topic={topic} />
-            ))}
-          </div>
-        </section>
-      )}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 animate-fade-in">
+        {currentTopics.map((topic) => (
+          <NewsCard key={topic.id} topic={topic} />
+        ))}
+      </div>
 
       {totalPages > 1 && (
         <Pagination className="justify-center">
