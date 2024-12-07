@@ -135,35 +135,40 @@ export const NewsList = ({ showIndex, setShowIndex }: NewsListProps) => {
 
   return (
     <div className="space-y-12">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col space-y-4 md:space-y-0 md:flex-row md:items-center md:justify-between">
         <Button
           variant="outline"
           onClick={() => setShowIndex(!showIndex)}
+          className="w-full md:w-auto"
         >
           Ver índice de historias
         </Button>
-        <div className="flex items-center gap-4">
+        <div className="flex flex-col space-y-2 md:space-y-0 md:flex-row md:items-center md:gap-4">
           <Button
             variant={selectedScore === "high" ? "default" : "outline"}
             onClick={() => setSelectedScore("high")}
+            className="w-full md:w-auto"
           >
             Noticias Destacadas ({groupedTopics.high.length})
           </Button>
           <Button
             variant={selectedScore === "medium" ? "default" : "outline"}
             onClick={() => setSelectedScore("medium")}
+            className="w-full md:w-auto"
           >
             Noticias Relevantes ({groupedTopics.medium.length})
           </Button>
           <Button
             variant={selectedScore === "low" ? "default" : "outline"}
             onClick={() => setSelectedScore("low")}
+            className="w-full md:w-auto"
           >
             Otras Noticias ({groupedTopics.low.length})
           </Button>
           <Button
             variant={selectedScore === "all" ? "default" : "outline"}
             onClick={() => setSelectedScore("all")}
+            className="w-full md:w-auto"
           >
             Todas las noticias ({allTopicsCount})
           </Button>
