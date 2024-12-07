@@ -19,7 +19,7 @@ export const NewsCard = ({ topic }: NewsCardProps) => {
           <Link to={`/story/${topic.id}`}>
             <img
               src={topic.imagen || import.meta.env.VITE_DEFAULT_NEWS_IMAGE}
-              alt={topic.tituloTraducido}
+              alt={topic.tituloTraducido || topic.titulo}
               className="w-full h-48 object-cover hover:opacity-90 transition-opacity"
             />
           </Link>
@@ -60,7 +60,7 @@ export const NewsCard = ({ topic }: NewsCardProps) => {
             className="text-xl font-bold mb-3 leading-tight group-hover:text-primary transition-colors"
             style={{ color: import.meta.env.VITE_TITLE_FONT_COLOR }}
           >
-            {topic.tituloTraducido}
+            {topic.tituloTraducido || topic.titulo}
           </h2>
         </Link>
         <div className="prose prose-sm max-w-none">
